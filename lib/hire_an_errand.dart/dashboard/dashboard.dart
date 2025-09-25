@@ -265,63 +265,61 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
 
                   /// Draggable Bid popup
-                  if (_showBidPopup)
-                    BlocConsumer<TaskBloc, TaskState>(
+                  // if (_showBidPopup)
+                  BlocConsumer<TaskBloc, TaskState>(listener: (context, state) {
+                    if (state is GetTaskForCurrenusersErrorState) {}
+                    if (state is GetTaskForCurrenusersErrorState) {
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   SnackBar(content: Text(state.errorMessage)),
+                      // );
+                    }
+                    if (state is GetTaskForCurrenusersSucessState) {
+                      setState(() {
+                        allTasksUnderBidding =
+                            filterOnlyBiddingTasks(state.gettask);
+                        allTasksUnderBidding.forEach(
+                          (element) {
+                            context.read<TransactionBloc>().add(
+                                  GetBidHistoryOfATaskEvent(
+                                      taskId: element.id!),
+                                );
+                          },
+                        );
+                      });
+                    }
+                  }, builder: (context, state) {
+                    return BlocConsumer<TransactionBloc, TransactionState>(
                         listener: (context, state) {
-                      if (state is GetTaskForCurrenusersErrorState) {}
-                      if (state is GetTaskForCurrenusersErrorState) {
+                      if (state is GetBidHistoryOfATaskErrorState) {}
+                      if (state is GetBidHistoryOfATaskErrorState) {
                         // ScaffoldMessenger.of(context).showSnackBar(
                         //   SnackBar(content: Text(state.errorMessage)),
                         // );
                       }
-                      if (state is GetTaskForCurrenusersSucessState) {
+                      if (state is GetBidHistoryOfATaskSuccessState) {
                         setState(() {
-                          allTasksUnderBidding =
-                              filterOnlyBiddingTasks(state.gettask);
-                          allTasksUnderBidding.forEach(
+                          GetTaskForCurrenusersEntity;
+                          if (!allDashbaordDraggableNotificationEntity.any(
                             (element) {
-                              context.read<TransactionBloc>().add(
-                                    GetBidHistoryOfATaskEvent(
-                                        taskId: element.id!),
-                                  );
+                              return element.taskModel?.id == state.taskID;
                             },
-                          );
+                          )) {
+                            allDashbaordDraggableNotificationEntity
+                                .add(DashbaordDraggableNotificationEntity(
+                                    bidHistoryModel: state.bidHistoryModel,
+                                    taskModel: allTasksUnderBidding.firstWhere(
+                                      (element) {
+                                        return element.id ==
+                                            state.bidHistoryModel.id;
+                                      },
+                                    )));
+                          }
                         });
                       }
                     }, builder: (context, state) {
-                      return BlocConsumer<TransactionBloc, TransactionState>(
-                          listener: (context, state) {
-                        if (state is GetBidHistoryOfATaskErrorState) {}
-                        if (state is GetBidHistoryOfATaskErrorState) {
-                          // ScaffoldMessenger.of(context).showSnackBar(
-                          //   SnackBar(content: Text(state.errorMessage)),
-                          // );
-                        }
-                        if (state is GetBidHistoryOfATaskSuccessState) {
-                          setState(() {
-                            GetTaskForCurrenusersEntity;
-                            if (!allDashbaordDraggableNotificationEntity.any(
-                              (element) {
-                                return element.taskModel?.id == state.taskID;
-                              },
-                            )) {
-                              allDashbaordDraggableNotificationEntity.add(
-                                  DashbaordDraggableNotificationEntity(
-                                      bidHistoryModel: state.bidHistoryModel,
-                                      taskModel:
-                                          allTasksUnderBidding.firstWhere(
-                                        (element) {
-                                          return element.id ==
-                                              state.bidHistoryModel.id;
-                                        },
-                                      )));
-                            }
-                          });
-                        }
-                      }, builder: (context, state) {
-                        return _buildDragableNotification(context);
-                      });
-                    }),
+                      return _buildDragableNotification(context);
+                    });
+                  }),
                 ],
               ),
             ),
