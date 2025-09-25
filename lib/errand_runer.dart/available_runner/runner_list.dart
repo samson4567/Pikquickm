@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+// import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/component/fancy_container.dart';
 import 'package:pikquick/features/profile/data/model/runnerdetails_model.dart';
 import 'package:pikquick/features/profile/domain/entities/runner_details_model.dart';
@@ -8,6 +9,7 @@ import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
 import 'package:pikquick/features/profile/presentation/profile_event.dart';
 import 'package:pikquick/features/profile/presentation/profile_state.dart';
 import 'package:pikquick/router/router_config.dart';
+import 'package:pikquick/app_variable.dart' as av;
 
 class ErrandRunnerScreen extends StatefulWidget {
   const ErrandRunnerScreen({super.key});
@@ -100,10 +102,16 @@ class _ErrandRunnerScreenState extends State<ErrandRunnerScreen> {
                 children: [
                   Row(
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back_ios_new, size: 22),
-                        onPressed: () => Navigator.pop(context),
-                      ),
+                      av.buildBackArrow(context,
+                          replaceWidget: IconButton(
+                              onPressed: () {
+                                context.go(MyAppRouteConstant.dashboard);
+                              },
+                              icon: Icon(Icons.home))),
+                      // IconButton(
+                      //   icon: const Icon(Icons.arrow_back_ios_new, size: 22),
+                      //   onPressed: () => Navigator.pop(context),
+                      // ),
                       const SizedBox(width: 20),
                     ],
                   ),

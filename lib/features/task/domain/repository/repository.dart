@@ -38,7 +38,7 @@ abstract class TaskRepository {
     required saveModel,
   });
   Future<Either<Failure, List<GetTaskForCurrenusersEntity>>> getTask(
-      {required GetTaskForClientModel gettaskModel});
+      {required GetTaskForClientModel gettaskModel, required String? mode});
 
   Future<Either<Failure, List<GetTaskForRunnerEntity>>> getTaskforRunner(
       {required GetTaskForRunnerModel getTaskRunner});

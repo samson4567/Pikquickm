@@ -98,7 +98,7 @@ class _SetbudgetState extends State<Setbudget> {
                       onChanged: (value) {
                         setState(() {
                           fareAmount = double.tryParse(value) ?? fareAmount;
-                          taskModelbeingCreated?.budget = fareAmount.toInt();
+                          taskModelbeingCreated?.budget = fareAmount.toDouble();
                         });
                         // taskModelbeingCreated?.budget = fareAmount.toInt();
                       },
@@ -108,14 +108,14 @@ class _SetbudgetState extends State<Setbudget> {
                     icon: const Icon(Icons.remove),
                     onPressed: () => setState(() {
                       fareAmount = (fareAmount - 100).clamp(0, double.infinity);
-                      taskModelbeingCreated?.budget = fareAmount.toInt();
+                      taskModelbeingCreated?.budget = fareAmount.toDouble();
                     }),
                   ),
                   IconButton(
                     icon: const Icon(Icons.add),
                     onPressed: () => setState(() {
                       fareAmount += 100;
-                      taskModelbeingCreated?.budget = fareAmount.toInt();
+                      taskModelbeingCreated?.budget = fareAmount.toDouble();
                     }),
                   ),
                   Image.asset(

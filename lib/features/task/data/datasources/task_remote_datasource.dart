@@ -24,7 +24,7 @@ abstract class TaskRemoteDatasource {
   Future<List<SavedCategoriesModel>> categorySaved(
       {required SavedCategoriesModel saveModel});
   Future<List<GetTaskForClientModel>> getTask(
-      {required GetTaskForClientModel gettaskModel});
+      {required GetTaskForClientModel gettaskModel, required String? mode});
   Future<List<GetTaskForRunnerModel>> getTaskrunner(
       {required GetTaskForRunnerModel getTaskRunner});
   Future<List<ActiveTaskPendingModel>> getActiveTask(
@@ -80,6 +80,9 @@ class TaskRemoteDatasourceIpl implements TaskRemoteDatasource {
   @override
   Future<TaskModel> taskcreation({required TaskModel taskModel}) async {
     print('taskModel.toJson() => ${taskModel.toJson()}');
+    print("ajsbdajkdbskjbdsadabda-taskcreation-started");
+    print("ajsbdajkdbskjbdsadabda-taskcreation-input_is>>$taskModel");
+
     final response = await networkClient.post(
       endpoint: EndpointConstant.createTask,
       isAuthHeaderRequired: true,
@@ -87,6 +90,8 @@ class TaskRemoteDatasourceIpl implements TaskRemoteDatasource {
     );
 
     final data = response.data;
+    print("ajsbdajkdbskjbdsadabda-response_message${response.message}");
+    print("ajsbdajkdbskjbdsadabda-response_data${response.data}");
     return TaskModel.fromJson(data);
   }
 
@@ -105,9 +110,12 @@ class TaskRemoteDatasourceIpl implements TaskRemoteDatasource {
 
   @override
   Future<List<GetTaskForClientModel>> getTask(
-      {required GetTaskForClientModel gettaskModel}) async {
+      {required GetTaskForClientModel gettaskModel,
+      required String? mode}) async {
     final response = await networkClient.get(
-      endpoint: EndpointConstant.gettaskforcurrentusers,
+      endpoint: (mode == null)
+          ? EndpointConstant.gettaskforcurrentusers
+          : "${EndpointConstant.gettaskforcurrentusers}?status=$mode",
       isAuthHeaderRequired: true,
     );
     var items = (response.data as List).map((item) {
@@ -133,7 +141,7 @@ class TaskRemoteDatasourceIpl implements TaskRemoteDatasource {
 
   @override
   Future<GetTaskOverviewModel> taskoverview({required String taskId}) async {
-    print('${taskId}************ ');
+    print('$taskId************ ');
     final response = await networkClient.get(
       endpoint: '${EndpointConstant.runnerOverviewTask}/$taskId',
       isAuthHeaderRequired: true,
@@ -182,7 +190,7 @@ class TaskRemoteDatasourceIpl implements TaskRemoteDatasource {
 
   @override
   Future<NewTaskModel> newDetailsTask({required String taskId}) async {
-    print('${taskId}************ ');
+    print('$taskId************ ');
     final response = await networkClient.get(
       endpoint: '${EndpointConstant.availableTaskOverview}/$taskId',
       isAuthHeaderRequired: true,

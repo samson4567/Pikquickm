@@ -56,7 +56,7 @@ class GooglePlaceMapScreenState extends State<GooglePlaceMapScreen> {
                     color: Colors.blueAccent,
                     icon: going
                         ? CircularProgressIndicator.adaptive(
-                            padding: EdgeInsets.all(20),
+                            // padding: EdgeInsets.all(20),
                             strokeWidth: 2,
                             valueColor: AlwaysStoppedAnimation<Color>(
                               Colors.blueAccent,

@@ -450,25 +450,29 @@ class AppRouter {
                   name: MyAppRouteConstant.dashboard,
                   path: MyAppRouteConstant.dashboard,
                   builder: (context, state) {
-                    final extra = state.extra;
+                    // final extra = state.extra;
 
-                    if (extra is Map<String, dynamic>) {
-                      final String? taskId = extra['taskId'] as String?;
-                      final String? bidId = extra['bidId'] as String?;
+                    // if (extra is Map<String, dynamic>) {
+                    //   final String? taskId = extra['taskId'] as String?;
+                    //   final String? bidId = extra['bidId'] as String?;
 
-                      if (taskId != null && taskId.isNotEmpty) {
-                        return DashboardPage(
-                          taskId: taskId,
-                          bidId: bidId ?? '', // optional, empty if missing
+                    //   if (taskId != null && taskId.isNotEmpty) {
+                    //     return DashboardPage(
+                    //         // taskId: taskId,
+                    //         // bidId: bidId ?? '', // optional, empty if missing
+                    //         );
+                    //   }
+                    // }
+                    return DashboardPage(
+                        // taskId: taskId,
+                        // bidId: bidId ?? '', // optional, empty if missing
                         );
-                      }
-                    }
 
-                    return const Scaffold(
-                      body: Center(
-                        child: Text('Invalid or missing task ID.'),
-                      ),
-                    );
+                    // return const Scaffold(
+                    //   body: Center(
+                    //     child: Text('Invalid or missing task ID.'),
+                    //   ),
+                    // );
                   },
                   routes: [
                     GoRoute(

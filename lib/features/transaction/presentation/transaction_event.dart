@@ -23,10 +23,10 @@ class TransactionHistoryEvent extends TransactionEvent {
 }
 
 // BidHistoryEvent
-class BidHistroyEvent extends TransactionEvent {
+class GetBidHistoryOfATaskEvent extends TransactionEvent {
   final String taskId;
 
-  const BidHistroyEvent({required this.taskId});
+  const GetBidHistoryOfATaskEvent({required this.taskId});
 
   @override
   List<Object> get props => [

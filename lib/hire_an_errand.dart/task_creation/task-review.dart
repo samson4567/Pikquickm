@@ -29,6 +29,12 @@ class TaskReview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // print("jskdksadkadsjadhasd>>${av.taskModelbeingCreated?.pickupAddress}");
+    print("jskdksadkadsjadhasd>>${av.taskModelbeingCreated?.pickupAddress
+        // AddressModel.fromEntity(av.taskModelbeingCreated?.pickupAddress)?.fullAddress
+        }");
+
+    // AddressModel.fromEntity(av.taskModelbeingCreated?.dropoffAddress)?.fullAddress
     return BlocConsumer<TaskBloc, TaskState>(
       listener: (context, state) {
         if (state is TaskCreationLoadingState) {
@@ -53,6 +59,9 @@ class TaskReview extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        // av.taskModelbeingCreated?.categoryId =
+        //     "455a8eed-729e-11f0-8703-00163cbf7aa3";
+        // av.taskModelbeingCreated?.taskType = av.taskModelbeingCreated?.name;
         return Scaffold(
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 100),
@@ -89,10 +98,10 @@ class TaskReview extends StatelessWidget {
                       '${av.taskModelbeingCreated?.additionalNotes ?? ''}'),
                   const Divider(),
                   buildLabelValue("Pick-up Location",
-                      '${av.taskModelbeingCreated?.pickupAddress?.addressLine1 ?? ''}'),
+                      '${AddressModel.fromEntity(av.taskModelbeingCreated?.pickupAddress)?.fullAddress ?? ''}'),
                   const Divider(),
                   buildLabelValue("Drop-off Location",
-                      '${av.taskModelbeingCreated?.dropoffAddress ?? ''}'),
+                      '${AddressModel.fromEntity(av.taskModelbeingCreated?.dropoffAddress)?.fullAddress ?? ''}'),
                   const Divider(),
                   buildLabelValue(
                       "Budget", '${av.taskModelbeingCreated?.budget ?? ''}'),

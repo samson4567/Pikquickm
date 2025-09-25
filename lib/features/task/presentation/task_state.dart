@@ -199,9 +199,10 @@ final class GetNewTaskDetailsErrorState extends TaskState {
 }
 
 // GetAvailablOrNewTASK
-final class GetNewTaskiiewIntitial extends TaskState {
-  const GetNewTaskiiewIntitial();
-}
+
+// final class GetBidingTaskIntitial extends TaskState {
+//   const GetBidingTaskIntitial();
+// }
 
 final class GetNewTaskLoadingState extends TaskState {}
 
@@ -476,4 +477,27 @@ final class MarkAsCompletedErrorState extends TaskState {
 
   @override
   List<Object> get props => [message];
+}
+
+// GetBidingTask
+final class GetBidingTaskIntitial extends TaskState {
+  const GetBidingTaskIntitial();
+}
+
+final class GetBidingTaskLoadingState extends TaskState {}
+
+final class GetBidingTaskSuccessState extends TaskState {
+  final List<NewTaskEntity> GetBidingTask;
+  const GetBidingTaskSuccessState({
+    required this.GetBidingTask,
+  });
+  @override
+  List<Object> get props => [GetBidingTask];
+}
+
+final class GetBidingTaskErrorState extends TaskState {
+  const GetBidingTaskErrorState({required this.errorMessage});
+  final String errorMessage;
+  @override
+  List<Object> get props => [errorMessage];
 }

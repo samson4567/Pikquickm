@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:pikquick/features/transaction/data/model/bid_history_model.dart';
 import 'package:pikquick/features/transaction/domain/entities/client_reviews_entity.dart';
 import 'package:pikquick/features/transaction/domain/entities/runner_review_enitty.dart';
 import 'package:pikquick/features/transaction/domain/entities/transaction_entity.dart';
@@ -84,21 +85,24 @@ final class RiunnerReviewErrorState extends TransactionState {
 
 // BidsHistory
 
-final class BidaHistorySuccessState extends TransactionState {
-  const BidaHistorySuccessState({required this.message});
-  final String message;
+final class GetBidHistoryOfATaskSuccessState extends TransactionState {
+  const GetBidHistoryOfATaskSuccessState(
+      {required this.bidHistoryModel, required this.taskID});
+  final BidHistoryModel bidHistoryModel;
+  final String taskID;
+
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [bidHistoryModel, taskID];
 }
 
-final class BidaHistoryLoadingState extends TransactionState {
-  const BidaHistoryLoadingState();
+final class GetBidHistoryOfATaskLoadingState extends TransactionState {
+  const GetBidHistoryOfATaskLoadingState();
   @override
   List<Object> get props => [];
 }
 
-final class BidHistoryErrorState extends TransactionState {
-  const BidHistoryErrorState({required this.message});
+final class GetBidHistoryOfATaskErrorState extends TransactionState {
+  const GetBidHistoryOfATaskErrorState({required this.message});
   final String message;
   @override
   List<Object> get props => [message];

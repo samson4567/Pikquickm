@@ -73,7 +73,7 @@ class _PlaceBottomSheetState extends State<PlaceBottomSheet> {
                     width: 80,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: Colors.black.withValues(alpha: .2)),
+                        color: Colors.black.withOpacity(.2)),
                   ),
                 ),
                 space,
@@ -90,7 +90,7 @@ class _PlaceBottomSheetState extends State<PlaceBottomSheet> {
                 space,
                 Divider(
                   height: 1,
-                  color: Colors.grey.withValues(alpha: .3),
+                  color: Colors.grey.withOpacity(.3),
                 ),
                 space,
                 SizedBox(
@@ -103,13 +103,13 @@ class _PlaceBottomSheetState extends State<PlaceBottomSheet> {
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide(
-                          color: Colors.grey.withValues(alpha: .3),
+                          color: Colors.grey.withOpacity(.3),
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide(
-                          color: Colors.grey.withValues(alpha: .3),
+                          color: Colors.grey.withOpacity(.3),
                         ),
                       ),
                       suffixIcon: Icon(Icons.search),
@@ -131,7 +131,8 @@ class _PlaceBottomSheetState extends State<PlaceBottomSheet> {
                       return Column(
                         children: [
                           ...ListTile.divideTiles(
-                              color: Colors.grey.withValues(alpha: .3),
+                              color: Colors.grey.withOpacity(.3),
+                              // withOpacity( .3),
                               tiles: [
                                 ...state.places.map((data) {
                                   final place = data as Map<String, dynamic>;
@@ -164,7 +165,7 @@ class _PlaceBottomSheetState extends State<PlaceBottomSheet> {
                           }
                         : null,
                     height: 45,
-                    disabledColor: Colors.blueAccent.withValues(alpha: .4),
+                    disabledColor: Colors.blueAccent.withOpacity(.4),
                     color: Colors.blueAccent,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),

@@ -22,7 +22,7 @@ class EndpointConstant {
   static const String inviteSent = '/tasks/';
   static const String getTaskforRunner = '/tasks/runner';
   static const String gettaskActive = '/task-assignments/active';
-  static const String bidaHisory = '/bids/task';
+  static const String bidHistory = '/bids/task';
   static const String runnerOverviewTask = '/tasks';
   static const String availableTaskOverview = '/tasks';
   static const String offerAbid = '/bids/initiate';

@@ -9,7 +9,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   TransactionBloc({required this.transactionRepository})
       : super(const TransactionHistoryInitial()) {
     on<TransactionHistoryEvent>(_onTransactionHistory);
-    on<BidHistroyEvent>(_onBiidHistoryEvent);
+    on<GetBidHistoryOfATaskEvent>(_ongetBidHistoryOfATask);
     on<ClientReviewEvent>(_onReviewByClientEvent);
     on<RunnerReviewEvent>(_onReviewByRunnerEvent);
   }
@@ -34,15 +34,16 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     );
   }
 
-  Future<void> _onBiidHistoryEvent(
-      BidHistroyEvent event, Emitter<TransactionState> emit) async {
-    emit(BidaHistoryLoadingState());
-    final result = await transactionRepository.bidsHistory(
-      taskId: event.taskId,
+  Future<void> _ongetBidHistoryOfATask(
+      GetBidHistoryOfATaskEvent event, Emitter<TransactionState> emit) async {
+    emit(GetBidHistoryOfATaskLoadingState());
+    final result = await transactionRepository.getBidHistoryOfATask(
+      taskID: event.taskId,
     );
     result.fold(
-      (error) => emit(BidHistoryErrorState(message: error.message)),
-      (message) => emit(BidaHistorySuccessState(message: message)),
+      (error) => emit(GetBidHistoryOfATaskErrorState(message: error.message)),
+      (bidHistoryModel) => emit(GetBidHistoryOfATaskSuccessState(
+          bidHistoryModel: bidHistoryModel, taskID: event.taskId)),
     );
   }
 

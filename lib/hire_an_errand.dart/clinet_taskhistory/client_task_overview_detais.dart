@@ -133,7 +133,8 @@ class _ClientTaskOverviewProgressState
     if (task.status?.toLowerCase() == "task_completed") {
       context.go(MyAppRouteConstant.reviews, extra: task); // Ratings page
     } else {
-      context.go(MyAppRouteConstant.mapBoxFullMapWidget); // Default to location
+      context
+          .push(MyAppRouteConstant.mapBoxFullMapWidget); // Default to location
     }
   }
 

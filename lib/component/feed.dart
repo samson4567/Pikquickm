@@ -16,9 +16,9 @@ class _FeedPageState extends State<FeedPage> {
   int _indexSelection = 0;
   final List<Widget> _pages = [
     const DashboardPage(
-      taskId: '',
-      bidId: '',
-    ),
+        // taskId: '',
+        // bidId: '',
+        ),
     const FeatureTaskCategories(),
     const Wallet(),
     const AccountPage(),

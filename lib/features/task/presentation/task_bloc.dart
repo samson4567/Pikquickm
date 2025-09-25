@@ -68,8 +68,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   Future<void> _onGetTaskCurrentUsers(
       GetTaskForCurrenusersEvent event, Emitter<TaskState> emit) async {
     emit(GetTaskForCurrenusersLoadingState());
-    final result =
-        await taskRepository.getTask(gettaskModel: event.gettaskModel);
+    final result = await taskRepository.getTask(
+        gettaskModel: event.gettaskModel, mode: event.mode);
     result.fold(
       (error) =>
           emit(GetTaskForCurrenusersErrorState(errorMessage: error.message)),

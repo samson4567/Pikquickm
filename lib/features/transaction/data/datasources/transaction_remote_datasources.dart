@@ -1,6 +1,7 @@
 import 'package:pikquick/core/api/pickquick_network_client.dart';
 import 'package:pikquick/core/constants/endpoint_constant.dart';
 import 'package:pikquick/core/db/app_preference_service.dart';
+import 'package:pikquick/features/transaction/data/model/bid_history_model.dart';
 import 'package:pikquick/features/transaction/data/model/client_review.dart';
 import 'package:pikquick/features/transaction/data/model/runner_review_model.dart';
 import 'package:pikquick/features/transaction/data/model/transaction_model.dart';
@@ -10,14 +11,15 @@ abstract class TransactionRemoteDatasources {
     required String page,
     required String limit,
   });
-  Future<String> bidHistory({
-    required String taskId,
-  });
+  // Future<String> bidHistory({
+  //   required String taskId,
+  // });
   Future<ClientReviewModel> clientReview(
       {required ClientReviewModel clientReview});
 
   Future<RunnerReviewModel> runnerReview(
       {required RunnerReviewModel runnerReview});
+  Future<BidHistoryModel> getBidHistoryOfATask({required String taskID});
 }
 
 class TransactionRemoteDatasourcesImpl implements TransactionRemoteDatasources {
@@ -58,14 +60,14 @@ class TransactionRemoteDatasourcesImpl implements TransactionRemoteDatasources {
         .toList();
   }
 
-  @override
-  Future<String> bidHistory({required String taskId}) async {
-    final response = await networkClient.get(
-      endpoint: '${EndpointConstant.bidaHisory}/$taskId/bid-history',
-      isAuthHeaderRequired: true,
-    );
-    return response.message;
-  }
+  // @override
+  // Future<String> bidHistory({required String taskId}) async {
+  //   final response = await networkClient.get(
+  //     endpoint: '${EndpointConstant.bidHistory}/$taskId/bid-history',
+  //     isAuthHeaderRequired: true,
+  //   );
+  //   return response.message;
+  // }
 
   @override
   Future<ClientReviewModel> clientReview({
@@ -99,5 +101,15 @@ class TransactionRemoteDatasourcesImpl implements TransactionRemoteDatasources {
     );
 
     return RunnerReviewModel.fromJson(response.data);
+  }
+
+  @override
+  Future<BidHistoryModel> getBidHistoryOfATask({required String taskID}) async {
+    final response = await networkClient.get(
+      endpoint: '${EndpointConstant.bidHistory}/$taskID/bid-history',
+      isAuthHeaderRequired: true,
+    );
+
+    return BidHistoryModel.fromJson(response.data);
   }
 }
