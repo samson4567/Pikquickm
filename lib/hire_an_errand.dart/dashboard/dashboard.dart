@@ -8,6 +8,8 @@ import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/au
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_event.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_state.dart';
 import 'package:pikquick/features/task/data/model/taskcreation_model.dart';
+import 'package:pikquick/features/task/domain/entitties/dashbaord_draggable_notification_entity.dart';
+import 'package:pikquick/features/task/domain/entitties/get_task_entities.dart';
 import 'package:pikquick/features/task/presentation/task_bloc.dart';
 import 'package:pikquick/features/task/presentation/task_event.dart';
 import 'package:pikquick/features/task/presentation/task_state.dart';
@@ -19,9 +21,12 @@ import 'package:pikquick/core/db/app_preference_service.dart';
 import 'package:pikquick/core/security/secure_key.dart';
 
 class DashboardPage extends StatefulWidget {
-  final String taskId;
-  final String bidId;
-  const DashboardPage({super.key, required this.taskId, required this.bidId});
+  // final String taskId;
+  // final String bidId;
+  const DashboardPage({
+    super.key,
+    // required this.taskId, required this.bidId
+  });
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -73,9 +78,9 @@ class _DashboardPageState extends State<DashboardPage> {
     context.read<AuthBloc>().add(
           TaskCategoryEvent(categoryModel: CustomCategoryTaskModel()),
         );
-    context.read<TransactionBloc>().add(
-          BidHistroyEvent(taskId: widget.taskId),
-        );
+    // context.read<TransactionBloc>().add(
+    //       GetBidHistoryOfATaskEvent(taskId: widget.taskId),
+    //     );
   }
 
   Future<void> _refreshAccessToken() async {
@@ -208,9 +213,9 @@ class _DashboardPageState extends State<DashboardPage> {
 
         /// Detect when bid history is loaded to show popup
         BlocListener<TransactionBloc, TransactionState>(
-          listenWhen: (p, c) => c is BidaHistorySuccessState,
+          listenWhen: (p, c) => c is GetBidHistoryOfATaskSuccessState,
           listener: (context, state) {
-            if (state is BidaHistorySuccessState) {
+            if (state is GetBidHistoryOfATaskSuccessState) {
               setState(() => _showBidPopup = true);
             }
           },
@@ -260,136 +265,212 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
 
                   /// Draggable Bid popup
-                  if (_showBidPopup)
-                    Positioned(
-                      top: _popupTop,
-                      left: _popupLeft,
-                      child: GestureDetector(
-                        onPanUpdate: (details) {
-                          setState(() {
-                            _popupTop += details.delta.dy;
-                            _popupLeft += details.delta.dx;
-                          });
-                        },
-                        child: Material(
-                          elevation: 6,
-                          borderRadius: BorderRadius.circular(40),
-                          child: Container(
-                            width: 355,
-                            constraints: const BoxConstraints(minHeight: 200),
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF2FAFF),
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Image.asset(
-                                  "assets/icons/com.png",
-                                  width: 40,
-                                  height: 40,
-                                  fit: BoxFit.contain,
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: const [
-                                          Text(
-                                            "You Received a New Bid!",
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.black87,
-                                            ),
-                                          ),
-                                          SizedBox(height: 4),
-                                          Text(
-                                            "You have received a new bid for your task. Would you like to accept or reject it?",
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.black54,
-                                              height: 1.4,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 16),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          context.read<TaskBloc>().add(
-                                                AcceptBidEvent(
-                                                    acceptBid: widget.bidId),
-                                              );
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.blue,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 12),
-                                        ),
-                                        child: const Text(
-                                          "Accept",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          context.read<TaskBloc>().add(
-                                              BidRejectEvent(
-                                                  bidReject: widget.bidId));
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.red,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 12),
-                                        ),
-                                        child: const Text(
-                                          "Reject",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                  // if (_showBidPopup)
+                  BlocConsumer<TaskBloc, TaskState>(listener: (context, state) {
+                    if (state is GetTaskForCurrenusersErrorState) {}
+                    if (state is GetTaskForCurrenusersErrorState) {
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   SnackBar(content: Text(state.errorMessage)),
+                      // );
+                    }
+                    if (state is GetTaskForCurrenusersSucessState) {
+                      setState(() {
+                        allTasksUnderBidding =
+                            filterOnlyBiddingTasks(state.gettask);
+                        allTasksUnderBidding.forEach(
+                          (element) {
+                            context.read<TransactionBloc>().add(
+                                  GetBidHistoryOfATaskEvent(
+                                      taskId: element.id!),
+                                );
+                          },
+                        );
+                      });
+                    }
+                  }, builder: (context, state) {
+                    return BlocConsumer<TransactionBloc, TransactionState>(
+                        listener: (context, state) {
+                      if (state is GetBidHistoryOfATaskErrorState) {}
+                      if (state is GetBidHistoryOfATaskErrorState) {
+                        // ScaffoldMessenger.of(context).showSnackBar(
+                        //   SnackBar(content: Text(state.errorMessage)),
+                        // );
+                      }
+                      if (state is GetBidHistoryOfATaskSuccessState) {
+                        setState(() {
+                          GetTaskForCurrenusersEntity;
+                          if (!allDashbaordDraggableNotificationEntity.any(
+                            (element) {
+                              return element.taskModel?.id == state.taskID;
+                            },
+                          )) {
+                            allDashbaordDraggableNotificationEntity
+                                .add(DashbaordDraggableNotificationEntity(
+                                    bidHistoryModel: state.bidHistoryModel,
+                                    taskModel: allTasksUnderBidding.firstWhere(
+                                      (element) {
+                                        return element.id ==
+                                            state.bidHistoryModel.id;
+                                      },
+                                    )));
+                          }
+                        });
+                      }
+                    }, builder: (context, state) {
+                      return _buildDragableNotification(context);
+                    });
+                  }),
                 ],
               ),
             ),
           );
         },
+      ),
+    );
+  }
+
+  bool getBidHistoryOfATaskEventIsLoading = false;
+
+  List<DashbaordDraggableNotificationEntity>
+      allDashbaordDraggableNotificationEntity = [];
+  List<GetTaskForCurrenusersEntity> allTasksUnderBidding = [];
+
+  List<GetTaskForCurrenusersEntity> filterOnlyBiddingTasks(
+      List<GetTaskForCurrenusersEntity> thatList) {
+    List<GetTaskForCurrenusersEntity> result = [];
+    thatList.forEach(
+      (element) {
+        if (element.status?.toLowerCase() == "bidding") result.add(element);
+      },
+    );
+    return result;
+  }
+
+  Positioned _buildDragableNotification(BuildContext context) {
+    return Positioned(
+      top: _popupTop,
+      left: _popupLeft,
+      child: GestureDetector(
+        onPanUpdate: (details) {
+          setState(() {
+            _popupTop += details.delta.dy;
+            _popupLeft += details.delta.dx;
+          });
+        },
+        child: Stack(
+          children: allDashbaordDraggableNotificationEntity.map(
+            (e) {
+              return Material(
+                elevation: 6,
+                borderRadius: BorderRadius.circular(40),
+                child: Container(
+                  width: 355,
+                  constraints: const BoxConstraints(minHeight: 200),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF2FAFF),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.asset(
+                        "assets/icons/com.png",
+                        width: 40,
+                        height: 40,
+                        fit: BoxFit.contain,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "You Received a New Bid!",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  "You have received a new bid from ${e.taskModel?.runnerName}. Would you like to accept or reject it?",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black54,
+                                    height: 1.4,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                context.read<TaskBloc>().add(
+                                      AcceptBidEvent(
+                                          acceptBid: e.bidHistoryModel!.id!),
+                                    );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12),
+                              ),
+                              child: const Text(
+                                "Accept",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                context.read<TaskBloc>().add(BidRejectEvent(
+                                    bidReject: e.bidHistoryModel!.id!));
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12),
+                              ),
+                              child: const Text(
+                                "Reject",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ).toList(),
+        ),
       ),
     );
   }
@@ -471,11 +552,11 @@ class _DashboardPageState extends State<DashboardPage> {
           return GestureDetector(
             onTap: () {
               av.taskModelbeingCreated = TaskModel(
-                categoryId: item['id']!,
-                taskType: item['name']!,
-                description: item['description']!,
-                name: item['name']!,
-              );
+                  categoryId: item['id']!,
+                  taskType: item['name']!,
+                  description: item['description']!,
+                  name: item['name']!,
+                  clientId: av.userModelG?.id);
               context.push(MyAppRouteConstant.deliveryScreen);
             },
             child: Column(

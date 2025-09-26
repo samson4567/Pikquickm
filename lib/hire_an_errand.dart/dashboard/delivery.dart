@@ -224,9 +224,15 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                         const SizedBox(width: 8),
                         TextButton(
                           onPressed: () async {
+                            print("dsjsabdsjadas-observation-started");
                             final dynamic result = await _showMap();
+                            print("dsjsabdsjadas-observation-_showMap-ended");
+                            print(
+                                "dsjsabdsjadas-observation-result_is>>$result");
                             final AddressModel? selected =
                                 _parseAddress(result);
+                            print(
+                                "dsjsabdsjadas-observation-result_is>>$selected");
 
                             if (selected != null && mounted) {
                               setState(() {
@@ -334,6 +340,9 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                     color: const Color(0xFF4378CD),
                     onTap: () {
                       if (av.taskModelbeingCreated != null && _validateForm()) {
+                        print(
+                            "ajsbdajkdbskjbdsadabda-av.taskModelbeingCreated-${av.taskModelbeingCreated}");
+                        AddressModel;
                         context.read<TaskBloc>().add(TaskCreationEvent(
                             taskModel: av.taskModelbeingCreated!));
                       } else {
@@ -449,7 +458,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
               onChanged: (value) {
                 setState(() {
                   fareAmount = double.tryParse(value) ?? fareAmount;
-                  av.taskModelbeingCreated?.budget = fareAmount.toInt();
+                  av.taskModelbeingCreated?.budget = fareAmount.toDouble();
                 });
               },
             ),
@@ -458,14 +467,14 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
             icon: const Icon(Icons.remove),
             onPressed: () => setState(() {
               fareAmount = (fareAmount - 100).clamp(0, double.infinity);
-              av.taskModelbeingCreated?.budget = fareAmount.toInt();
+              av.taskModelbeingCreated?.budget = fareAmount.toDouble();
             }),
           ),
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () => setState(() {
               fareAmount += 100;
-              av.taskModelbeingCreated?.budget = fareAmount.toInt();
+              av.taskModelbeingCreated?.budget = fareAmount.toDouble();
             }),
           ),
         ],

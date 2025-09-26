@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:pikquick/core/error/failure.dart';
+import 'package:pikquick/features/transaction/data/model/bid_history_model.dart';
 import 'package:pikquick/features/transaction/data/model/client_review.dart';
 import 'package:pikquick/features/transaction/data/model/runner_review_model.dart';
 import 'package:pikquick/features/transaction/domain/entities/client_reviews_entity.dart';
@@ -12,9 +13,9 @@ abstract class TransactionRepository {
     required String limit,
   });
 
-  Future<Either<Failure, String>> bidsHistory({
-    required String taskId,
-  });
+  // Future<Either<Failure, String>> bidsHistory({
+  //   required String taskId,
+  // });
 
   Future<Either<Failure, ClientReviewEntity>> reviewByClient({
     required ClientReviewModel makeReview,
@@ -23,4 +24,6 @@ abstract class TransactionRepository {
   Future<Either<Failure, RunnerReviewEntity>> reviewByRunner({
     required RunnerReviewModel makeReviewRunner,
   });
+  Future<Either<Failure, BidHistoryModel>> getBidHistoryOfATask(
+      {required String taskID});
 }

@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:pikquick/core/error/exception.dart';
 import 'package:pikquick/core/error/failure.dart';
 import 'package:pikquick/core/mapper/failure_mapper.dart';
 import 'package:pikquick/features/task/data/model/accept_bid.dart';
@@ -49,16 +50,19 @@ class TaskRepositoryImpl implements TaskRepository {
           taskModel: taskModel); // returns TaskModel
       return right(result);
     } catch (e) {
+      print(
+          "ajsbdajkdbskjbdsadabda-TaskRepositoryImpl-taskcreation-error_is>>${e}");
       return left(mapExceptionToFailure(e));
     }
   }
 
   @override
   Future<Either<Failure, List<GetTaskForCurrenusersEntity>>> getTask(
-      {required GetTaskForClientModel gettaskModel}) async {
+      {required GetTaskForClientModel gettaskModel,
+      required String? mode}) async {
     try {
-      final result =
-          await taskRemoteDatasource.getTask(gettaskModel: gettaskModel);
+      final result = await taskRemoteDatasource.getTask(
+          gettaskModel: gettaskModel, mode: mode);
       return right(result);
     } catch (e) {
       return left(mapExceptionToFailure(e));

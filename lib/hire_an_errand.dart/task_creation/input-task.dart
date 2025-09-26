@@ -37,9 +37,14 @@ class _HireRunnerPageState extends State<HireRunnerPage> {
   @override
   void initState() {
     super.initState();
+    taskModelbeingCreated?.clientId = userModelG?.id;
+    taskModelbeingCreated?.categoryId = "455a8eed-729e-11f0-8703-00163cbf7aa3";
+
+    // 455a8eed-729e-11f0-8703-00163cbf7aa3
     _titleController.addListener(
       () {
         taskModelbeingCreated?.name = _titleController.text;
+        taskModelbeingCreated?.taskType = _titleController.text;
       },
     );
     _descriptionController.addListener(

@@ -39,11 +39,17 @@ class SavedCategoriesEvent extends TaskEvent {
 
 class GetTaskForCurrenusersEvent extends TaskEvent {
   final GetTaskForClientModel gettaskModel;
+  final String? mode;
 
-  const GetTaskForCurrenusersEvent({required this.gettaskModel});
+  const GetTaskForCurrenusersEvent({
+    required this.gettaskModel,
+    this.mode,
+  });
 
   @override
   List<Object> get props => [gettaskModel];
+
+  // get mode => null;
 }
 
 class GetTaskforRunnerEvent extends TaskEvent {

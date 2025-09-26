@@ -19,7 +19,7 @@ class TopRightHomeWidgets extends StatelessWidget {
       child: BlocBuilder<PrmpMapCubit, PrmpMapState>(
         builder: (context, mapState) {
           return Column(
-            spacing: 14,
+            // spacing: 14,
             children: [
               ValueListenableBuilder(
                 valueListenable: mapTypeNotifier,

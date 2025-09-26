@@ -232,12 +232,11 @@ bool toPop = false;
 //   );
 // }
 
-Widget buildBackArrow(
-  BuildContext context, {
-  Function()? replaceFunction,
-  Function()? supplimentFunctionBefore,
-  Function()? supplimentFunctionAfter,
-}) {
+Widget buildBackArrow(BuildContext context,
+    {Function()? replaceFunction,
+    Function()? supplimentFunctionBefore,
+    Function()? supplimentFunctionAfter,
+    Widget? replaceWidget}) {
   return Visibility(
     visible: !(ModalRoute.of(context)?.isFirst ?? true),
     child: Padding(
@@ -252,12 +251,15 @@ Widget buildBackArrow(
                   context.pop();
                   supplimentFunctionAfter?.call();
                 },
-            child: Image.asset(
-              "assets/icons/arrow.png",
-              fit: BoxFit.contain,
-            )),
+            child: Icon(Icons.arrow_back_ios_new_rounded)
+            // Image.asset(
+            //   "assets/icons/arrow.png",
+            //   fit: BoxFit.contain,
+            // )
+            ),
       ),
     ),
+    replacement: replaceWidget ?? const SizedBox.shrink(),
   );
 }
 

@@ -116,7 +116,7 @@ class PrmpMapCubit extends Cubit<PrmpMapState> {
     final position = await getCurrentCameraPosition();
     await controller.animateCamera(
       CameraUpdate.newCameraPosition(position),
-      duration: Duration(milliseconds: 500),
+      // duration: Duration(milliseconds: 500),
     );
     emit(state.copyWith(goingToCurrenPosition: false));
     await _addMarker(position.target);
@@ -274,8 +274,9 @@ class PrmpMapCubit extends Cubit<PrmpMapState> {
         state: getComponent("administrative_area_level_1") ?? "",
         postalCode: getComponent("postal_code") ?? "",
         country: getComponent("country") ?? "",
-        countryCode: getComponent("country") ??
-            "", // If you want short_name instead, change this
+        countryCode: null,
+        // getComponent("country") ??
+        //     "", // If you want short_name instead, change this
         latitude: location['lat'],
         longitude: location['lng'],
         description: description,

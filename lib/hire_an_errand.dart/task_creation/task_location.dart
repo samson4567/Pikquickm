@@ -107,7 +107,7 @@ class _TasklocationState extends State<Tasklocation> {
                 title: 'Task location',
                 hint: 'Enter  address',
                 imagePath: 'assets/icons/ic1.png',
-                controller: dropoffController,
+                controller: pickupController,
               ),
               Row(
                 children: [
@@ -116,11 +116,12 @@ class _TasklocationState extends State<Tasklocation> {
                   TextButton(
                     // '${av.taskModelbeingCreated?.description}',
                     onPressed: () async {
+                      print("dsjhksajdhjka");
+
                       final address = await _showMap();
                       taskModelbeingCreated ??= TaskModel.empty();
+                      pickupController.text = address?.fullAddress ?? '';
                       taskModelbeingCreated!.pickupAddress = address;
-
-                      dropoffController.text = address?.fullAddress ?? '';
 
                       print('From dropOff ${address?.toJson()}');
                     },
@@ -154,9 +155,8 @@ class _TasklocationState extends State<Tasklocation> {
                       onPressed: () async {
                         final address = await _showMap();
                         taskModelbeingCreated ??= TaskModel.empty();
-                        taskModelbeingCreated!.dropoffAddress = address;
-
                         dropoffController.text = address?.fullAddress ?? '';
+                        taskModelbeingCreated!.dropoffAddress = address;
 
                         print('From dropOff2 ${address?.toJson()}');
                       },

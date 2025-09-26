@@ -3,6 +3,7 @@ import 'package:pikquick/core/error/failure.dart';
 import 'package:pikquick/core/mapper/failure_mapper.dart';
 import 'package:pikquick/features/transaction/data/datasources/transaction_local_datasources.dart';
 import 'package:pikquick/features/transaction/data/datasources/transaction_remote_datasources.dart';
+import 'package:pikquick/features/transaction/data/model/bid_history_model.dart';
 import 'package:pikquick/features/transaction/data/model/client_review.dart';
 import 'package:pikquick/features/transaction/data/model/runner_review_model.dart';
 import 'package:pikquick/features/transaction/domain/entities/client_reviews_entity.dart';
@@ -34,10 +35,11 @@ class TrannsactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
-  Future<Either<Failure, String>> bidsHistory({required String taskId}) async {
+  Future<Either<Failure, BidHistoryModel>> getBidHistoryOfATask(
+      {required String taskID}) async {
     try {
-      final result = await transactionRemoteDatasources.bidHistory(
-        taskId: taskId,
+      final result = await transactionRemoteDatasources.getBidHistoryOfATask(
+        taskID: taskID,
       );
       return right(result);
     } catch (e) {
