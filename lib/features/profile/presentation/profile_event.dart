@@ -3,8 +3,10 @@ import 'package:pikquick/features/profile/data/model/create_model.dart';
 import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
 import 'package:pikquick/features/profile/data/model/invite_sent_model.dart';
 import 'package:pikquick/features/profile/data/model/profile_model.dart';
+import 'package:pikquick/features/profile/data/model/profile_upload_model.dart';
 import 'package:pikquick/features/profile/data/model/runnerdetails_model.dart'
     show RunnersAllDetailsModel;
+import 'package:pikquick/features/profile/domain/entities/profile_uplaod_entites.dart';
 
 abstract class ProfileEvent extends Equatable {
   const ProfileEvent();
@@ -118,4 +120,11 @@ class InviteSentEvent extends ProfileEvent {
   final String taskId;
   final InviteSentToRunnerModel sendInvite;
   const InviteSentEvent({required this.taskId, required this.sendInvite});
+}
+
+// provileuplod
+class ProfileUploadFileEvent extends ProfileEvent {
+  final ProfileUploadModel profileUpload;
+
+  const ProfileUploadFileEvent({required this.profileUpload});
 }

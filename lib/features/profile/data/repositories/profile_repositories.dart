@@ -6,11 +6,13 @@ import 'package:pikquick/features/profile/data/datasource/profile_remote_datasou
 import 'package:pikquick/features/profile/data/model/create_model.dart';
 import 'package:pikquick/features/profile/data/model/invite_sent_model.dart';
 import 'package:pikquick/features/profile/data/model/profile_model.dart';
+import 'package:pikquick/features/profile/data/model/profile_upload_model.dart';
 import 'package:pikquick/features/profile/data/model/runnerdetails_model.dart';
 import 'package:pikquick/features/profile/domain/entities/create_profile_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/getrunner_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/invite_sent_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/profile_entity.dart';
+import 'package:pikquick/features/profile/domain/entities/profile_uplaod_entites.dart';
 import 'package:pikquick/features/profile/domain/entities/runner_details_model.dart';
 import 'package:pikquick/features/profile/domain/entities/runner_performance_entiy.dart';
 import 'package:pikquick/features/profile/domain/entities/search_entity.dart';
@@ -143,6 +145,19 @@ class ProfileRepositoryImpl implements ProfileRepository {
     try {
       final result = await profileRemoteDatasource.sendRunnerInvite(
           taskId: taskId, sendInvite: sendInvite);
+      return right(result);
+    } catch (e) {
+      return left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ProfileUploadEntity>> uploadProfile({
+    required ProfileUploadModel profile,
+  }) async {
+    try {
+      final result =
+          await profileRemoteDatasource.uploadProfile(profile: profile);
       return right(result);
     } catch (e) {
       return left(mapExceptionToFailure(e));

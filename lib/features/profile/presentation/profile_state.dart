@@ -1,8 +1,10 @@
 import 'package:equatable/equatable.dart';
+import 'package:pikquick/features/profile/data/model/profile_upload_model.dart';
 import 'package:pikquick/features/profile/domain/entities/create_profile_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/getrunner_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/invite_sent_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/profile_entity.dart';
+import 'package:pikquick/features/profile/domain/entities/profile_uplaod_entites.dart';
 import 'package:pikquick/features/profile/domain/entities/runner_details_model.dart';
 import 'package:pikquick/features/profile/domain/entities/runner_performance_entiy.dart';
 import 'package:pikquick/features/profile/domain/entities/search_entity.dart'
@@ -200,6 +202,28 @@ final class InviteSentErrorState extends ProfileState {
   final String errorMessage;
 
   const InviteSentErrorState({required this.errorMessage});
+
+  @override
+  List<Object> get props => [errorMessage];
+}
+
+class ProfileUploadInitial extends ProfileState {}
+
+class ProfileUploadLoadingState extends ProfileState {}
+
+class ProfileUploadSuccessState extends ProfileState {
+  final ProfileUploadEntity profileUpload;
+
+  const ProfileUploadSuccessState({required this.profileUpload});
+
+  @override
+  List<Object> get props => [profileUpload];
+}
+
+class ProfileUploadErrorState extends ProfileState {
+  final String errorMessage;
+
+  const ProfileUploadErrorState({required this.errorMessage});
 
   @override
   List<Object> get props => [errorMessage];

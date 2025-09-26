@@ -17,6 +17,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<RunnerDetailsInviteSentEvent>(_onViewRunnerDetailsSent);
     on<SearchRunnerEvent>(_onSearchRunner);
     on<InviteSentEvent>(_onInviteSent);
+    on<ProfileUploadFileEvent>(_onProfileUpload);
   }
 
   Future<void> _onProfileSetup(
@@ -129,6 +130,20 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     result.fold(
       (error) => emit(InviteSentErrorState(errorMessage: error.message)),
       (data) => emit(InviteSentSuccessState(runners: data)),
+    );
+  }
+
+  Future<void> _onProfileUpload(
+      ProfileUploadFileEvent event, Emitter<ProfileState> emit) async {
+    emit(ProfileUploadLoadingState());
+
+    final result =
+        await profileRepository.uploadProfile(profile: event.profileUpload);
+
+    result.fold(
+      (failure) => emit(ProfileUploadErrorState(errorMessage: failure.message)),
+      (profileUpload) =>
+          emit(ProfileUploadSuccessState(profileUpload: profileUpload)),
     );
   }
 }

@@ -10,6 +10,7 @@ import 'package:pikquick/errand_runer.dart/profile/my_profile.dart';
 import 'package:pikquick/features/authentication/data/models/refrresh_toke_model.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_event.dart';
+import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
 import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
 import 'package:pikquick/features/profile/presentation/profile_state.dart';
 import 'package:pikquick/features/task/data/model/active_task_model.dart';
@@ -32,6 +33,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  GetRunnerProfileModel? runnerData;
   bool isToggled = false;
   double currentBalance = 0.0;
 
@@ -133,7 +135,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               child: CircleAvatar(
                                 radius: 25,
                                 backgroundImage:
-                                    AssetImage('assets/images/du.png'),
+                                    runnerData?.profilePictureUrl != null
+                                        ? NetworkImage(
+                                            runnerData!.profilePictureUrl!)
+                                        : AssetImage('assets/images/du.png')
+                                            as ImageProvider,
                               ),
                             ),
                             SizedBox(width: 10),
