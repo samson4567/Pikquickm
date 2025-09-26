@@ -45,7 +45,7 @@ class EndpointConstant {
   static const String addreviewsbyclient = '/reviews/runners';
   static const String addreviewsbyrunner = '/reviews/runners';
   static const String profileUpload = '/runner-profile/profile-picture';
-  // static const String convert = '/wallet/convert';
+  static const String walletSummary = '/runner/earnings/summary';
   // static const String getConversions = '/wallet/conversions';
   // static const String getTradableCoin = "/market/tradable-coins";
   // static const String interTransfer = "/wallet/transfer";

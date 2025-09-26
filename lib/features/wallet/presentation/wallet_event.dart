@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:pikquick/features/wallet/data/model/client_notification_model.dart';
 import 'package:pikquick/features/wallet/data/model/runner_available_model.dart';
 import 'package:pikquick/features/transaction/data/model/transaction_model.dart';
+import 'package:pikquick/features/wallet/data/model/summary_wallet_model.dart';
 import 'package:pikquick/features/wallet/data/model/walllet_balance_model.dart';
 
 abstract class WalletEvent extends Equatable {
@@ -24,5 +25,3 @@ class GetClientNotificationEvent extends WalletEvent {
   final ClientNotificationModel clientnote;
   const GetClientNotificationEvent({required this.clientnote});
 }
-
-// GetClientNotification

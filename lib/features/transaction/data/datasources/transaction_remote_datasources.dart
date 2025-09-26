@@ -5,6 +5,7 @@ import 'package:pikquick/features/transaction/data/model/bid_history_model.dart'
 import 'package:pikquick/features/transaction/data/model/client_review.dart';
 import 'package:pikquick/features/transaction/data/model/runner_review_model.dart';
 import 'package:pikquick/features/transaction/data/model/transaction_model.dart';
+import 'package:pikquick/features/wallet/data/model/summary_wallet_model.dart';
 
 abstract class TransactionRemoteDatasources {
   Future<List<TransactionModel>> transaction({
