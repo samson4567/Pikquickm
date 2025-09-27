@@ -2,9 +2,11 @@ import 'package:dartz/dartz.dart';
 import 'package:pikquick/core/error/failure.dart';
 import 'package:pikquick/features/wallet/data/model/client_notification_model.dart';
 import 'package:pikquick/features/wallet/data/model/runner_available_model.dart';
+import 'package:pikquick/features/wallet/data/model/summary_wallet_model.dart';
 import 'package:pikquick/features/wallet/data/model/walllet_balance_model.dart';
 import 'package:pikquick/features/wallet/domain/entities/client_notification.enity.dart';
 import 'package:pikquick/features/wallet/domain/entities/runner_model_entity.dart';
+import 'package:pikquick/features/wallet/domain/entities/summary_wallet_entities.dart';
 import 'package:pikquick/features/wallet/domain/entities/wallet_entiea.dart';
 
 abstract class WalletRepository {
@@ -15,5 +17,6 @@ abstract class WalletRepository {
 
   Future<Either<Failure, List<ClientNotificationEntity>>> clientNotiifcation(
       {required ClientNotificationModel clientNotiifcation});
-}
+
 //transactionHistory
+}

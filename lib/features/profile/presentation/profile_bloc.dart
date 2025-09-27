@@ -17,6 +17,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<RunnerDetailsInviteSentEvent>(_onViewRunnerDetailsSent);
     on<SearchRunnerEvent>(_onSearchRunner);
     on<InviteSentEvent>(_onInviteSent);
+    on<ProfileUploadFileEvent>(_onProfileUpload);
+    on<ToggleSubscribeAutoDeductionEvent>(_onToggleSubscribeAutoDeduction);
+    on<UnsubscribeAutoDeductionEvent>(_onUnsubscribeAutoDeduction);
   }
 
   Future<void> _onProfileSetup(
@@ -129,6 +132,49 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     result.fold(
       (error) => emit(InviteSentErrorState(errorMessage: error.message)),
       (data) => emit(InviteSentSuccessState(runners: data)),
+    );
+  }
+
+  Future<void> _onProfileUpload(
+      ProfileUploadFileEvent event, Emitter<ProfileState> emit) async {
+    emit(ProfileUploadLoadingState());
+
+    final result =
+        await profileRepository.uploadProfile(profile: event.profileUpload);
+
+    result.fold(
+      (failure) => emit(ProfileUploadErrorState(errorMessage: failure.message)),
+      (profileUpload) =>
+          emit(ProfileUploadSuccessState(profileUpload: profileUpload)),
+    );
+  }
+
+  Future<void> _onToggleSubscribeAutoDeduction(
+    ToggleSubscribeAutoDeductionEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
+    emit(SubscribeAutoDeductionLoading());
+
+    final result =
+        await profileRepository.subscribeAutoDeduction(model: event.model);
+
+    result.fold(
+      (failure) => emit(SubscribeAutoDeductionError(failure.message)),
+      (subscription) => emit(SubscribeAutoDeductionSuccess(subscription)),
+    );
+  }
+
+  Future<void> _onUnsubscribeAutoDeduction(
+    UnsubscribeAutoDeductionEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
+    emit(UnsubscribeAutoDeductionLoading());
+    final result =
+        await profileRepository.unsubscribeAutoDeduction(model: event.model);
+
+    result.fold(
+      (failure) => emit(UnsubscribeAutoDeductionError(failure.message)),
+      (entity) => emit(UnsubscribeAutoDeductionSuccess(entity)),
     );
   }
 }

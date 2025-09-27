@@ -6,15 +6,21 @@ import 'package:pikquick/features/profile/data/datasource/profile_remote_datasou
 import 'package:pikquick/features/profile/data/model/create_model.dart';
 import 'package:pikquick/features/profile/data/model/invite_sent_model.dart';
 import 'package:pikquick/features/profile/data/model/profile_model.dart';
+import 'package:pikquick/features/profile/data/model/profile_upload_model.dart';
 import 'package:pikquick/features/profile/data/model/runnerdetails_model.dart';
 import 'package:pikquick/features/profile/domain/entities/create_profile_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/getrunner_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/invite_sent_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/profile_entity.dart';
+import 'package:pikquick/features/profile/domain/entities/profile_uplaod_entites.dart';
 import 'package:pikquick/features/profile/domain/entities/runner_details_model.dart';
 import 'package:pikquick/features/profile/domain/entities/runner_performance_entiy.dart';
 import 'package:pikquick/features/profile/domain/entities/search_entity.dart';
 import 'package:pikquick/features/profile/domain/repositories/profile_repositires.dart';
+import 'package:pikquick/features/task/data/model/subscrip_toggle_model.dart';
+import 'package:pikquick/features/task/data/model/unsuscribe_model.dart';
+import 'package:pikquick/features/task/domain/entitties/subscripe_entity.dart';
+import 'package:pikquick/features/task/domain/entitties/unsuscribe_entities.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {
   final ProfileRemoteDatasource profileRemoteDatasource;
@@ -146,6 +152,46 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return right(result);
     } catch (e) {
       return left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ProfileUploadEntity>> uploadProfile({
+    required ProfileUploadModel profile,
+  }) async {
+    try {
+      final result =
+          await profileRemoteDatasource.uploadProfile(profile: profile);
+      return right(result);
+    } catch (e) {
+      return left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, SubscribeAutoDeductionEntity>> subscribeAutoDeduction({
+    required SubscribeAutoDeductionModel model,
+  }) async {
+    try {
+      final result =
+          await profileRemoteDatasource.subscribeAutoDeduction(model: model);
+      return Right(result);
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UnsubscribeAutoDeductionEntity>>
+      unsubscribeAutoDeduction({
+    required UnsubscribeAutoDeductionModel model,
+  }) async {
+    try {
+      final result =
+          await profileRemoteDatasource.unsubscribeAutoDeduction(model: model);
+      return Right(result);
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
     }
   }
 }

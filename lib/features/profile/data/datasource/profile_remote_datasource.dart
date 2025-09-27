@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:pikquick/core/api/pickquick_network_client.dart';
 import 'package:pikquick/core/constants/endpoint_constant.dart';
 import 'package:pikquick/core/db/app_preference_service.dart';
@@ -6,9 +9,13 @@ import 'package:pikquick/features/profile/data/model/get_runner_profile_model.da
 import 'package:pikquick/features/profile/data/model/invite_sent_model.dart'
     show InviteSentToRunnerModel;
 import 'package:pikquick/features/profile/data/model/profile_model.dart';
+import 'package:pikquick/features/profile/data/model/profile_upload_model.dart';
 import 'package:pikquick/features/profile/data/model/runner_performance_model.dart';
 import 'package:pikquick/features/profile/data/model/runnerdetails_model.dart';
 import 'package:pikquick/features/profile/data/model/searh_runner_model.dart';
+import 'package:pikquick/features/profile/domain/entities/profile_uplaod_entites.dart';
+import 'package:pikquick/features/task/data/model/subscrip_toggle_model.dart';
+import 'package:pikquick/features/task/data/model/unsuscribe_model.dart';
 
 abstract class ProfileRemoteDatasource {
   Future<List<ProfileEditModel>> profileEdit(
@@ -36,6 +43,14 @@ abstract class ProfileRemoteDatasource {
 
   Future<InviteSentToRunnerModel> sendRunnerInvite(
       {required String taskId, required InviteSentToRunnerModel sendInvite});
+  Future<ProfileUploadModel> uploadProfile({
+    required ProfileUploadModel profile,
+  });
+  Future<SubscribeAutoDeductionModel> subscribeAutoDeduction(
+      {required SubscribeAutoDeductionModel model});
+  Future<UnsubscribeAutoDeductionModel> unsubscribeAutoDeduction({
+    required UnsubscribeAutoDeductionModel model,
+  });
 }
 
 class ProfileRemoteDatasourceImpl implements ProfileRemoteDatasource {
@@ -166,5 +181,53 @@ class ProfileRemoteDatasourceImpl implements ProfileRemoteDatasource {
     );
 
     return InviteSentToRunnerModel.fromJson(response.data);
+  }
+
+  @override
+  Future<ProfileUploadModel> uploadProfile({
+    required ProfileUploadModel profile,
+  }) async {
+    if (profile.filePath == null || profile.filePath!.isEmpty) {
+      throw Exception("No file selected for upload");
+    }
+
+    final file = File(profile.filePath!);
+
+    final formData = FormData.fromMap({
+      "file": await MultipartFile.fromFile(file.path),
+    });
+
+    final response = await networkClient.put(
+      endpoint: EndpointConstant.profileUpload,
+      isAuthHeaderRequired: true,
+      data: formData,
+    );
+
+    print("Upload response: ${response.data}");
+
+    return ProfileUploadModel.fromJson(response.data);
+  }
+
+  @override
+  Future<SubscribeAutoDeductionModel> subscribeAutoDeduction(
+      {required SubscribeAutoDeductionModel model}) async {
+    final response = await networkClient.post(
+      endpoint: EndpointConstant.subscribetoggle,
+      isAuthHeaderRequired: true,
+      data: model.toJson(),
+    );
+    return SubscribeAutoDeductionModel.fromJson(response.data);
+  }
+
+  @override
+  Future<UnsubscribeAutoDeductionModel> unsubscribeAutoDeduction({
+    required UnsubscribeAutoDeductionModel model,
+  }) async {
+    final response = await networkClient.post(
+      endpoint: EndpointConstant.unsubscribetoggle,
+      isAuthHeaderRequired: true,
+      data: model.toJson(),
+    );
+    return UnsubscribeAutoDeductionModel.fromJson(response.data);
   }
 }

@@ -6,6 +6,7 @@ import 'package:pikquick/core/db/app_preference_service.dart'
 import 'package:pikquick/features/wallet/data/model/client_notification_model.dart';
 
 import 'package:pikquick/features/wallet/data/model/runner_available_model.dart';
+import 'package:pikquick/features/wallet/data/model/summary_wallet_model.dart';
 import 'package:pikquick/features/wallet/data/model/walllet_balance_model.dart';
 
 abstract class WalletRomoteDatasources {

@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pikquick/features/task/domain/entitties/taskcreation_entity.dart';
 import 'package:pikquick/features/task/domain/repository/repository.dart';
 import 'package:pikquick/features/task/presentation/task_event.dart';
 import 'package:pikquick/features/task/presentation/task_state.dart';
@@ -29,6 +30,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<BidRejectEvent>(_onBidReject);
     on<StartTaskEvent>(_onStartTask);
     on<MarkAsCompletedEvent>(_onMarkAsCompleted);
+    on<WalletSummaryEvent>(_onGetWalletSummary);
   }
 
 // taskcreation
@@ -262,6 +264,18 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     result.fold(
       (error) => emit(MarkAsCompletedErrorState(message: error.message)),
       (data) => emit(MarkAsCompletedSuccessState(message: data)),
+    );
+  }
+
+  Future<void> _onGetWalletSummary(
+      WalletSummaryEvent event, Emitter<TaskState> emit) async {
+    emit(WalletSummaryLoadingState());
+
+    final result = await taskRepository.getWalletSummary(model: event.model);
+
+    result.fold(
+      (failure) => emit(WalletSummaryErrorState(failure.message)),
+      (summary) => emit(WalletSummarySuccessState(summary)),
     );
   }
 }

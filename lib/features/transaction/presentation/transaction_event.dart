@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:pikquick/features/transaction/data/model/client_review.dart';
 import 'package:pikquick/features/transaction/data/model/runner_review_model.dart';
+import 'package:pikquick/features/wallet/data/model/summary_wallet_model.dart';
 
 abstract class TransactionEvent extends Equatable {
   const TransactionEvent();

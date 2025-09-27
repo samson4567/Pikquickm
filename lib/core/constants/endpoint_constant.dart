@@ -44,10 +44,10 @@ class EndpointConstant {
   static const String feedback = '/feedback';
   static const String addreviewsbyclient = '/reviews/runners';
   static const String addreviewsbyrunner = '/reviews/runners';
-  // static const String fetchCompletedTrade = '/trade/history';
-  // static const String convert = '/wallet/convert';
-  // static const String getConversions = '/wallet/conversions';
-  // static const String getTradableCoin = "/market/tradable-coins";
+  static const String profileUpload = '/runner-profile/profile-picture';
+  static const String walletSummary = '/runner/earnings/summary';
+  static const String subscribetoggle = '/runner-subscription/toggle';
+  static const String unsubscribetoggle = '/runner-subscription/toggle';
   // static const String interTransfer = "/wallet/transfer";
   // static const String googleauth = "/auth/google";
   // static const String forgetpassword = "/auth/forgot-password";

@@ -4,15 +4,21 @@ import 'package:pikquick/features/profile/data/model/create_model.dart';
 import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
 import 'package:pikquick/features/profile/data/model/invite_sent_model.dart';
 import 'package:pikquick/features/profile/data/model/profile_model.dart';
+import 'package:pikquick/features/profile/data/model/profile_upload_model.dart';
 import 'package:pikquick/features/profile/data/model/runnerdetails_model.dart';
 import 'package:pikquick/features/profile/domain/entities/create_profile_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/getrunner_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/invite_sent_entity.dart'
     show InviteSentToRunnerEntity;
 import 'package:pikquick/features/profile/domain/entities/profile_entity.dart';
+import 'package:pikquick/features/profile/domain/entities/profile_uplaod_entites.dart';
 import 'package:pikquick/features/profile/domain/entities/runner_details_model.dart';
 import 'package:pikquick/features/profile/domain/entities/runner_performance_entiy.dart';
 import 'package:pikquick/features/profile/domain/entities/search_entity.dart';
+import 'package:pikquick/features/task/data/model/subscrip_toggle_model.dart';
+import 'package:pikquick/features/task/data/model/unsuscribe_model.dart';
+import 'package:pikquick/features/task/domain/entitties/subscripe_entity.dart';
+import 'package:pikquick/features/task/domain/entitties/unsuscribe_entities.dart';
 
 abstract class ProfileRepository {
   Future<Either<Failure, List<ProfileEntity>>> profileEdit(
@@ -48,4 +54,15 @@ abstract class ProfileRepository {
 
   Future<Either<Failure, InviteSentToRunnerEntity>> sendRunnerInvite(
       {required String taskId, required InviteSentToRunnerModel sendInvite});
+
+  Future<Either<Failure, ProfileUploadEntity>> uploadProfile({
+    required ProfileUploadModel profile,
+  });
+  Future<Either<Failure, SubscribeAutoDeductionEntity>> subscribeAutoDeduction({
+    required SubscribeAutoDeductionModel model,
+  });
+  Future<Either<Failure, UnsubscribeAutoDeductionEntity>>
+      unsubscribeAutoDeduction({
+    required UnsubscribeAutoDeductionModel model,
+  });
 }
