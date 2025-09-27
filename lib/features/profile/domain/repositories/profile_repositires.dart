@@ -15,6 +15,10 @@ import 'package:pikquick/features/profile/domain/entities/profile_uplaod_entites
 import 'package:pikquick/features/profile/domain/entities/runner_details_model.dart';
 import 'package:pikquick/features/profile/domain/entities/runner_performance_entiy.dart';
 import 'package:pikquick/features/profile/domain/entities/search_entity.dart';
+import 'package:pikquick/features/task/data/model/subscrip_toggle_model.dart';
+import 'package:pikquick/features/task/data/model/unsuscribe_model.dart';
+import 'package:pikquick/features/task/domain/entitties/subscripe_entity.dart';
+import 'package:pikquick/features/task/domain/entitties/unsuscribe_entities.dart';
 
 abstract class ProfileRepository {
   Future<Either<Failure, List<ProfileEntity>>> profileEdit(
@@ -53,5 +57,12 @@ abstract class ProfileRepository {
 
   Future<Either<Failure, ProfileUploadEntity>> uploadProfile({
     required ProfileUploadModel profile,
+  });
+  Future<Either<Failure, SubscribeAutoDeductionEntity>> subscribeAutoDeduction({
+    required SubscribeAutoDeductionModel model,
+  });
+  Future<Either<Failure, UnsubscribeAutoDeductionEntity>>
+      unsubscribeAutoDeduction({
+    required UnsubscribeAutoDeductionModel model,
   });
 }

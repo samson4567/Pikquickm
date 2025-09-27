@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
+import 'package:pikquick/features/profile/presentation/profile_event.dart';
+import 'package:pikquick/features/profile/presentation/profile_state.dart';
+import 'package:pikquick/features/task/data/model/subscrip_toggle_model.dart';
+import 'package:pikquick/features/task/data/model/unsuscribe_model.dart';
 import 'package:pikquick/features/task/presentation/task_bloc.dart';
 import 'package:pikquick/features/task/presentation/task_event.dart';
 import 'package:pikquick/features/task/presentation/task_state.dart';
@@ -47,16 +52,17 @@ class _ErrandWalletState extends State<ErrandWallet> {
 
     // Fetch wallet summary
     final summaryModel = WalletSummaryModel(
-        totalEarningsAllTime: null,
-        withdrawableBalance: null,
-        pendingPayments: null,
-        completedTasks: null,
-        totalTasks: null,
-        averageEarningsPerTask: null,
-        thisMonthEarnings: null,
-        lastMonthEarnings: null,
-        earningsBreakdown: null,
-        recentTransactions: []);
+      totalEarningsAllTime: null,
+      withdrawableBalance: null,
+      pendingPayments: null,
+      completedTasks: null,
+      totalTasks: null,
+      averageEarningsPerTask: null,
+      thisMonthEarnings: null,
+      lastMonthEarnings: null,
+      earningsBreakdown: null,
+      recentTransactions: [],
+    );
     context.read<TaskBloc>().add(WalletSummaryEvent(model: summaryModel));
   }
 
@@ -88,42 +94,90 @@ class _ErrandWalletState extends State<ErrandWallet> {
             balance(context),
             const SizedBox(height: 20),
 
-            // Auto Deduction
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Auto Deduction ",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: 'Outfit',
-                          fontWeight: FontWeight.w500,
-                        ),
+            // Auto Deduction Toggle (Bloc integrated)
+            BlocConsumer<ProfileBloc, ProfileState>(
+              listener: (context, state) {
+                if (state is SubscribeAutoDeductionSuccess) {
+                  setState(() => isAutoDeductionEnabled = true);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Auto-deduction subscribed successfully"),
+                    ),
+                  );
+                } else if (state is UnsubscribeAutoDeductionSuccess) {
+                  setState(() => isAutoDeductionEnabled = false);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Auto-deduction unsubscribed successfully"),
+                    ),
+                  );
+                } else if (state is SubscribeAutoDeductionError ||
+                    state is UnsubscribeAutoDeductionError) {
+                  final errorMessage = state is SubscribeAutoDeductionError
+                      ? state.errorMessage
+                      : (state as UnsubscribeAutoDeductionError).errorMessage;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(errorMessage)),
+                  );
+                }
+              },
+              builder: (context, state) {
+                final isLoading = state is SubscribeAutoDeductionLoading ||
+                    state is UnsubscribeAutoDeductionLoading;
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Auto Deduction ",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Outfit',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Text(
+                            "Enable daily auto-deduction of 100 availability",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Outfit',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
                       ),
-                      Text(
-                        "Enable daily auto-deduction of 100 availability",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontFamily: 'Outfit',
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Switch(
-                  value: isAutoDeductionEnabled,
-                  onChanged: (value) {
-                    setState(() {
-                      isAutoDeductionEnabled = value;
-                    });
-                  },
-                ),
-              ],
+                    ),
+                    isLoading
+                        ? const CircularProgressIndicator()
+                        : Switch(
+                            value: isAutoDeductionEnabled,
+                            onChanged: (value) {
+                              if (value) {
+                                context.read<ProfileBloc>().add(
+                                      ToggleSubscribeAutoDeductionEvent(
+                                        model: SubscribeAutoDeductionModel(
+                                          subscribe: true,
+                                        ),
+                                      ),
+                                    );
+                              } else {
+                                context.read<ProfileBloc>().add(
+                                      UnsubscribeAutoDeductionEvent(
+                                        model: UnsubscribeAutoDeductionModel(
+                                          unsubscribe: false,
+                                        ),
+                                      ),
+                                    );
+                              }
+                            },
+                          ),
+                  ],
+                );
+              },
             ),
             const SizedBox(height: 20),
 

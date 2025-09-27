@@ -7,6 +7,8 @@ import 'package:pikquick/features/profile/data/model/profile_upload_model.dart';
 import 'package:pikquick/features/profile/data/model/runnerdetails_model.dart'
     show RunnersAllDetailsModel;
 import 'package:pikquick/features/profile/domain/entities/profile_uplaod_entites.dart';
+import 'package:pikquick/features/task/data/model/subscrip_toggle_model.dart';
+import 'package:pikquick/features/task/data/model/unsuscribe_model.dart';
 
 abstract class ProfileEvent extends Equatable {
   const ProfileEvent();
@@ -127,4 +129,24 @@ class ProfileUploadFileEvent extends ProfileEvent {
   final ProfileUploadModel profileUpload;
 
   const ProfileUploadFileEvent({required this.profileUpload});
+}
+
+//sbuscription toggle
+class ToggleSubscribeAutoDeductionEvent extends ProfileEvent {
+  final SubscribeAutoDeductionModel model;
+
+  const ToggleSubscribeAutoDeductionEvent({required this.model});
+
+  @override
+  List<Object> get props => [model];
+}
+
+//unscripeauth
+class UnsubscribeAutoDeductionEvent extends ProfileEvent {
+  final UnsubscribeAutoDeductionModel model;
+
+  const UnsubscribeAutoDeductionEvent({required this.model});
+
+  @override
+  List<Object> get props => [model];
 }

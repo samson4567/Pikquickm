@@ -63,7 +63,7 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
           listener: (context, state) {
             if (state is BidOfferSuccessState) {
               Navigator.pop(context); // Close the bid sheet
-              _showBidSubmittedModal(context); // Show success modal
+              _showBidSubmittedDialog(context); // Show success modal
             } else if (state is BidOfferErrorState) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.message)),
@@ -511,38 +511,69 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
   }
 }
 
-void _showBidSubmittedModal(BuildContext context) {
-  showModalBottomSheet(
+void _showBidSubmittedDialog(BuildContext context) {
+  showDialog(
     context: context,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
     builder: (_) {
-      return Container(
-        height: 200,
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Image.asset('assets/images/con2.png', height: 60, width: 60),
-            const SizedBox(height: 16),
-            const Text(
-              'Bid Submitted',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Outfit',
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset('assets/images/con2.png', height: 60, width: 60),
+              const SizedBox(height: 16),
+              const Text(
+                'Bid Submitted',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Outfit',
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Your bid has been submitted. You will be notified once it\'s reviewed.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.black54,
+              const SizedBox(height: 8),
+              const Text(
+                'Your bid has been submitted. You will be notified once it\'s reviewed.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.black54,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: () {
+                  context.go(
+                      MyAppRouteConstant.dashBoardScreen); // Navigate safely
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'Go back to Dashboard',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: 'Outfit',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       );
     },

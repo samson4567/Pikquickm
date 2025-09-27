@@ -13,7 +13,9 @@ import 'package:pikquick/features/task/domain/entitties/reject_bid_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/runner_task_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/specialize_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/start_entity.dart';
+import 'package:pikquick/features/task/domain/entitties/subscripe_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/taskcreation_entity.dart';
+import 'package:pikquick/features/task/domain/entitties/unsuscribe_entities.dart';
 import 'package:pikquick/features/wallet/domain/entities/summary_wallet_entities.dart';
 
 sealed class TaskState extends Equatable {

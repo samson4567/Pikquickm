@@ -46,8 +46,8 @@ class EndpointConstant {
   static const String addreviewsbyrunner = '/reviews/runners';
   static const String profileUpload = '/runner-profile/profile-picture';
   static const String walletSummary = '/runner/earnings/summary';
-  // static const String getConversions = '/wallet/conversions';
-  // static const String getTradableCoin = "/market/tradable-coins";
+  static const String subscribetoggle = '/runner-subscription/toggle';
+  static const String unsubscribetoggle = '/runner-subscription/toggle';
   // static const String interTransfer = "/wallet/transfer";
   // static const String googleauth = "/auth/google";
   // static const String forgetpassword = "/auth/forgot-password";

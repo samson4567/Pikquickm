@@ -55,33 +55,65 @@ class _RunnerProfileHiredState extends State<RunnerProfileHired> {
     await prefs.setBool("hired_${widget.userId}_${widget.taskId}", true);
   }
 
-  void _showHiretModal() {
-    showModalBottomSheet(
+  void _showHireDialog() {
+    showDialog(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) {
-        return Container(
-          padding: const EdgeInsets.all(20),
-          width: 450,
-          height: 220,
-          child: Column(
-            children: [
-              Image.asset('assets/images/con2.png', height: 60, width: 100),
-              const SizedBox(height: 16),
-              const Text('Runner Hired',
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            width: 350,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset('assets/images/con2.png', height: 60, width: 100),
+                const SizedBox(height: 16),
+                const Text(
+                  'Runner Hired',
                   style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Outfit')),
-              const SizedBox(height: 8),
-              const Text(
-                'You hired this runner, kindly wait for feedback .',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Colors.black54),
-              ),
-            ],
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Outfit',
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'You hired this runner, kindly wait for feedback.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14, color: Colors.black54),
+                ),
+                const SizedBox(height: 20),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context); // close the dialog
+                    // Navigate back to dashboard here
+                    context
+                        .go(MyAppRouteConstant.dashboard); // if using go_router
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Text(
+                      'Go back to Dashboard',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontFamily: 'Outfit',
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -115,7 +147,7 @@ class _RunnerProfileHiredState extends State<RunnerProfileHired> {
                 isHired = true;
               });
               _saveHireStatus();
-              _showHiretModal();
+              _showHireDialog();
             }
             if (state is AssignTaskeSErrorState) {
               ScaffoldMessenger.of(context).showSnackBar(
