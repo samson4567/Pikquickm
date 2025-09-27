@@ -389,8 +389,9 @@ final class AcceptBidInitialState extends TaskState {
 final class AcceptBidLoadingState extends TaskState {}
 
 final class AcceptBidSuccessState extends TaskState {
-  const AcceptBidSuccessState({required this.messsage});
+  const AcceptBidSuccessState({required this.messsage, required this.taskID});
   final String messsage;
+  final String taskID;
 
   @override
   List<Object> get props => [messsage];
@@ -414,8 +415,9 @@ final class BidRejectInitialState extends TaskState {
 final class BidRejectLoadingState extends TaskState {}
 
 final class BidRejectSuccessState extends TaskState {
-  const BidRejectSuccessState({required this.message});
+  const BidRejectSuccessState({required this.message, required this.taskID});
   final BidRejectEntity message;
+  final String taskID;
 
   @override
   List<Object> get props => [message];

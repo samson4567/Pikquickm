@@ -73,10 +73,16 @@ class TaskReview extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back_ios),
-                        onPressed: () => Navigator.pop(context),
-                      ),
+                      av.buildBackArrow(context,
+                          replaceWidget: IconButton(
+                              onPressed: () {
+                                context.go(MyAppRouteConstant.dashboard);
+                              },
+                              icon: Icon(Icons.home)))
+                      // IconButton(
+                      //   icon: const Icon(Icons.arrow_back_ios),
+                      //   onPressed: () => Navigator.pop(context),
+                      // ),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -91,18 +97,20 @@ class TaskReview extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
 
-                  buildLabelValue("Task Title",
-                      '${av.taskModelbeingCreated?.taskType ?? ''}'),
+                  buildLabelValue(
+                      "Task Title", '${av.taskModelbeingCreated?.name ?? ''}'),
                   const Divider(),
                   buildLabelValue("Task Description",
-                      '${av.taskModelbeingCreated?.additionalNotes ?? ''}'),
+                      '${av.taskModelbeingCreated?.description ?? ''}'),
                   const Divider(),
                   buildLabelValue("Pick-up Location",
                       '${AddressModel.fromEntity(av.taskModelbeingCreated?.pickupAddress)?.fullAddress ?? ''}'),
                   const Divider(),
-                  buildLabelValue("Drop-off Location",
-                      '${AddressModel.fromEntity(av.taskModelbeingCreated?.dropoffAddress)?.fullAddress ?? ''}'),
-                  const Divider(),
+                  if (av.taskModelbeingCreated?.dropoffAddress != null)
+                    buildLabelValue("Drop-off Location",
+                        '${AddressModel.fromEntity(av.taskModelbeingCreated?.dropoffAddress)?.fullAddress ?? ''}'),
+                  if (av.taskModelbeingCreated?.dropoffAddress != null)
+                    const Divider(),
                   buildLabelValue(
                       "Budget", '${av.taskModelbeingCreated?.budget ?? ''}'),
                   const Divider(),

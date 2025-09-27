@@ -36,7 +36,7 @@ class _ClientTaskHistoryState extends State<ClientTaskHistory>
     _tabController = TabController(length: tabLabels.length, vsync: this);
 
     context.read<TaskBloc>().add(GetTaskForCurrenusersEvent(
-          gettaskModel: const GetTaskForClientModel(),
+        // gettaskModel: const GetTaskForClientModel(),
         ));
   }
 

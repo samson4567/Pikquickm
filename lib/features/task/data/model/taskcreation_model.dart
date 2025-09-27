@@ -121,19 +121,19 @@ class AddressModel extends AddressEntity {
 
   factory AddressModel.fromJson(Map<String, dynamic> json) {
     return AddressModel(
-      addressLine1: json['addressLine1'] ?? "",
-      addressLine2: json['addressLine2'] ?? "",
-      city: json['city'] ?? "",
-      state: json['state'] ?? "",
+      addressLine1: json['addressLine1'] ?? '     ',
+      addressLine2: json['addressLine2'] ?? '     ',
+      city: json['city'] ?? '     ',
+      state: json['state'] ?? '     ',
       postalCode: json['postalCode'] ?? "000000",
-      country: json['country'] ?? "",
+      country: json['country'] ?? '     ',
       countryCode: null,
-      //  json['countryCode'] ?? "",
+      //  json['countryCode'] ?? '     ',
       latitude: json['latitude'] ?? 0,
       longitude: json['longitude'] ?? 0,
       isDefault: json['isDefault'] ?? false,
-      label: json['label'] ?? "",
-      // description: json['description'] ?? "",
+      label: json['label'] ?? '     ',
+      // description: json['description'] ?? '     ',
     );
   }
   static AddressModel? fromEntity(AddressEntity? addressEntity) {
@@ -142,18 +142,18 @@ class AddressModel extends AddressEntity {
     }
     // addressEntity!;
     return AddressModel(
-      addressLine1: addressEntity.addressLine1 ?? "",
-      addressLine2: addressEntity.addressLine2 ?? "",
-      city: addressEntity.city ?? "",
-      state: addressEntity.state ?? "",
+      addressLine1: addressEntity.addressLine1 ?? '     ',
+      addressLine2: addressEntity.addressLine2 ?? '     ',
+      city: addressEntity.city ?? '     ',
+      state: addressEntity.state ?? '     ',
       postalCode: addressEntity.postalCode ?? "000000",
-      country: addressEntity.country ?? "",
+      country: addressEntity.country ?? '     ',
       countryCode: null,
       //  json['countryCode'] ?? "",
       latitude: addressEntity.latitude ?? 0,
       longitude: addressEntity.longitude ?? 0,
       isDefault: addressEntity.isDefault ?? false,
-      label: addressEntity.label ?? "",
+      label: addressEntity.label ?? '     ',
       // description: json['description'] ?? "",
     );
   }

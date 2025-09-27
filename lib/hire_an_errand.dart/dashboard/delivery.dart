@@ -43,12 +43,12 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     // Initialize controllers with existing address data if available
     if (av.taskModelbeingCreated?.pickupAddress != null) {
       pickupController.text =
-          av.taskModelbeingCreated!.pickupAddress!.addressLine1 ?? '';
+          av.taskModelbeingCreated!.pickupAddress!.addressLine1 ?? '     ';
     }
 
     if (hasTwoAddress && av.taskModelbeingCreated?.dropoffAddress != null) {
       dropoffController.text =
-          av.taskModelbeingCreated!.dropoffAddress!.addressLine2 ?? '';
+          av.taskModelbeingCreated!.dropoffAddress!.addressLine2 ?? '     ';
     }
 
     // Setup listeners
@@ -56,17 +56,17 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
       if (av.taskModelbeingCreated != null) {
         av.taskModelbeingCreated!.pickupAddress = AddressModel(
           addressLine1: pickupController.text,
-          addressLine2: "",
-          city: "",
-          state: "",
-          postalCode: "",
-          country: "",
-          countryCode: "",
+          addressLine2: "    ",
+          city: "    ",
+          state: "    ",
+          postalCode: "    ",
+          country: "    ",
+          countryCode: "    ",
           latitude: 0,
           longitude: 0,
           isDefault: false,
-          label: '',
-          description: '',
+          label: "    ",
+          description: "    ",
         );
       }
     });
@@ -75,17 +75,17 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
       if (hasTwoAddress && av.taskModelbeingCreated != null) {
         av.taskModelbeingCreated!.dropoffAddress = AddressModel(
           addressLine1: dropoffController.text,
-          addressLine2: "",
-          city: "",
-          state: "",
-          postalCode: "",
-          country: "",
-          countryCode: "",
+          addressLine2: "    ",
+          city: "    ",
+          state: "    ",
+          postalCode: "    ",
+          country: "    ",
+          countryCode: "    ",
           latitude: 0,
           longitude: 0,
           isDefault: false,
-          label: '',
-          description: '',
+          label: "    ",
+          description: "    ",
         );
       }
     });
@@ -112,18 +112,18 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
       // Handle AddressEntity conversion
       if (result is AddressEntity) {
         return AddressModel(
-          addressLine1: result.addressLine1 ?? '',
-          addressLine2: result.addressLine2 ?? '',
-          city: result.city ?? '',
-          state: result.state ?? '',
-          postalCode: result.postalCode ?? '',
-          country: result.country ?? '',
+          addressLine1: result.addressLine1 ?? '     ',
+          addressLine2: result.addressLine2 ?? '     ',
+          city: result.city ?? '     ',
+          state: result.state ?? '     ',
+          postalCode: result.postalCode ?? '     ',
+          country: result.country ?? '     ',
           countryCode: result.countryCode,
           latitude: result.latitude ?? 0,
           longitude: result.longitude ?? 0,
           isDefault: result.isDefault ?? false,
-          label: result.label ?? '',
-          description: '',
+          label: result.label ?? '     ',
+          description: '     ',
         );
       }
 
@@ -131,17 +131,17 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
       if (result is String) {
         return AddressModel(
           addressLine1: result,
-          addressLine2: '',
-          city: '',
-          state: '',
-          postalCode: '',
-          country: '',
+          addressLine2: '     ',
+          city: '     ',
+          state: '     ',
+          postalCode: '     ',
+          country: '     ',
           countryCode: null,
           latitude: 0,
           longitude: 0,
           isDefault: false,
-          label: '',
-          description: '',
+          label: '     ',
+          description: '     ',
         );
       }
 
@@ -281,13 +281,14 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                           TextButton(
                             onPressed: () async {
                               final dynamic result = await _showMap();
+                              print("fdslfdhfksf>${result}");
                               final AddressModel? selected =
                                   _parseAddress(result);
 
                               if (selected != null && mounted) {
                                 setState(() {
                                   dropoffController.text =
-                                      selected.addressLine2!;
+                                      selected.addressLine1!;
                                   av.taskModelbeingCreated ??=
                                       TaskModel.empty();
                                   av.taskModelbeingCreated!.dropoffAddress =

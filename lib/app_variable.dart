@@ -36,9 +36,10 @@ String currency = "₦";
 String? serviceBeingFilled;
 
 List<String> twoAddressedTaskCategory = [
-  "Pick Up & Delivery",
-  "Document & Dispatch",
-  "Gift & Parcel",
+  "Pickup & Delivery",
+  "Document Dispatch",
+  "Gift & Parcel Delivery",
+  "Transport Errands"
 ];
 
 Map unitsAndTheirShorts = {"liters": "L", "KG": "KG"};

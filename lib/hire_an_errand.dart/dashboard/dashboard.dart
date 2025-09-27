@@ -7,6 +7,7 @@ import 'package:pikquick/features/authentication/data/models/taskcategories_mode
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_event.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_state.dart';
+import 'package:pikquick/features/task/data/model/get_task_currentusermodel.dart';
 import 'package:pikquick/features/task/data/model/taskcreation_model.dart';
 import 'package:pikquick/features/task/domain/entitties/dashbaord_draggable_notification_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/get_task_entities.dart';
@@ -81,6 +82,9 @@ class _DashboardPageState extends State<DashboardPage> {
     // context.read<TransactionBloc>().add(
     //       GetBidHistoryOfATaskEvent(taskId: widget.taskId),
     //     );
+    context.read<TaskBloc>().add(
+          GetTaskForCurrenusersEvent(mode: "bidding"),
+        );
   }
 
   Future<void> _refreshAccessToken() async {
@@ -93,6 +97,9 @@ class _DashboardPageState extends State<DashboardPage> {
             RefreshTokenEvent(
               model: RefreshTokenModel(refreshToken: refreshToken),
             ),
+          );
+      context.read<TaskBloc>().add(
+            GetTaskForCurrenusersEvent(mode: "bidding"),
           );
     }
   }
@@ -188,6 +195,13 @@ class _DashboardPageState extends State<DashboardPage> {
               c is BidRejectErrorState,
           listener: (context, state) {
             if (state is AcceptBidSuccessState) {
+              state.taskID;
+
+              allDashbaordDraggableNotificationEntity.removeWhere(
+                (element) {
+                  return element.taskModel?.id == state.taskID;
+                },
+              );
               setState(() => _showBidPopup = false);
               _showSuccessModal(
                 title: "Bid Accepted",
@@ -198,6 +212,11 @@ class _DashboardPageState extends State<DashboardPage> {
                 SnackBar(content: Text(state.message)),
               );
             } else if (state is BidRejectSuccessState) {
+              allDashbaordDraggableNotificationEntity.removeWhere(
+                (element) {
+                  return element.taskModel?.id == state.taskID;
+                },
+              );
               setState(() => _showBidPopup = false);
               _showSuccessModal(
                 title: "Bid Rejected",
@@ -277,14 +296,18 @@ class _DashboardPageState extends State<DashboardPage> {
                       setState(() {
                         allTasksUnderBidding =
                             filterOnlyBiddingTasks(state.gettask);
-                        allTasksUnderBidding.forEach(
-                          (element) {
-                            context.read<TransactionBloc>().add(
-                                  GetBidHistoryOfATaskEvent(
-                                      taskId: element.id!),
-                                );
-                          },
-                        );
+                        print(
+                            "fkdjsjkfskdfhdsfkhsfd-allTasksUnderBidding_length>>${allTasksUnderBidding.length}");
+                        try {
+                          allTasksUnderBidding.forEach(
+                            (element) {
+                              context.read<TransactionBloc>().add(
+                                    GetBidHistoryOfATaskEvent(
+                                        taskId: element.id!),
+                                  );
+                            },
+                          );
+                        } catch (e) {}
                       });
                     }
                   }, builder: (context, state) {
@@ -292,27 +315,41 @@ class _DashboardPageState extends State<DashboardPage> {
                         listener: (context, state) {
                       if (state is GetBidHistoryOfATaskErrorState) {}
                       if (state is GetBidHistoryOfATaskErrorState) {
+                        print(
+                            "nakdsbadkjskadj-GetBidHistoryOfATaskErrorState>${state.message}");
+
                         // ScaffoldMessenger.of(context).showSnackBar(
                         //   SnackBar(content: Text(state.errorMessage)),
                         // );
                       }
                       if (state is GetBidHistoryOfATaskSuccessState) {
                         setState(() {
-                          GetTaskForCurrenusersEntity;
-                          if (!allDashbaordDraggableNotificationEntity.any(
-                            (element) {
-                              return element.taskModel?.id == state.taskID;
-                            },
-                          )) {
-                            allDashbaordDraggableNotificationEntity
-                                .add(DashbaordDraggableNotificationEntity(
-                                    bidHistoryModel: state.bidHistoryModel,
-                                    taskModel: allTasksUnderBidding.firstWhere(
-                                      (element) {
-                                        return element.id ==
-                                            state.bidHistoryModel.id;
-                                      },
-                                    )));
+                          print(
+                              "fkdjsjkfskdfhdsfkhsfd-GetBidHistoryOfATaskSuccessState");
+                          try {
+                            if (!allDashbaordDraggableNotificationEntity.any(
+                              (element) {
+                                return element.taskModel?.id == state.taskID;
+                              },
+                            )) {
+                              print(
+                                  "fkdjsjkfskdfhdsfkhsfd-GetBidHistoryOfATaskSuccessState-something is added");
+                              allDashbaordDraggableNotificationEntity
+                                  .add(DashbaordDraggableNotificationEntity(
+                                      bidHistoryModel: state.bidHistoryModel,
+                                      taskModel: allTasksUnderBidding.where(
+                                        (element) {
+                                          return element.id ==
+                                              state.bidHistoryModel.id;
+                                        },
+                                      ).firstOrNull));
+                              print(
+                                  "fkdjsjkfskdfhdsfkhsfd-GetBidHistoryOfATaskSuccessState-allDashbaordDraggableNotificationEntity_length>>${allDashbaordDraggableNotificationEntity.length}");
+                              // allTasksUnderBidding.
+                            }
+                          } catch (e) {
+                            print(
+                                "zdlkkjandjsabdkjabsd>>${allTasksUnderBidding}");
                           }
                         });
                       }
@@ -398,7 +435,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 ),
                                 SizedBox(height: 4),
                                 Text(
-                                  "You have received a new bid from ${e.taskModel?.runnerName}. Would you like to accept or reject it?",
+                                  "You have received a new bid ${(e.taskModel?.runnerName == null) ? "" : "from ${e.taskModel?.runnerName}"}. Would you like to accept or reject it?",
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.black54,
@@ -479,14 +516,21 @@ class _DashboardPageState extends State<DashboardPage> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(
-          child: Text(
-            'Welcome back, ${av.userModelG?.fullName ?? ''}',
-            style: const TextStyle(
-              fontFamily: 'Gap',
-              fontSize: 18,
+        GestureDetector(
+          onTap: () {
+            context.read<TaskBloc>().add(
+                  GetTaskForCurrenusersEvent(mode: "bidding"),
+                );
+          },
+          child: Expanded(
+            child: Text(
+              'Welcome back, ${av.userModelG?.fullName ?? ''}',
+              style: const TextStyle(
+                fontFamily: 'Gap',
+                fontSize: 18,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
-            overflow: TextOverflow.ellipsis,
           ),
         ),
         CircleAvatar(
@@ -658,8 +702,8 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 }
 
-  // const taskId = "51656f02-30fc-4ce1-8082-0de534795acd";
-  //   context.read<TransactionBloc>().add(
-  //         BidHistroyEvent(taskId: taskId),
-  //       );
-  // }
+// const taskId = "51656f02-30fc-4ce1-8082-0de534795acd";
+//   context.read<TransactionBloc>().add(
+//         BidHistroyEvent(taskId: taskId),
+//       );
+// }

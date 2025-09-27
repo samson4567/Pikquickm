@@ -58,11 +58,9 @@ class TaskRepositoryImpl implements TaskRepository {
 
   @override
   Future<Either<Failure, List<GetTaskForCurrenusersEntity>>> getTask(
-      {required GetTaskForClientModel gettaskModel,
-      required String? mode}) async {
+      {required String? mode}) async {
     try {
-      final result = await taskRemoteDatasource.getTask(
-          gettaskModel: gettaskModel, mode: mode);
+      final result = await taskRemoteDatasource.getTask(mode: mode);
       return right(result);
     } catch (e) {
       return left(mapExceptionToFailure(e));

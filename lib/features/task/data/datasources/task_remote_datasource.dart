@@ -23,8 +23,7 @@ abstract class TaskRemoteDatasource {
   Future<TaskModel> taskcreation({required TaskModel taskModel});
   Future<List<SavedCategoriesModel>> categorySaved(
       {required SavedCategoriesModel saveModel});
-  Future<List<GetTaskForClientModel>> getTask(
-      {required GetTaskForClientModel gettaskModel, required String? mode});
+  Future<List<GetTaskForClientModel>> getTask({required String? mode});
   Future<List<GetTaskForRunnerModel>> getTaskrunner(
       {required GetTaskForRunnerModel getTaskRunner});
   Future<List<ActiveTaskPendingModel>> getActiveTask(
@@ -109,9 +108,7 @@ class TaskRemoteDatasourceIpl implements TaskRemoteDatasource {
   }
 
   @override
-  Future<List<GetTaskForClientModel>> getTask(
-      {required GetTaskForClientModel gettaskModel,
-      required String? mode}) async {
+  Future<List<GetTaskForClientModel>> getTask({required String? mode}) async {
     final response = await networkClient.get(
       endpoint: (mode == null)
           ? EndpointConstant.gettaskforcurrentusers

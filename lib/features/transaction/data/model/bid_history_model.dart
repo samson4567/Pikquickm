@@ -23,8 +23,10 @@ class BidHistoryModel extends BidHistoryEntity {
   });
 
   factory BidHistoryModel.fromJson(Map<String, dynamic> json) {
-    final data = json['data'] as Map<String, dynamic>? ?? {};
+    final data = json;
+    // ['data'] as Map<String, dynamic>? ?? {};
     final currentBid = data['currentBid'] as Map<String, dynamic>? ?? {};
+    print("daskbasdjkbasdkjbasdkjabsd>${currentBid}");
 
     return BidHistoryModel(
       success: json['success'] as bool?,

@@ -68,8 +68,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   Future<void> _onGetTaskCurrentUsers(
       GetTaskForCurrenusersEvent event, Emitter<TaskState> emit) async {
     emit(GetTaskForCurrenusersLoadingState());
-    final result = await taskRepository.getTask(
-        gettaskModel: event.gettaskModel, mode: event.mode);
+    final result = await taskRepository.getTask(mode: event.mode);
     result.fold(
       (error) =>
           emit(GetTaskForCurrenusersErrorState(errorMessage: error.message)),
@@ -216,8 +215,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
     result.fold(
       (error) => emit(AcceptBidErrorState(message: error.message)),
-      (data) =>
-          emit(AcceptBidSuccessState(messsage: 'Task Accepted Successfully ')),
+      (data) => emit(AcceptBidSuccessState(
+          messsage: 'Task Accepted Successfully ', taskID: event.acceptBid)),
     );
   }
 
@@ -231,7 +230,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
     result.fold(
       (error) => emit(BidRejectErrorState(message: error.message)),
-      (data) => emit(BidRejectSuccessState(message: data)),
+      (data) =>
+          emit(BidRejectSuccessState(message: data, taskID: event.bidReject)),
     );
   }
 
