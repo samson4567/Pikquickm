@@ -228,7 +228,7 @@ class _CreateProfileState extends State<CreateProfile> {
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
-                av.FancyContainer(
+                av.FancyContainer2(
                   action: () async {
                     // TODO: Add location selection logic
                   },
@@ -347,7 +347,9 @@ class _CreateProfileState extends State<CreateProfile> {
 
 // backgroundImage: _imageFile != null
 //                         ? FileImage(_imageFile!)
-//                         : const AssetImage('assets/images/circle.png')
+//                         : const (userModelG?.imageUrl != null)
+                              // ? NetworkImage(userModelG!.imageUrl!)
+                              // : AssetImage('assets/images/circle.png')
 //                             as ImageProvider,
 
 // Widget _buildDropdown(String label, String? value, List<String> options,

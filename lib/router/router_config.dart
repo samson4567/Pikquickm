@@ -74,4 +74,8 @@ class MyAppRouteConstant {
   // map router
   static const String mapBoxFullMapWidget = '/mapBoxFullMapWidget';
   static const String preMapPageForTesting = '/preMapPageForTesting';
+
+// others
+  static const String documentVerificationCamera =
+      '/documentVerificationCamera';
 }

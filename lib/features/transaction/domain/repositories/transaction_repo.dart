@@ -6,8 +6,6 @@ import 'package:pikquick/features/transaction/data/model/runner_review_model.dar
 import 'package:pikquick/features/transaction/domain/entities/client_reviews_entity.dart';
 import 'package:pikquick/features/transaction/domain/entities/runner_review_enitty.dart';
 import 'package:pikquick/features/transaction/domain/entities/transaction_entity.dart';
-import 'package:pikquick/features/wallet/data/model/summary_wallet_model.dart';
-import 'package:pikquick/features/wallet/domain/entities/summary_wallet_entities.dart';
 
 abstract class TransactionRepository {
   Future<Either<Failure, List<TransactionEntity>>> transactionHistory({

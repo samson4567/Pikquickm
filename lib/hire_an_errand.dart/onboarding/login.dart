@@ -9,6 +9,8 @@ import 'package:pikquick/component/textfilled.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_event.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_state.dart';
+import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
+import 'package:pikquick/features/profile/presentation/profile_event.dart';
 import 'package:pikquick/router/router_config.dart';
 
 class LoginPage extends StatefulWidget {
@@ -54,6 +56,7 @@ class _LoginPageState extends State<LoginPage> {
         }
         if (state is LoginSuccessState) {
           // ignore: unused_local_variable
+
           final taskId = av.taskId?.taskId ?? '';
           if (state.user.role == 'client') {
             context.go(

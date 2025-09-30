@@ -19,7 +19,7 @@ class _PreMapPageForTestingState extends State<PreMapPageForTesting> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: FancyContainer(
+          child: FancyContainer2(
             height: 40,
             action: () async {
               selectedMapBoxPlace = await context.push<MapBoxPlace>(

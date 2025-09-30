@@ -11,8 +11,6 @@ import 'package:pikquick/features/transaction/domain/entities/runner_review_enit
 import 'package:pikquick/features/transaction/domain/repositories/transaction_repo.dart';
 import 'package:pikquick/features/transaction/domain/entities/transaction_entity.dart';
 import 'package:pikquick/features/transaction/presentation/transaction_state.dart';
-import 'package:pikquick/features/wallet/data/model/summary_wallet_model.dart';
-import 'package:pikquick/features/wallet/domain/entities/summary_wallet_entities.dart';
 
 class TrannsactionRepositoryImpl implements TransactionRepository {
   final TransactionRemoteDatasources transactionRemoteDatasources;

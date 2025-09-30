@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pikquick/app_variable.dart' hide FancyContainer;
+import 'package:pikquick/app_variable.dart' hide FancyContainer2;
 import 'package:pikquick/component/fancy_container.dart';
 import 'package:pikquick/router/router_config.dart';
 

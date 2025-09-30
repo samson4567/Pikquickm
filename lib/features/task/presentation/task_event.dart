@@ -12,10 +12,7 @@ import 'package:pikquick/features/task/data/model/reject_bid_model.dart';
 import 'package:pikquick/features/task/data/model/rejecttask_model.dart';
 import 'package:pikquick/features/task/data/model/specialize_model.dart';
 import 'package:pikquick/features/task/data/model/start_task_model.dart';
-import 'package:pikquick/features/task/data/model/subscrip_toggle_model.dart';
 import 'package:pikquick/features/task/data/model/taskcreation_model.dart';
-import 'package:pikquick/features/task/data/model/unsuscribe_model.dart';
-import 'package:pikquick/features/wallet/data/model/summary_wallet_model.dart';
 
 abstract class TaskEvent extends Equatable {
   const TaskEvent();
@@ -203,9 +200,4 @@ class MarkAsCompletedEvent extends TaskEvent {
 
   @override
   List<Object> get props => [markAsCompleted];
-}
-
-class WalletSummaryEvent extends TaskEvent {
-  final WalletSummaryModel model;
-  const WalletSummaryEvent({required this.model});
 }

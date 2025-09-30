@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:pikquick/features/wallet/domain/entities/client_notification.enity.dart';
 import 'package:pikquick/features/wallet/domain/entities/runner_model_entity.dart';
 import 'package:pikquick/features/transaction/domain/entities/transaction_entity.dart';
-import 'package:pikquick/features/wallet/domain/entities/summary_wallet_entities.dart';
 import 'package:pikquick/features/wallet/domain/entities/wallet_entiea.dart';
 
 sealed class WalletState extends Equatable {
@@ -88,6 +87,3 @@ final class GetClientNotificationErrorState extends WalletState {
   @override
   List<Object> get props => [errorMessage];
 }
-
-//wallet summary
-// presentation/bloc/wallet_summary/wallet_summary_state.dart

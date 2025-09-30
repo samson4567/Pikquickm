@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/component/fancy_container.dart';
 import 'package:pikquick/hire_an_errand.dart/dashboard/message_chat.dart';
 import 'package:pikquick/router/router_config.dart';
@@ -155,11 +156,13 @@ class _TaskDetailsState extends State<TaskDetails> {
               ],
             ),
             const SizedBox(height: 20),
-            const Row(
+            Row(
               children: [
                 CircleAvatar(
                   radius: 30,
-                  backgroundImage: AssetImage('assets/images/circle.png'),
+                  backgroundImage: (userModelG?.imageUrl != null)
+                      ? NetworkImage(userModelG!.imageUrl!)
+                      : AssetImage('assets/images/circle.png'),
                 ),
                 SizedBox(width: 10),
                 Text(

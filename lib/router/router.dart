@@ -60,15 +60,23 @@ import 'package:pikquick/prmp_map_widgets/google_place_map_screen.dart';
 import 'package:pikquick/mapbox_anew/map_box_full_map_widget.dart';
 import 'package:pikquick/mapbox_anew/pre_map_page_for_testing.dart';
 import 'package:pikquick/router/router_config.dart';
+import 'package:pikquick/screen_test/test_site.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: MyAppRouteConstant.login,
+    initialLocation:
+        // MyAppRouteConstant.documentVerificationCamera,
+        MyAppRouteConstant.login,
     routes: [
       GoRoute(
         name: MyAppRouteConstant.splashScreen,
         path: MyAppRouteConstant.splashScreen,
         builder: (context, state) => const SplashScreen(),
+      ),
+      GoRoute(
+        name: MyAppRouteConstant.documentVerificationCamera,
+        path: MyAppRouteConstant.documentVerificationCamera,
+        builder: (context, state) => const DocumentVerificationCamera(),
       ),
 
       GoRoute(

@@ -5,11 +5,13 @@ class UserEntity {
   final String phone;
   final String role;
   final String status;
+  String? imageUrl;
+
   final bool isActive;
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  const UserEntity({
+  UserEntity({
     required this.id,
     required this.fullName,
     required this.email,
@@ -19,5 +21,6 @@ class UserEntity {
     required this.isActive,
     required this.createdAt,
     required this.updatedAt,
+    this.imageUrl,
   });
 }

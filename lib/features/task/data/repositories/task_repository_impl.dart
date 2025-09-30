@@ -16,9 +16,7 @@ import 'package:pikquick/features/task/data/model/new_task_model.dart';
 import 'package:pikquick/features/task/data/model/reject_bid_model.dart';
 import 'package:pikquick/features/task/data/model/rejecttask_model.dart';
 import 'package:pikquick/features/task/data/model/start_task_model.dart';
-import 'package:pikquick/features/task/data/model/subscrip_toggle_model.dart';
 import 'package:pikquick/features/task/data/model/taskcreation_model.dart';
-import 'package:pikquick/features/task/data/model/unsuscribe_model.dart';
 import 'package:pikquick/features/task/domain/entitties/acceot_task_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/accet_bid_enity.dart';
 import 'package:pikquick/features/task/domain/entitties/active_task_entity.dart';
@@ -34,12 +32,8 @@ import 'package:pikquick/features/task/domain/entitties/reject_bid_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/runner_task_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/specialize_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/start_entity.dart';
-import 'package:pikquick/features/task/domain/entitties/subscripe_entity.dart';
-import 'package:pikquick/features/task/domain/entitties/unsuscribe_entities.dart';
 import 'package:pikquick/features/task/domain/repository/repository.dart';
 import 'package:pikquick/features/transaction/domain/entities/user_address_enties.dart';
-import 'package:pikquick/features/wallet/data/model/summary_wallet_model.dart';
-import 'package:pikquick/features/wallet/domain/entities/summary_wallet_entities.dart';
 
 class TaskRepositoryImpl implements TaskRepository {
   TaskRepositoryImpl(
@@ -284,17 +278,6 @@ class TaskRepositoryImpl implements TaskRepository {
         markAsCompleted: markAsCompleted,
       );
       return right(result); // Model extends Entity
-    } catch (e) {
-      return left(mapExceptionToFailure(e));
-    }
-  }
-
-  @override
-  Future<Either<Failure, WalletSummaryEntity>> getWalletSummary(
-      {required WalletSummaryModel model}) async {
-    try {
-      final result = await taskRemoteDatasource.getWalletSummary(model: model);
-      return right(result);
     } catch (e) {
       return left(mapExceptionToFailure(e));
     }

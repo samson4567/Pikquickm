@@ -11,6 +11,7 @@ class UserModel extends UserEntity {
     required super.isActive,
     required super.createdAt,
     required super.updatedAt,
+    required super.imageUrl,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -24,6 +25,7 @@ class UserModel extends UserEntity {
       isActive: json['is_active'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
+      imageUrl: json['image'],
     );
   }
 
@@ -51,6 +53,7 @@ class UserModel extends UserEntity {
         isActive: model.isActive,
         createdAt: model.createdAt,
         updatedAt: model.updatedAt,
+        imageUrl: model.imageUrl,
       );
 
   factory UserModel.createFromLogin(Map<String, dynamic> json) {
@@ -64,6 +67,7 @@ class UserModel extends UserEntity {
       isActive: json['is_active'] == 1,
       createdAt: DateTime.tryParse(json['created_at'] ?? '') ?? DateTime.now(),
       updatedAt: DateTime.tryParse(json['updated_at'] ?? '') ?? DateTime.now(),
+      imageUrl: null,
     );
   }
   factory UserModel.fromEntity(UserEntity userEntity) {
@@ -77,6 +81,7 @@ class UserModel extends UserEntity {
       isActive: userEntity.isActive,
       createdAt: userEntity.createdAt,
       updatedAt: userEntity.updatedAt,
+      imageUrl: userEntity.imageUrl,
     );
   }
 }

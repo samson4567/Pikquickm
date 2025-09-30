@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/component/fancy_container.dart';
 import 'package:pikquick/features/task/domain/entitties/get_task_overview_entity.dart';
 import 'package:pikquick/features/task/presentation/task_bloc.dart';
@@ -199,10 +200,11 @@ class _ClientTaskOverviewProgressState
                   const SizedBox(height: 20),
                   Row(
                     children: [
-                      const CircleAvatar(
+                      CircleAvatar(
                           radius: 30,
-                          backgroundImage:
-                              AssetImage('assets/images/circle.png')),
+                          backgroundImage: (userModelG?.imageUrl != null)
+                              ? NetworkImage(userModelG!.imageUrl!)
+                              : AssetImage('assets/images/circle.png')),
                       const SizedBox(width: 10),
                       Text(task.runnerName ?? '',
                           style: const TextStyle(

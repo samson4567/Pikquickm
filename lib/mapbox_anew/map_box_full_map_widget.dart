@@ -79,7 +79,7 @@ class MapBoxFullMapWidgetState extends State<MapBoxFullMapWidget> {
               )),
         Align(
           alignment: Alignment.bottomCenter,
-          child: FancyContainer(
+          child: FancyContainer2(
             rawBorderRadius: BorderRadius.vertical(top: Radius.circular(40)),
             height: MediaQuery.sizeOf(context).height * .3,
             backgroundColor: Colors.white,
@@ -93,7 +93,7 @@ class MapBoxFullMapWidgetState extends State<MapBoxFullMapWidget> {
                       : Text((selectedMapBoxPlace == null)
                           ? "No address found"
                           : "${selectedMapBoxPlace?.placeName}"),
-                  FancyContainer(
+                  FancyContainer2(
                     height: 40,
                     action: () {
                       context.pop(selectedMapBoxPlace);

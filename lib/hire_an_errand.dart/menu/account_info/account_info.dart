@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pikquick/app_variable.dart' as app_var;
+import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/hire_an_errand.dart/menu/account_info/Edit_mail.dart';
 import 'package:pikquick/hire_an_errand.dart/menu/account_info/edit_phone.dart';
 import 'package:pikquick/hire_an_errand.dart/menu/account_info/name_update.dart';
@@ -39,9 +40,12 @@ class AccountInfo extends StatelessWidget {
             // Profile Picture with Edit Icon
             Stack(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 50,
-                  backgroundImage: AssetImage('assets/images/circle.png'),
+                  backgroundImage: (userModelG?.imageUrl != null)
+                      ? NetworkImage(userModelG!.imageUrl!)
+                      : AssetImage('assets/images/circle.png'),
+                  // child:   ,
                 ),
                 Positioned(
                   bottom: 0,

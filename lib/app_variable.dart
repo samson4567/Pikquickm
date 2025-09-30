@@ -113,7 +113,7 @@ Widget fancyContainer({
   );
 }
 
-class FancyContainer extends StatefulWidget {
+class FancyContainer2 extends StatefulWidget {
   Widget? child;
   double? radius;
   Color? backgroundColor;
@@ -128,7 +128,7 @@ class FancyContainer extends StatefulWidget {
   double? borderwidth;
 
   Function()? action;
-  FancyContainer(
+  FancyContainer2(
       {super.key,
       this.child,
       this.radius,
@@ -144,10 +144,10 @@ class FancyContainer extends StatefulWidget {
       this.rawBorderRadius});
 
   @override
-  State<FancyContainer> createState() => _FancyContainerState();
+  State<FancyContainer2> createState() => _FancyContainer2State();
 }
 
-class _FancyContainerState extends State<FancyContainer> {
+class _FancyContainer2State extends State<FancyContainer2> {
   bool isLoading = false;
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/app_variable.dart' as runner;
@@ -10,8 +11,8 @@ import 'package:pikquick/errand_runer.dart/profile/my_profile.dart';
 import 'package:pikquick/features/authentication/data/models/refrresh_toke_model.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_event.dart';
-import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
 import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
+import 'package:pikquick/features/profile/presentation/profile_event.dart';
 import 'package:pikquick/features/profile/presentation/profile_state.dart';
 import 'package:pikquick/features/task/data/model/active_task_model.dart';
 import 'package:pikquick/features/task/presentation/task_bloc.dart';
@@ -33,7 +34,6 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  GetRunnerProfileModel? runnerData;
   bool isToggled = false;
   double currentBalance = 0.0;
 
@@ -49,6 +49,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     context
         .read<WalletBloc>()
         .add(WalletBalanceEvent(walletBalance: walletModel));
+
+    // this is to help fetch runner image url
+    context
+        .read<ProfileBloc>()
+        .add(GetrunnerProfileEvent(userID: userModelG!.id));
     context.read<TaskBloc>().add(
           ActivetaskEvent(
               getTaskRunner: ActiveTaskPendingModel(
@@ -102,265 +107,274 @@ class _DashboardScreenState extends State<DashboardScreen> {
           );
         }
       },
-      child: Scaffold(
-        body: Stack(
-          children: [
-            // Background with blue and white sections
-            Column(
-              children: [
-                Container(height: 200, color: Colors.blue),
-                Expanded(child: Container(color: Colors.white)),
-              ],
-            ),
-
-            // Content
-            SingleChildScrollView(
-              child: Column(
+      child:
+          BlocConsumer<ProfileBloc, ProfileState>(listener: (context, state) {
+        if (state is GetrunnerProfileSuccessState) {
+          userModelG?.imageUrl = state.getProfile.profilePictureUrl;
+          setState(() {});
+        }
+      }, builder: (context, state) {
+        return Scaffold(
+          body: Stack(
+            children: [
+              // Background with blue and white sections
+              Column(
                 children: [
-                  // Header section on blue background
-                  Container(
-                    height: 200,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 60.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => MyProfile())),
-                              child: CircleAvatar(
-                                radius: 25,
-                                backgroundImage:
-                                    runnerData?.profilePictureUrl != null
-                                        ? NetworkImage(
-                                            runnerData!.profilePictureUrl!)
-                                        : AssetImage('assets/images/du.png')
-                                            as ImageProvider,
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 17),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Welcome back',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16)),
-                                  Text(
-                                    userModelG?.fullName ?? "",
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: _handleToggle,
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 250),
-                                width: 56,
-                                height: 32,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: isToggled
-                                      ? const Color(0xFF40B869) // ON color
-                                      : const Color(0xFFE4E4E7), // OFF color
+                  Container(height: 200, color: Colors.blue),
+                  Expanded(child: Container(color: Colors.white)),
+                ],
+              ),
+
+              // Content
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // Header section on blue background
+                    Container(
+                      height: 200,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 60.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => MyProfile())),
+                                child: CircleAvatar(
+                                  radius: 25,
+                                  backgroundImage: (userModelG?.imageUrl !=
+                                          null)
+                                      ? NetworkImage(userModelG!.imageUrl!)
+                                      : (userModelG?.imageUrl != null)
+                                          ? NetworkImage(userModelG!.imageUrl!)
+                                          : AssetImage(
+                                              'assets/images/circle.png'),
                                 ),
-                                child: AnimatedAlign(
+                              ),
+                              SizedBox(width: 10),
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 17),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Welcome back',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 16)),
+                                    Text(
+                                      userModelG?.fullName ?? "",
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              GestureDetector(
+                                onTap: _handleToggle,
+                                child: AnimatedContainer(
                                   duration: const Duration(milliseconds: 250),
-                                  alignment: isToggled
-                                      ? Alignment.centerRight
-                                      : Alignment.centerLeft,
-                                  curve: Curves.easeInOut,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: Container(
-                                      width: 24,
-                                      height: 24,
-                                      decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.white,
+                                  width: 56,
+                                  height: 32,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: isToggled
+                                        ? const Color(0xFF40B869) // ON color
+                                        : const Color(0xFFE4E4E7), // OFF color
+                                  ),
+                                  child: AnimatedAlign(
+                                    duration: const Duration(milliseconds: 250),
+                                    alignment: isToggled
+                                        ? Alignment.centerRight
+                                        : Alignment.centerLeft,
+                                    curve: Curves.easeInOut,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Container(
+                                        width: 24,
+                                        height: 24,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            CircleAvatar(
-                              radius: 20,
-                              backgroundColor: Colors.white,
-                              child: IconButton(
-                                icon: const Icon(Icons.notifications,
-                                    color: Colors.black),
-                                onPressed: () => context.pushNamed(
-                                  MyAppRouteConstant.errandNotification,
+                              const SizedBox(width: 8),
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundColor: Colors.white,
+                                child: IconButton(
+                                  icon: const Icon(Icons.notifications,
+                                      color: Colors.black),
+                                  onPressed: () => context.pushNamed(
+                                    MyAppRouteConstant.errandNotification,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        )
-                      ],
+                            ],
+                          )
+                        ],
+                      ),
                     ),
-                  ),
 
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: balance(),
-                  ),
-
-                  Container(
-                    width: 390,
-                    height: 155,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFAFAFA),
-                      borderRadius: BorderRadius.circular(16),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: balance(),
                     ),
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 9),
-                          child: Row(
-                            children: [
-                              const Expanded(
-                                child: Text(
-                                  'Request payout to your bank',
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.black),
+
+                    Container(
+                      width: 390,
+                      height: 155,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFAFAFA),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 9),
+                            child: Row(
+                              children: [
+                                const Expanded(
+                                  child: Text(
+                                    'Request payout to your bank',
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.black),
+                                  ),
                                 ),
+                                GestureDetector(
+                                  onTap: () => context
+                                      .go(MyAppRouteConstant.requestpayout),
+                                  child: Container(
+                                    height: 40,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(7),
+                                    ),
+                                    child: Center(
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: const [
+                                          Text(
+                                            'Withdraw ',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily: 'Outfit'),
+                                          ),
+                                          Icon(Icons.arrow_upward,
+                                              size: 20, color: Colors.black),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              GestureDetector(
+                                onTap: () => context
+                                    .push(MyAppRouteConstant.availabeTask),
+                                child: Container(
+                                  height: 60,
+                                  width: 160,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFECFBFF),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: const Center(
+                                    child: Text(
+                                      'Browse new task',
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 20,
                               ),
                               GestureDetector(
                                 onTap: () => context
-                                    .go(MyAppRouteConstant.requestpayout),
+                                    .push(MyAppRouteConstant.taskHistoryrunner),
                                 child: Container(
-                                  height: 40,
-                                  width: 100,
+                                  height: 60,
+                                  width: 142,
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(7),
+                                    color: const Color(0xFFFFECCA),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: Center(
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: const [
-                                        Text(
-                                          'Withdraw ',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Outfit'),
-                                        ),
-                                        Icon(Icons.arrow_upward,
-                                            size: 20, color: Colors.black),
-                                      ],
+                                  child: const Center(
+                                    child: Text(
+                                      'Manage active tasks',
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            GestureDetector(
-                              onTap: () =>
-                                  context.push(MyAppRouteConstant.availabeTask),
-                              child: Container(
-                                height: 60,
-                                width: 160,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFECFBFF),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: const Center(
-                                  child: Text(
-                                    'Browse new task',
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            GestureDetector(
-                              onTap: () => context
-                                  .push(MyAppRouteConstant.taskHistoryrunner),
-                              child: Container(
-                                height: 60,
-                                width: 142,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFFFECCA),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: const Center(
-                                  child: Text(
-                                    'Manage active tasks',
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
 
-                  SizedBox(height: 10),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Active Task',
-                          style: const TextStyle(
-                            fontSize: 15,
+                    SizedBox(height: 10),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 30),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Active Task',
+                            style: const TextStyle(
+                              fontSize: 15,
+                            ),
                           ),
-                        ),
-                        TextButton(
-                            onPressed: () {
-                              context.goNamed(
-                                  MyAppRouteConstant.taskHistoryrunner);
-                            },
-                            child: Text(
-                              'View all ',
-                              style: const TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
-                            ))
-                      ],
+                          TextButton(
+                              onPressed: () {
+                                context.goNamed(
+                                    MyAppRouteConstant.taskHistoryrunner);
+                              },
+                              child: Text(
+                                'View all ',
+                                style: const TextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              ))
+                        ],
+                      ),
                     ),
-                  ),
-                  Activetask(),
-                  performanceSummary(),
-                ],
+                    Activetask(),
+                    performanceSummary(),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      }),
     );
   }
 

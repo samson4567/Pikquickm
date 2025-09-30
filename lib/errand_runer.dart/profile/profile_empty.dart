@@ -264,7 +264,7 @@ class _EditProfileSetupState extends State<EditProfileSetup> {
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Outfit')),
                   const SizedBox(height: 10),
-                  av.FancyContainer(
+                  av.FancyContainer2(
                     action: () async {
                       // selectedLocationModel = await Navigator.of(context).push(
                       //       MaterialPageRoute(
@@ -408,7 +408,9 @@ class _EditProfileSetupState extends State<EditProfileSetup> {
 
 // backgroundImage: _imageFile != null
 //                         ? FileImage(_imageFile!)
-//                         : const AssetImage('assets/images/circle.png')
+//                         : const (userModelG?.imageUrl != null)
+                              // ? NetworkImage(userModelG!.imageUrl!)
+                              // : AssetImage('assets/images/circle.png')
 //                             as ImageProvider,
 
 // Widget _buildDropdown(String label, String? value, List<String> options,

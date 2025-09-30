@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/features/authentication/data/models/taskcategories_model.dart';
 import 'package:pikquick/features/authentication/domain/entities/task_categores_entity.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_event.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_state.dart';
+import 'package:pikquick/features/task/data/model/taskcreation_model.dart';
 import 'package:pikquick/router/router_config.dart';
 
 class FeatureTaskCategories extends StatefulWidget {
@@ -43,7 +45,16 @@ class _FeatureTaskCategoriesState extends State<FeatureTaskCategories>
   }
 
   void _onGridItemTap(CustomCategoryTaskEntity category) {
-    context.pushNamed(MyAppRouteConstant.deliveryScreen, extra: category);
+    // av.
+    taskModelbeingCreated = TaskModel(
+        categoryId: category.id,
+        taskType: category.name,
+        description: category.description,
+        name: category.name,
+        clientId: userModelG?.id);
+    context.push(MyAppRouteConstant.deliveryScreen);
+
+    // context.pushNamed(MyAppRouteConstant.deliveryScreen, extra: category);
   }
 
   Widget _buildCategoryCard(CustomCategoryTaskEntity category, int index) {
