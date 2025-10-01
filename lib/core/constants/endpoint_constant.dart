@@ -47,6 +47,9 @@ class EndpointConstant {
   static const String getRunnerVerificationDetails =
       '/runner-documents/my-verification-status';
 
+  static const String walletSummary = '/runner/earnings/summary';
+  static const String subscribetoggle = '/runner-subscription/toggle';
+  static const String unsubscribetoggle = '/runner-subscription/toggle';
   // static const String fetchCompletedTrade = '/trade/history';
   // static const String convert = '/wallet/convert';
   // static const String getConversions = '/wallet/conversions';

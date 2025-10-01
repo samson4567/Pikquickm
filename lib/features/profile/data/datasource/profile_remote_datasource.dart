@@ -9,6 +9,8 @@ import 'package:pikquick/features/profile/data/model/profile_model.dart';
 import 'package:pikquick/features/profile/data/model/runner_performance_model.dart';
 import 'package:pikquick/features/profile/data/model/runnerdetails_model.dart';
 import 'package:pikquick/features/profile/data/model/searh_runner_model.dart';
+import 'package:pikquick/features/task/data/model/subscrip_toggle_model.dart';
+import 'package:pikquick/features/task/data/model/unsuscribe_model.dart';
 
 abstract class ProfileRemoteDatasource {
   Future<List<ProfileEditModel>> profileEdit(
@@ -36,6 +38,13 @@ abstract class ProfileRemoteDatasource {
 
   Future<InviteSentToRunnerModel> sendRunnerInvite(
       {required String taskId, required InviteSentToRunnerModel sendInvite});
+
+  Future<SubscribeAutoDeductionModel> subscribeAutoDeduction(
+      {required SubscribeAutoDeductionModel model});
+
+  Future<UnsubscribeAutoDeductionModel> unsubscribeAutoDeduction({
+    required UnsubscribeAutoDeductionModel model,
+  });
 }
 
 class ProfileRemoteDatasourceImpl implements ProfileRemoteDatasource {
@@ -166,5 +175,28 @@ class ProfileRemoteDatasourceImpl implements ProfileRemoteDatasource {
     );
 
     return InviteSentToRunnerModel.fromJson(response.data);
+  }
+
+  @override
+  Future<SubscribeAutoDeductionModel> subscribeAutoDeduction(
+      {required SubscribeAutoDeductionModel model}) async {
+    final response = await networkClient.post(
+      endpoint: EndpointConstant.subscribetoggle,
+      isAuthHeaderRequired: true,
+      data: model.toJson(),
+    );
+    return SubscribeAutoDeductionModel.fromJson(response.data);
+  }
+
+  @override
+  Future<UnsubscribeAutoDeductionModel> unsubscribeAutoDeduction({
+    required UnsubscribeAutoDeductionModel model,
+  }) async {
+    final response = await networkClient.post(
+      endpoint: EndpointConstant.unsubscribetoggle,
+      isAuthHeaderRequired: true,
+      data: model.toJson(),
+    );
+    return UnsubscribeAutoDeductionModel.fromJson(response.data);
   }
 }

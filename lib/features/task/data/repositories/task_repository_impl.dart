@@ -1,7 +1,10 @@
 import 'package:dartz/dartz.dart';
+import 'package:pikquick/core/constants/endpoint_constant.dart';
 import 'package:pikquick/core/error/exception.dart';
 import 'package:pikquick/core/error/failure.dart';
 import 'package:pikquick/core/mapper/failure_mapper.dart';
+import 'package:pikquick/features/profile/data/model/wallet_summary_model.dart';
+import 'package:pikquick/features/profile/domain/entities/wallet_entities.dart';
 import 'package:pikquick/features/task/data/model/accept_bid.dart';
 import 'package:pikquick/features/task/data/model/accept_task_model.dart';
 import 'package:pikquick/features/task/data/model/active_task_model.dart';
@@ -278,6 +281,17 @@ class TaskRepositoryImpl implements TaskRepository {
         markAsCompleted: markAsCompleted,
       );
       return right(result); // Model extends Entity
+    } catch (e) {
+      return left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, WalletSummaryEntity>> getWalletSummary(
+      {required WalletSummaryModel model}) async {
+    try {
+      final result = await taskRemoteDatasource.getWalletSummary(model: model);
+      return right(result);
     } catch (e) {
       return left(mapExceptionToFailure(e));
     }

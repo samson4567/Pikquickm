@@ -1,6 +1,7 @@
 import 'package:pikquick/core/api/pickquick_network_client.dart';
 import 'package:pikquick/core/constants/endpoint_constant.dart';
 import 'package:pikquick/core/db/app_preference_service.dart';
+import 'package:pikquick/features/profile/data/model/wallet_summary_model.dart';
 import 'package:pikquick/features/task/data/model/accept_bid.dart';
 import 'package:pikquick/features/task/data/model/accept_task_model.dart';
 import 'package:pikquick/features/task/data/model/active_task_model.dart';
@@ -64,6 +65,8 @@ abstract class TaskRemoteDatasource {
   Future<MarkAsCompletedModel> markAsCompleted({
     required MarkAsCompletedModel markAsCompleted,
   });
+  Future<WalletSummaryModel> getWalletSummary(
+      {required WalletSummaryModel model});
 }
 
 //newDetailsTask
@@ -313,5 +316,15 @@ class TaskRemoteDatasourceIpl implements TaskRemoteDatasource {
     );
 
     return MarkAsCompletedModel.fromJson(response.data);
+  }
+
+  @override
+  Future<WalletSummaryModel> getWalletSummary(
+      {required WalletSummaryModel model}) async {
+    final response = await networkClient.get(
+      endpoint: EndpointConstant.walletSummary,
+      isAuthHeaderRequired: true,
+    );
+    return WalletSummaryModel.fromJson(response.data);
   }
 }
