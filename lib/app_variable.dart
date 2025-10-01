@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:pikquick/features/authentication/domain/entities/kyc_request_entity.dart';
 // import 'package:location/location.dart';
 import 'package:pikquick/features/authentication/domain/entities/user_entity.dart';
 import 'dart:convert';
@@ -40,6 +41,38 @@ List<String> twoAddressedTaskCategory = [
   "Document Dispatch",
   "Gift & Parcel Delivery",
   "Transport Errands"
+];
+KycRequestEntity? idVerificationKycRequestEntity;
+KycRequestEntity? selfieVerificationKycRequestEntity;
+KycRequestEntity? addressVerificationKycRequestEntity;
+var far = [
+  {
+    "id": "49d70b98-9d37-11f0-b251-00163cbf7aa3",
+    "name": "Government Issued ID",
+    "description":
+        "Any valid government-issued identification document such as a national ID card, passport, or driver’s license.",
+    "is_required": 1,
+    "created_at": "2025-09-29T13:22:04.000Z",
+    "updated_at": "2025-09-29T13:22:04.000Z"
+  },
+  {
+    "id": "43c2d2a3-9d37-11f0-b251-00163cbf7aa3",
+    "name": "Live Selfie",
+    "description":
+        "A live selfie photograph used to confirm the identity of the runner matches the identity document provided.",
+    "is_required": 1,
+    "created_at": "2025-09-29T13:21:53.000Z",
+    "updated_at": "2025-09-29T13:21:53.000Z"
+  },
+  {
+    "id": "2ac69be0-9d37-11f0-b251-00163cbf7aa3",
+    "name": "Proof of Address ",
+    "description":
+        "A document showing the runner’s current residential address, such as a utility bill, bank statement, or lease agreement.",
+    "is_required": 1,
+    "created_at": "2025-09-29T13:21:11.000Z",
+    "updated_at": "2025-09-29T13:21:11.000Z"
+  }
 ];
 
 Map unitsAndTheirShorts = {"liters": "L", "KG": "KG"};
@@ -120,28 +153,34 @@ class FancyContainer2 extends StatefulWidget {
   Color? borderColor;
   bool? hasBorder;
   bool? isAsync;
+  bool? nulledAlign;
   double? elevation;
+
   BorderRadius? rawBorderRadius;
 
   double? height;
   double? width;
   double? borderwidth;
+  EdgeInsets? padding;
 
   Function()? action;
-  FancyContainer2(
-      {super.key,
-      this.child,
-      this.radius,
-      this.backgroundColor,
-      this.borderColor,
-      this.hasBorder,
-      this.height,
-      this.width,
-      this.action,
-      this.borderwidth,
-      this.elevation,
-      this.isAsync,
-      this.rawBorderRadius});
+  FancyContainer2({
+    super.key,
+    this.child,
+    this.radius,
+    this.backgroundColor,
+    this.borderColor,
+    this.hasBorder,
+    this.height,
+    this.width,
+    this.action,
+    this.borderwidth,
+    this.elevation,
+    this.isAsync,
+    this.rawBorderRadius,
+    this.padding,
+    this.nulledAlign = false,
+  });
 
   @override
   State<FancyContainer2> createState() => _FancyContainer2State();
@@ -168,9 +207,10 @@ class _FancyContainer2State extends State<FancyContainer2> {
                 })
           : null,
       child: Container(
-        alignment: Alignment.center,
+        alignment: widget.nulledAlign! ? null : Alignment.center,
         width: widget.width,
         height: widget.height,
+        padding: widget.padding,
         decoration: BoxDecoration(
             borderRadius: widget.rawBorderRadius ??
                 BorderRadius.circular(widget.radius ?? 8),

@@ -44,6 +44,9 @@ class EndpointConstant {
   static const String feedback = '/feedback';
   static const String addreviewsbyclient = '/reviews/runners';
   static const String addreviewsbyrunner = '/reviews/runners';
+  static const String getRunnerVerificationDetails =
+      '/runner-documents/my-verification-status';
+
   // static const String fetchCompletedTrade = '/trade/history';
   // static const String convert = '/wallet/convert';
   // static const String getConversions = '/wallet/conversions';
@@ -66,7 +69,7 @@ class EndpointConstant {
   // static const String fetchActiveTrade = "/user/latest-trade";
   // static const String tradeOrders = "/trade/orders";
   // static const String fetchCoinPrice = "/market/klines?symbol=";
-  // static const String kycVerification = "/auth/verify-id";
+  static const String uploadKYCVerificationDocument = "/runner-documents";
 
 //
 }

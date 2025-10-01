@@ -1,11 +1,16 @@
+import 'package:dio/dio.dart';
 import 'package:pikquick/core/api/pickquick_network_client.dart';
 import 'package:pikquick/core/constants/endpoint_constant.dart';
 import 'package:pikquick/core/db/app_preference_service.dart';
+import 'package:pikquick/features/authentication/data/models/kyc_request_model.dart';
 import 'package:pikquick/features/authentication/data/models/new_user_request_model.dart';
+import 'package:pikquick/features/authentication/data/models/runner_verification_details_model.dart';
 import 'package:pikquick/features/authentication/data/models/share_feee_model.dart';
 import 'dart:developer';
 
 import 'package:pikquick/features/authentication/data/models/taskcategories_model.dart';
+import 'package:pikquick/features/authentication/domain/entities/kyc_request_entity.dart';
+import 'package:pikquick/features/authentication/domain/entities/runner_verification_details_entity.dart';
 import 'package:pikquick/features/transaction/data/model/transaction_model.dart';
 
 abstract class AuthenticationRemoteDatasource {
@@ -32,8 +37,11 @@ abstract class AuthenticationRemoteDatasource {
 
   Future<ShareFeedbackModel> shareFeedBack(
       {required ShareFeedbackModel feedModel});
+  Future<String> uploadkycDocument(
+      {required KycRequestEntity kycRequestEntity});
+  Future<RunnerVerificationDetailsEntity> getRunnerVerificationDetails();
 
-  //taskCategories
+  //getRunnerVerificationDetails
 }
 
 class AuthenticationRemoteDatasourceImpl
@@ -229,5 +237,40 @@ class AuthenticationRemoteDatasourceImpl
     );
     print('Response data********************: ${response.message}');
     return ShareFeedbackModel.fromJson(response.data);
+  }
+
+  @override
+  Future<String> uploadkycDocument(
+      {required KycRequestEntity kycRequestEntity}) async {
+    print("dsajajbkjsbdjabskdbas>>${kycRequestEntity.file}");
+    Map<String, dynamic> mapToUpload =
+        KycRequestModel().fromEntity(kycRequestEntity)!.toJson();
+    print("dsajajbkjsbdjabskdbas");
+    final file = await MultipartFile.fromFile(
+      kycRequestEntity.file!.path,
+      filename: kycRequestEntity.file!.path.split('/').last,
+    );
+    // mapToUpload.remove("file");
+    mapToUpload["file"] = file;
+
+    final formData = FormData.fromMap(mapToUpload);
+    final response = await networkClient.post(
+      endpoint: EndpointConstant.uploadKYCVerificationDocument,
+      isAuthHeaderRequired: true,
+      data: formData,
+    );
+    print('Response data********************: ${response.message}');
+    return response.message;
+    // ShareFeedbackModel.fromJson(response.data);
+  }
+
+  @override
+  Future<RunnerVerificationDetailsEntity> getRunnerVerificationDetails() async {
+    final response = await networkClient.get(
+      endpoint: EndpointConstant.getRunnerVerificationDetails,
+      isAuthHeaderRequired: true,
+    );
+    print('Response data********************: ${response.message}');
+    return RunnerVerificationDetailsModel.fromJson(response.data);
   }
 }

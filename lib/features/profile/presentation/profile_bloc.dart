@@ -37,7 +37,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         await profileRepository.getRunnerProfile(userID: event.userID);
     result.fold(
         (error) =>
-            emit(GetrunnerProfileErroeState(errorMessage: error.message)),
+            emit(GetrunnerProfileErrorState(errorMessage: error.message)),
         (data) => emit(GetrunnerProfileSuccessState(getProfile: data)));
   }
 

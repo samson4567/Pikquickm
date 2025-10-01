@@ -33,7 +33,8 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
 
     if (kDebugMode) {
-      emailController.text = 'sam.client1@gmail.com';
+      emailController.text = "keder.runner1@gmaiil.com";
+      // 'sam.client1@gmail.com';
       passwordController.text = 'Password@123';
     }
   }

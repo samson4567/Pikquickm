@@ -431,7 +431,7 @@ class _MyProfileState extends State<MyProfile> {
             ),
           );
         }
-        if (state is GetrunnerProfileErroeState) {
+        if (state is GetrunnerProfileErrorState) {
           return Center(child: Text(state.errorMessage));
         }
         return const Center(child: Text("No profile data found."));

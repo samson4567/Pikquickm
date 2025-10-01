@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/component/fancy_container.dart';
+import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
+import 'package:pikquick/features/profile/presentation/profile_event.dart';
+import 'package:pikquick/features/profile/presentation/profile_state.dart';
 import 'package:pikquick/features/task/data/model/get_task_currentusermodel.dart';
 import 'package:pikquick/features/task/domain/entitties/get_task_entities.dart';
 import 'package:pikquick/features/task/presentation/task_bloc.dart';
@@ -331,14 +335,47 @@ class _ClientTaskHistoryState extends State<ClientTaskHistory>
                 // Runner info
                 Row(
                   children: [
-                    CircleAvatar(
-                      radius: 22,
-                      backgroundImage:
-                          const AssetImage("assets/images/circle.png"),
-                      child: task.runnerName == null
-                          ? const Icon(Icons.person, color: Colors.white)
-                          : null,
-                    ),
+                    FutureBuilder<Object>(
+                        future: () async {
+                          context.read<ProfileBloc>().add(
+                              GetrunnerProfileEvent(userID: task.runnerId!));
+                          return "";
+                        }.call(),
+                        builder: (context, snapshot) {
+                          String? imagePath;
+                          return (snapshot.hasData)
+                              ? CircularProgressIndicator.adaptive()
+                              : BlocConsumer<ProfileBloc, ProfileState>(
+                                  listener: (context, state) {
+                                  if (state is GetrunnerProfileErrorState) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(state.errorMessage)),
+                                    );
+                                  }
+                                  if (state is GetrunnerProfileSuccessState) {
+                                    setState(() {
+                                      imagePath =
+                                          state.getProfile.profilePictureUrl;
+                                    });
+                                  }
+                                }, builder: (context, state) {
+                                  if (state is GetrunnerProfileLoadingState) {
+                                    return CircularProgressIndicator.adaptive();
+                                  }
+                                  return CircleAvatar(
+                                    radius: 22,
+                                    backgroundImage: (imagePath != null)
+                                        ? NetworkImage(imagePath!)
+                                        : const AssetImage(
+                                            "assets/images/circle.png"),
+                                    child: task.runnerName == null
+                                        ? const Icon(Icons.person,
+                                            color: Colors.white)
+                                        : null,
+                                  );
+                                });
+                        }),
                     const SizedBox(width: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

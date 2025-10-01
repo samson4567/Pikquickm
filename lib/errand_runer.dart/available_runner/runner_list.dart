@@ -227,10 +227,15 @@ class _ErrandRunnerScreenState extends State<ErrandRunnerScreen> {
                                         const SizedBox(height: 10),
                                         Row(
                                           children: [
-                                            const CircleAvatar(
+                                            CircleAvatar(
                                               radius: 50,
-                                              backgroundImage: AssetImage(
-                                                  "assets/images/circle.png"),
+                                              backgroundImage: (runner
+                                                          .profilePictureUrl !=
+                                                      null)
+                                                  ? NetworkImage(
+                                                      runner.profilePictureUrl!)
+                                                  : AssetImage(
+                                                      "assets/images/circle.png"),
                                             ),
                                             const SizedBox(width: 16),
                                             Expanded(

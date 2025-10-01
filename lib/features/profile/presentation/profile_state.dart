@@ -50,8 +50,8 @@ final class GetrunnerProfileSuccessState extends ProfileState {
   List<Object> get props => [getProfile];
 }
 
-final class GetrunnerProfileErroeState extends ProfileState {
-  const GetrunnerProfileErroeState({required this.errorMessage});
+final class GetrunnerProfileErrorState extends ProfileState {
+  const GetrunnerProfileErrorState({required this.errorMessage});
   final String errorMessage;
   @override
   List<Object> get props => [errorMessage];

@@ -60,12 +60,18 @@ import 'package:pikquick/prmp_map_widgets/google_place_map_screen.dart';
 import 'package:pikquick/mapbox_anew/map_box_full_map_widget.dart';
 import 'package:pikquick/mapbox_anew/pre_map_page_for_testing.dart';
 import 'package:pikquick/router/router_config.dart';
+import 'package:pikquick/screen_test/Id_verification_document_type_screen.dart';
+import 'package:pikquick/screen_test/account_info_page.dart';
+import 'package:pikquick/screen_test/adddress_verification_page.dart';
+import 'package:pikquick/screen_test/document_verification_page.dart';
+import 'package:pikquick/screen_test/selfie_verification_page.dart';
+import 'package:pikquick/screen_test/test_site%20copy.dart';
 import 'package:pikquick/screen_test/test_site.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation:
-        // MyAppRouteConstant.documentVerificationCamera,
+        // MyAppRouteConstant.splashScreen,
         MyAppRouteConstant.login,
     routes: [
       GoRoute(
@@ -78,7 +84,31 @@ class AppRouter {
         path: MyAppRouteConstant.documentVerificationCamera,
         builder: (context, state) => const DocumentVerificationCamera(),
       ),
+      GoRoute(
+        name: MyAppRouteConstant.selfieVerificationPage,
+        path: MyAppRouteConstant.selfieVerificationPage,
+        builder: (context, state) => const SelfieVerificationPage(),
+      ),
+      GoRoute(
+        name: MyAppRouteConstant.addressDocumentUploadScreen,
+        path: MyAppRouteConstant.addressDocumentUploadScreen,
+        builder: (context, state) => const AddressDocumentUploadScreen(),
+      ),
 
+// AddressDocumentUploadScreen
+      GoRoute(
+        name: MyAppRouteConstant.accountInfoScreen,
+        path: MyAppRouteConstant.accountInfoScreen,
+        builder: (context, state) => const AccountInfoScreen(),
+      ),
+      GoRoute(
+        name: MyAppRouteConstant.idVerificationDocumentTypeScreen,
+        path: MyAppRouteConstant.idVerificationDocumentTypeScreen,
+        builder: (context, state) =>
+            // UploadDp()
+            const IdVerificationDocumentTypeScreen(),
+      ),
+//
       GoRoute(
         name: MyAppRouteConstant.mapBoxFullMapWidget,
         path: MyAppRouteConstant.mapBoxFullMapWidget,

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:pikquick/features/authentication/domain/entities/Refresh_entiy.dart';
+import 'package:pikquick/features/authentication/domain/entities/runner_verification_details_entity.dart';
 import 'package:pikquick/features/authentication/domain/entities/share_feed_entites.dart';
 import 'package:pikquick/features/authentication/domain/entities/task_categores_entity.dart';
 import 'package:pikquick/features/authentication/domain/entities/user_entity.dart';
@@ -164,6 +165,8 @@ final class VerifyResetOTPErrorState extends AuthState {
   @override
   List<Object> get props => [errorMessage];
 }
+
+// UploadkycDocument
 // ResetPassword
 
 class ResetPassowordLoading extends AuthState {}
@@ -242,3 +245,44 @@ final class ShareFeedbackErrorState extends AuthState {
   @override
   List<Object> get props => [errorMessage];
 }
+
+// UploadkycDocument
+
+final class UploadkycDocumentLoadingState extends AuthState {}
+
+final class UploadkycDocumentSuccessState extends AuthState {
+  const UploadkycDocumentSuccessState({required this.message});
+  final String message;
+  @override
+  List<Object> get props => [message];
+}
+
+final class UploadkycDocumentErrorState extends AuthState {
+  const UploadkycDocumentErrorState({required this.errorMessage});
+  final String errorMessage;
+  @override
+  List<Object> get props => [errorMessage];
+}
+
+// GetRunnerVerificationDetails
+
+final class GetRunnerVerificationDetailsLoadingState extends AuthState {}
+
+final class GetRunnerVerificationDetailsSuccessState extends AuthState {
+  const GetRunnerVerificationDetailsSuccessState(
+      {required this.runnerVerificationDetailsEntity});
+  final RunnerVerificationDetailsEntity runnerVerificationDetailsEntity;
+  @override
+  List<Object> get props => [runnerVerificationDetailsEntity];
+}
+
+final class GetRunnerVerificationDetailsErrorState extends AuthState {
+  const GetRunnerVerificationDetailsErrorState({required this.errorMessage});
+  final String errorMessage;
+  @override
+  List<Object> get props => [errorMessage];
+}
+
+
+
+// GetRunnerVerificationDetails

@@ -24,7 +24,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<RessetPasswordEvent>(_onResetPasswordEvent);
     on<RefreshTokenEvent>(_onRefreshToken);
     on<ShareFeedbackEvent>(_onShareFeedBack);
+    on<UploadkycDocumentEvent>(_onUploadkycDocument);
+    on<GetRunnerVerificationDetailsEvent>(_onGetRunnerVerificationDetails);
   }
+  // GetRunnerVerificationDetails
   Future<void> _onNewUserSignUpEvent(
     NewUserSignUpEvent event,
     Emitter<AuthState> emit,
@@ -190,4 +193,30 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         (error) => emit(ShareFeedbackErrorState(errorMessage: error.message)),
         (data) => emit(ShareFeedbackSucessState(feedBack: data)));
   }
+
+  Future<void> _onUploadkycDocument(
+      UploadkycDocumentEvent event, Emitter<AuthState> emit) async {
+    emit(UploadkycDocumentLoadingState());
+    final result = await authenticationRepository.uploadkycDocument(
+        kycRequestEntity: event.kycRequestEntity);
+    result.fold(
+        (error) =>
+            emit(UploadkycDocumentErrorState(errorMessage: error.message)),
+        (data) => emit(UploadkycDocumentSuccessState(message: data)));
+  }
+
+  Future<void> _onGetRunnerVerificationDetails(
+      GetRunnerVerificationDetailsEvent event, Emitter<AuthState> emit) async {
+    emit(GetRunnerVerificationDetailsLoadingState());
+    final result =
+        await authenticationRepository.getRunnerVerificationDetails();
+    result.fold(
+        (error) => emit(GetRunnerVerificationDetailsErrorState(
+            errorMessage: error.message)),
+        (runnerVerificationDetailsEntity) => emit(
+            GetRunnerVerificationDetailsSuccessState(
+                runnerVerificationDetailsEntity:
+                    runnerVerificationDetailsEntity)));
+  }
+  // _onGetRunnerVerificationDetails
 }

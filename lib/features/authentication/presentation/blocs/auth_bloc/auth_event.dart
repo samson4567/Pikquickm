@@ -1,8 +1,10 @@
 import 'package:equatable/equatable.dart';
+import 'package:pikquick/features/authentication/data/models/kyc_request_model.dart';
 import 'package:pikquick/features/authentication/data/models/new_user_request_model.dart';
 import 'package:pikquick/features/authentication/data/models/refrresh_toke_model.dart';
 import 'package:pikquick/features/authentication/data/models/share_feee_model.dart';
 import 'package:pikquick/features/authentication/data/models/taskcategories_model.dart';
+import 'package:pikquick/features/authentication/domain/entities/kyc_request_entity.dart';
 
 abstract class AuthEvent extends Equatable {
   const AuthEvent();
@@ -119,3 +121,20 @@ class ShareFeedbackEvent extends AuthEvent {
   @override
   List<Object> get props => [feedModel];
 }
+
+class UploadkycDocumentEvent extends AuthEvent {
+  final KycRequestEntity kycRequestEntity;
+  const UploadkycDocumentEvent({required this.kycRequestEntity});
+  @override
+  List<Object> get props => [kycRequestEntity];
+}
+
+class GetRunnerVerificationDetailsEvent extends AuthEvent {
+  const GetRunnerVerificationDetailsEvent();
+  @override
+  List<Object> get props => [];
+}
+
+
+
+// GetRunnerVerificationDetails

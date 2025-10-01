@@ -6,6 +6,8 @@ import 'package:pikquick/features/authentication/data/models/new_user_request_mo
 import 'package:pikquick/features/authentication/data/models/share_feee_model.dart';
 import 'package:pikquick/features/authentication/data/models/taskcategories_model.dart';
 import 'package:pikquick/features/authentication/data/models/token_model.dart';
+import 'package:pikquick/features/authentication/domain/entities/kyc_request_entity.dart';
+import 'package:pikquick/features/authentication/domain/entities/runner_verification_details_entity.dart';
 import 'package:pikquick/features/authentication/domain/entities/share_feed_entites.dart';
 import 'package:pikquick/features/authentication/domain/entities/task_categores_entity.dart';
 import 'package:pikquick/features/authentication/domain/entities/varify_entity.dart';
@@ -154,6 +156,30 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
     try {
       final result =
           await authenticationRemoteDatasource.shareFeedBack(feedModel: shared);
+      return right(result);
+    } catch (e) {
+      return left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> uploadkycDocument(
+      {required KycRequestEntity kycRequestEntity}) async {
+    try {
+      final result = await authenticationRemoteDatasource.uploadkycDocument(
+          kycRequestEntity: kycRequestEntity);
+      return right(result);
+    } catch (e) {
+      return left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, RunnerVerificationDetailsEntity>>
+      getRunnerVerificationDetails() async {
+    try {
+      final result =
+          await authenticationRemoteDatasource.getRunnerVerificationDetails();
       return right(result);
     } catch (e) {
       return left(mapExceptionToFailure(e));
