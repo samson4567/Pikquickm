@@ -17,8 +17,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<RunnerDetailsInviteSentEvent>(_onViewRunnerDetailsSent);
     on<SearchRunnerEvent>(_onSearchRunner);
     on<InviteSentEvent>(_onInviteSent);
+    on<GetVerifiedDocumentsEvent>(_onGetVerifiedDocuments);
   }
 
+// GetVerifiedDocuments
   Future<void> _onProfileSetup(
       ProfileSetupEvent event, Emitter<ProfileState> emit) async {
     emit(ProfileLoadingState());
@@ -42,7 +44,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     result.fold(
         (error) =>
             emit(GetrunnerProfileErrorState(errorMessage: error.message)),
-        (data) => emit(GetrunnerProfileSuccessState(getProfile: data)));
+        (data) => emit(GetrunnerProfileSuccessState(
+            getProfile: data, runnerID: event.userID)));
   }
 
   Future<void> _onGetrunnerPerformance(
@@ -135,4 +138,20 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (data) => emit(InviteSentSuccessState(runners: data)),
     );
   }
+
+  Future<void> _onGetVerifiedDocuments(
+      GetVerifiedDocumentsEvent event, Emitter<ProfileState> emit) async {
+    emit(GetVerifiedDocumentsLoadingState());
+
+    final result = await profileRepository.getVerifiedDocuments();
+
+    result.fold(
+      (error) =>
+          emit(GetVerifiedDocumentsErrorState(errorMessage: error.message)),
+      (data) =>
+          emit(GetVerifiedDocumentsSuccessState(listOfMyDocumentModel: data)),
+    );
+  }
+
+  // _onGetVerifiedDocuments
 }

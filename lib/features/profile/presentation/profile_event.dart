@@ -5,6 +5,7 @@ import 'package:pikquick/features/profile/data/model/invite_sent_model.dart';
 import 'package:pikquick/features/profile/data/model/profile_model.dart';
 import 'package:pikquick/features/profile/data/model/runnerdetails_model.dart'
     show RunnersAllDetailsModel;
+import 'package:pikquick/features/task/data/model/my_document_model.dart';
 
 abstract class ProfileEvent extends Equatable {
   const ProfileEvent();
@@ -119,3 +120,12 @@ class InviteSentEvent extends ProfileEvent {
   final InviteSentToRunnerModel sendInvite;
   const InviteSentEvent({required this.taskId, required this.sendInvite});
 }
+
+//  GetVerifiedDocuments
+
+class GetVerifiedDocumentsEvent extends ProfileEvent {
+  const GetVerifiedDocumentsEvent();
+}
+
+
+// getVerifiedDocuments

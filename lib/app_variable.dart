@@ -45,7 +45,7 @@ List<String> twoAddressedTaskCategory = [
 KycRequestEntity? idVerificationKycRequestEntity;
 KycRequestEntity? selfieVerificationKycRequestEntity;
 KycRequestEntity? addressVerificationKycRequestEntity;
-var far = [
+List<Map> staticListOfDocuments = [
   {
     "id": "49d70b98-9d37-11f0-b251-00163cbf7aa3",
     "name": "Government Issued ID",

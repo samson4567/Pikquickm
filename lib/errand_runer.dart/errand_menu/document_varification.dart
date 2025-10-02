@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/errand_runer.dart/errand_menu/id_upload.dart';
+import 'package:pikquick/features/authentication/domain/entities/kyc_request_entity.dart';
+import 'package:pikquick/prmp_map_widgets/place_bottom_sheet.dart';
+import 'package:pikquick/router/router_config.dart';
 
 class DocumentVarification extends StatefulWidget {
   const DocumentVarification({super.key});
@@ -44,6 +49,11 @@ class _DocumentVarificationState extends State<DocumentVarification> {
                   "Upload a Government ID\nAccept IDs: NIN, Driver’s Licence",
               onTap: () {
                 // Navigate to ID Verification screen
+                idVerificationKycRequestEntity ??= KycRequestEntity();
+                idVerificationKycRequestEntity!.documentTypeId =
+                    "49d70b98-9d37-11f0-b251-00163cbf7aa3";
+                // context
+                //     .push(MyAppRouteConstant.idVerificationDocumentTypeScreen);
                 Navigator.push(context,
                     MaterialPageRoute(builder: (_) => const IDVerification()));
               },
@@ -57,10 +67,17 @@ class _DocumentVarificationState extends State<DocumentVarification> {
                   "Take a selfie for identity confirmation\nEnsure good lighting, match your ID",
               onTap: () {
                 // Navigate to Selfie Verification screen
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const SelfieVerificationPage()));
+                selfieVerificationKycRequestEntity ??= KycRequestEntity();
+                selfieVerificationKycRequestEntity!.documentTypeId =
+                    "43c2d2a3-9d37-11f0-b251-00163cbf7aa3";
+                selfieVerificationKycRequestEntity!.documentName =
+                    "Live Selfie";
+
+                context.push(MyAppRouteConstant.selfieVerificationPage);
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (_) => const SelfieVerificationPage()));
               },
             ),
             const SizedBox(height: 16),
@@ -72,10 +89,17 @@ class _DocumentVarificationState extends State<DocumentVarification> {
                   "Upload utility bill or bank statement\nMust be recent (last 3 months)",
               onTap: () {
                 // Navigate to Address Verification screen
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const AddressVerificationPage()));
+                addressVerificationKycRequestEntity ??= KycRequestEntity();
+                addressVerificationKycRequestEntity!.documentTypeId =
+                    "2ac69be0-9d37-11f0-b251-00163cbf7aa3";
+                addressVerificationKycRequestEntity!.documentName =
+                    "Proof of Address";
+
+                context.push(MyAppRouteConstant.addressDocumentUploadScreen);
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (_) => const AddressVerificationPage()));
               },
             ),
             SizedBox(

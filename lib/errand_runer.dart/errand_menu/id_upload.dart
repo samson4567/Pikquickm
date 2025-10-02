@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/errand_runer.dart/errand_menu/document_varification.dart';
 import 'package:pikquick/errand_runer.dart/errand_menu/lincence_verificatio.dart';
+import 'package:pikquick/features/authentication/domain/entities/kyc_request_entity.dart';
+import 'package:pikquick/router/router_config.dart';
 
 class IDVerification extends StatefulWidget {
   const IDVerification({super.key});
@@ -43,36 +47,46 @@ class _IDVerificationState extends State<IDVerification> {
               title: "ID Card",
               onTap: () {
                 // Navigate to ID Verification screen
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const LicenceVerification()));
+                idVerificationKycRequestEntity ??= KycRequestEntity();
+                idVerificationKycRequestEntity!.documentName = "ID Card";
+                // userModelG;
+                context.push(MyAppRouteConstant.documentVerificationCamera);
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (_) => const LicenceVerification()
+                //         ));
               },
             ),
             const SizedBox(height: 16),
             _buildVerificationItem(
               context,
               imagePath: 'assets/icons/camera.png',
-              title: "Self Verification",
+              title: "Driving License",
+              // "Self Verification",
               onTap: () {
                 // Navigate to Selfie Verification screen
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const SelfieVerificationPage()));
+                idVerificationKycRequestEntity ??= KycRequestEntity();
+                idVerificationKycRequestEntity!.documentName =
+                    "Driving License";
+                context.push(MyAppRouteConstant.documentVerificationCamera);
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (_) => const SelfieVerificationPage()));
               },
             ),
             const SizedBox(height: 16),
             _buildVerificationItem(
               context,
               imagePath: 'assets/icons/location.png',
-              title: "Address Verification",
+              title: "International Passport",
               onTap: () {
                 // Navigate to Address Verification screen
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const AddressVerificationPage()));
+                idVerificationKycRequestEntity ??= KycRequestEntity();
+                idVerificationKycRequestEntity!.documentName =
+                    "International Passport";
+                context.push(MyAppRouteConstant.documentVerificationCamera);
               },
             ),
             SizedBox(

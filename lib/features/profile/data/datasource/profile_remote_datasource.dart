@@ -9,6 +9,8 @@ import 'package:pikquick/features/profile/data/model/profile_model.dart';
 import 'package:pikquick/features/profile/data/model/runner_performance_model.dart';
 import 'package:pikquick/features/profile/data/model/runnerdetails_model.dart';
 import 'package:pikquick/features/profile/data/model/searh_runner_model.dart';
+import 'package:pikquick/features/task/data/model/my_document_model.dart';
+import 'package:pikquick/features/task/domain/entitties/my_document_entity.dart';
 
 abstract class ProfileRemoteDatasource {
   Future<List<ProfileEditModel>> profileEdit(
@@ -36,6 +38,7 @@ abstract class ProfileRemoteDatasource {
 
   Future<InviteSentToRunnerModel> sendRunnerInvite(
       {required String taskId, required InviteSentToRunnerModel sendInvite});
+  Future<List<MyDocumentEntity>> getVerifiedDocuments();
 }
 
 class ProfileRemoteDatasourceImpl implements ProfileRemoteDatasource {
@@ -81,6 +84,16 @@ class ProfileRemoteDatasourceImpl implements ProfileRemoteDatasource {
     return RunnerPerformanceModel.fromJson(response.data);
   }
 
+  // @override
+  // Future<RunnerPerformanceModel> getVerifiedDocuments(
+  //     {required String userID}) async {
+  //   final response = await networkClient.get(
+  //     endpoint: '${EndpointConstant.getrunnerPerformance}/$userID',
+  //     isAuthHeaderRequired: true,
+  //   );
+  //   return RunnerPerformanceModel.fromJson(response.data);
+  // }
+// getVerifiedDocuments
   @override
   Future<List<ProfileModel>> createProfile(
       {required ProfileModel profileModel}) async {
@@ -166,5 +179,25 @@ class ProfileRemoteDatasourceImpl implements ProfileRemoteDatasource {
     );
 
     return InviteSentToRunnerModel.fromJson(response.data);
+  }
+
+  @override
+  Future<List<MyDocumentEntity>> getVerifiedDocuments() async {
+    // print('${sendInvite.toJson()}************ ');
+    // print('${taskId}************ ');
+    final response = await networkClient.get(
+      endpoint: EndpointConstant.getVerifiedDocuments,
+      isAuthHeaderRequired: true,
+      // data: sendInvite.toJson(),
+      // {'runner_id': '6fe19e6b-fb77-42f2-add0-328681eb130d'}
+    );
+    List<MyDocumentEntity> result = (response.data as List?)?.map(
+          (e) {
+            return MyDocumentModel.fromJson(e);
+          },
+        ).toList() ??
+        [];
+    return result;
+    // InviteSentToRunnerModel.fromJson(response.data);
   }
 }

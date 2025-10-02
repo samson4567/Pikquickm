@@ -467,23 +467,27 @@ class _RunnerImageWidget2State extends State<RunnerImageWidget2> {
 
   @override
   Widget build(BuildContext context) {
-    context
-        .read<ProfileBloc>()
-        .add(GetrunnerProfileEvent(userID: widget.task.runnerId!));
+    // context
+    //     .read<ProfileBloc>()
+    //     .add(GetrunnerProfileEvent(userID: widget.task.runnerId!));
     return BlocConsumer<ProfileBloc, ProfileState>(listener: (context, state) {
       if (state is GetrunnerProfileErrorState) {
         getrunnerProfileEventHasError = true;
         // ScaffoldMessenger.of(context).showSnackBar(
         //   SnackBar(content: Text(state.errorMessage)),
         // );
+        print(
+            "dnanjsadnadknasd>>getrunnerProfileEventHasError${getrunnerProfileEventHasError}");
+        setState(() {});
       }
       if (state is GetrunnerProfileSuccessState) {
-        getrunnerProfileEventHasError = false;
-        print(
-            "dnanjsadnadknasd-state.getProfile.profilePictureUrl>>${state.getProfile.profilePictureUrl}");
-        imagePath = state.getProfile.profilePictureUrl;
-        print("dnanjsadnadknasd>>${imagePath}");
-        setState(() {});
+        if (widget.task.runnerId == state.runnerID) {
+          getrunnerProfileEventHasError = false;
+          print(
+              "dnasldalskdandlnasjkasdkj-state.getProfile.profilePictureUrl>>${state.getProfile.profilePictureUrl}");
+          imagePath = state.getProfile.profilePictureUrl;
+          setState(() {});
+        }
       }
     }, builder: (context, state) {
       print("dnanjsadnadknasd>>${[imagePath, widget.task.runnerId]}");

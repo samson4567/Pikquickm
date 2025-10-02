@@ -17,6 +17,7 @@ import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
 import 'package:pikquick/features/profile/presentation/profile_event.dart';
 import 'package:pikquick/features/profile/presentation/profile_state.dart';
 import 'package:pikquick/features/task/data/model/active_task_model.dart';
+import 'package:pikquick/features/task/domain/entitties/my_document_entity.dart';
 import 'package:pikquick/features/task/presentation/task_bloc.dart';
 import 'package:pikquick/features/task/presentation/task_event.dart';
 import 'package:pikquick/features/task/presentation/task_state.dart';
@@ -57,6 +58,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         .read<ProfileBloc>()
         .add(GetrunnerProfileEvent(userID: userModelG!.id));
     context.read<AuthBloc>().add(GetRunnerVerificationDetailsEvent());
+    context.read<ProfileBloc>().add(GetVerifiedDocumentsEvent());
 
     context.read<TaskBloc>().add(
           ActivetaskEvent(
@@ -113,9 +115,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
       },
       child:
           BlocConsumer<ProfileBloc, ProfileState>(listener: (context, state) {
+        print("asdkbdajdgasdj${state}");
         if (state is GetrunnerProfileSuccessState) {
           userModelG?.imageUrl = state.getProfile.profilePictureUrl;
           setState(() {});
+        }
+        if (state is GetVerifiedDocumentsSuccessState) {
+          alignDocumentsNature(state.listOfMyDocumentModel);
         }
       }, builder: (context, state) {
         return BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
@@ -192,8 +198,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     children: [
                                       GestureDetector(
                                         onTap: () {
-                                          context.read<AuthBloc>().add(
-                                              GetRunnerVerificationDetailsEvent());
+                                          context
+                                              .read<ProfileBloc>()
+                                              .add(GetVerifiedDocumentsEvent());
+                                          // context.read<AuthBloc>().add(
+                                          //     GetRunnerVerificationDetailsEvent());
                                         },
                                         child: Text('Welcome back',
                                             style: TextStyle(
@@ -417,6 +426,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
         });
       }),
     );
+  }
+
+  alignDocumentsNature(List<MyDocumentEntity> documents) {
+    MyDocumentEntity? theDoc;
+    staticListOfDocuments.forEach(
+      (element) {
+        if (documents.any(
+          (document) {
+            bool isTrue = document.documentTypeId == element["id"];
+            if (isTrue) {
+              theDoc = document;
+            }
+
+            return isTrue;
+          },
+        )) {
+          element['isAttendedTo'] = true;
+          element['verification_status'] = theDoc?.verificationStatus;
+        }
+        ;
+      },
+    );
+// staticListOfDocuments
   }
 
   Widget balance() {

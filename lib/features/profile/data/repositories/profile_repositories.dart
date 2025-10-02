@@ -15,6 +15,7 @@ import 'package:pikquick/features/profile/domain/entities/runner_details_model.d
 import 'package:pikquick/features/profile/domain/entities/runner_performance_entiy.dart';
 import 'package:pikquick/features/profile/domain/entities/search_entity.dart';
 import 'package:pikquick/features/profile/domain/repositories/profile_repositires.dart';
+import 'package:pikquick/features/task/domain/entitties/my_document_entity.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {
   final ProfileRemoteDatasource profileRemoteDatasource;
@@ -143,6 +144,16 @@ class ProfileRepositoryImpl implements ProfileRepository {
     try {
       final result = await profileRemoteDatasource.sendRunnerInvite(
           taskId: taskId, sendInvite: sendInvite);
+      return right(result);
+    } catch (e) {
+      return left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<MyDocumentEntity>>> getVerifiedDocuments() async {
+    try {
+      final result = await profileRemoteDatasource.getVerifiedDocuments();
       return right(result);
     } catch (e) {
       return left(mapExceptionToFailure(e));

@@ -70,6 +70,7 @@ class EndpointConstant {
   // static const String tradeOrders = "/trade/orders";
   // static const String fetchCoinPrice = "/market/klines?symbol=";
   static const String uploadKYCVerificationDocument = "/runner-documents";
+  static const String getVerifiedDocuments = "/runner-documents/my-documents";
 
-//
+  ///runner-documents/my-documents
 }

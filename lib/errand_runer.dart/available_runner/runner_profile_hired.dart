@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pikquick/app_variable.dart' as av;
+import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/component/fancy_container.dart';
 import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
 import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
@@ -447,15 +448,25 @@ Widget _buildAboutSection(GetRunnerProfileModel data) {
 Widget _buildVerificationSection() {
   return Padding(
     padding: const EdgeInsets.all(16),
-    child: const Column(
+    child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("Verified Credentials", style: _sectionTitleStyle),
         SizedBox(height: 10),
-        _VerificationItem("Government ID"),
-        _VerificationItem("Vehicle Registration"),
-        _VerificationItem("International Passport"),
-        _VerificationItem("Background Check"),
+        Column(
+          children: staticListOfDocuments
+              .where(
+                (element) => element['isAttendedTo'] ?? false,
+              )
+              .map(
+                (e) => _VerificationItem(e['name'], e['verification_status']),
+              )
+              .toList(),
+        )
+        // _VerificationItem("Government ID"),
+        // _VerificationItem("Vehicle Registration"),
+        // _VerificationItem("International Passport"),
+        // _VerificationItem("Background Check"),
       ],
     ),
   );
@@ -486,10 +497,11 @@ const _sectionTitleStyle =
     TextStyle(fontSize: 14, fontWeight: FontWeight.bold, fontFamily: 'Outfit');
 const _sectionContentStyle = TextStyle(fontSize: 14, fontFamily: 'Outfit');
 
-// Reusable widgets
 class _VerificationItem extends StatelessWidget {
   final String title;
-  const _VerificationItem(this.title);
+  final String status;
+
+  const _VerificationItem(this.title, this.status);
 
   @override
   Widget build(BuildContext context) {
@@ -499,16 +511,50 @@ class _VerificationItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title, style: _sectionContentStyle),
-          const Image(
-            image: AssetImage('assets/images/ci.png'),
-            width: 20,
-            height: 20,
-          ),
+          (status == "verified")
+              ? const Image(
+                  image: AssetImage('assets/images/ci.png'),
+                  width: 20,
+                  height: 20,
+                )
+              : (status == "pending")
+                  ? Icon(
+                      Icons.pending_actions_rounded,
+                      color: Colors.yellow,
+                    )
+                  : Icon(
+                      Icons.cancel,
+                      color: Colors.red,
+                    ),
         ],
       ),
     );
   }
 }
+
+// Reusable widgets
+// class _VerificationItem extends StatelessWidget {
+//   final String title;
+//   const _VerificationItem(this.title);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(vertical: 6.0),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//           Text(title, style: _sectionContentStyle),
+//           const Image(
+//             image: AssetImage('assets/images/ci.png'),
+//             width: 20,
+//             height: 20,
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class _ReviewItem extends StatelessWidget {
   final String name;

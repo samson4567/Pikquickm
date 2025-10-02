@@ -7,6 +7,8 @@ import 'package:pikquick/features/profile/domain/entities/runner_details_model.d
 import 'package:pikquick/features/profile/domain/entities/runner_performance_entiy.dart';
 import 'package:pikquick/features/profile/domain/entities/search_entity.dart'
     show SearchRunnerListEntity;
+import 'package:pikquick/features/task/data/model/my_document_model.dart';
+import 'package:pikquick/features/task/domain/entitties/my_document_entity.dart';
 
 sealed class ProfileState extends Equatable {
   const ProfileState();
@@ -44,8 +46,13 @@ final class GetrunnerProfileinitial extends ProfileState {
 final class GetrunnerProfileLoadingState extends ProfileState {}
 
 final class GetrunnerProfileSuccessState extends ProfileState {
-  const GetrunnerProfileSuccessState({required this.getProfile});
+  const GetrunnerProfileSuccessState({
+    required this.getProfile,
+    required this.runnerID,
+  });
   final GetRunnerProfileEntity getProfile;
+  final String runnerID;
+
   @override
   List<Object> get props => [getProfile];
 }
@@ -204,3 +211,32 @@ final class InviteSentErrorState extends ProfileState {
   @override
   List<Object> get props => [errorMessage];
 }
+
+// GetVerifiedDocuments
+
+final class GetVerifiedDocumentsInitial extends ProfileState {
+  const GetVerifiedDocumentsInitial();
+}
+
+final class GetVerifiedDocumentsLoadingState extends ProfileState {}
+
+final class GetVerifiedDocumentsSuccessState extends ProfileState {
+  final List<MyDocumentEntity> listOfMyDocumentModel;
+
+  const GetVerifiedDocumentsSuccessState({required this.listOfMyDocumentModel});
+
+  @override
+  List<Object> get props => [listOfMyDocumentModel];
+}
+
+final class GetVerifiedDocumentsErrorState extends ProfileState {
+  final String errorMessage;
+
+  const GetVerifiedDocumentsErrorState({required this.errorMessage});
+
+  @override
+  List<Object> get props => [errorMessage];
+}
+
+
+// GetVerifiedDocuments

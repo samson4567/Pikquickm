@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pikquick/app_variable.dart' as av;
+import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/component/fancy_container.dart';
+import 'package:pikquick/errand_runer.dart/available_runner/verification_item_widget.dart';
 import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
 import 'package:pikquick/features/profile/data/model/invite_sent_model.dart';
 import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
@@ -349,15 +351,29 @@ class _RunnerProfileState extends State<RunnerProfile> {
   Widget _buildVerificationSection() {
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text("Verified Credentials", style: _sectionTitleStyle),
           SizedBox(height: 10),
-          _VerificationItem("Government ID"),
-          _VerificationItem("Vehicle Registration"),
-          _VerificationItem("International Passport"),
-          _VerificationItem("Background Check"),
+          Column(
+            children: staticListOfDocuments
+                .where(
+                  (element) => element['isAttendedTo'] ?? false,
+                )
+                .map(
+                  (e) => VerificationItemWidget(
+                      e['name'], e['verification_status']),
+                )
+                .toList(),
+          )
+          // ...List.generate(staticListOfDocuments.length, )
+
+          // _VerificationItem("Government ID"),
+          // _VerificationItem("Vehicle Registration"),
+          // _VerificationItem("International Passport"),
+
+          // _VerificationItem("Background Check"),
         ],
       ),
     );
@@ -390,28 +406,6 @@ const _sectionTitleStyle =
 const _sectionContentStyle = TextStyle(fontSize: 14, fontFamily: 'Outfit');
 
 // Reusable widgets
-class _VerificationItem extends StatelessWidget {
-  final String title;
-  const _VerificationItem(this.title);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(title, style: _sectionContentStyle),
-          const Image(
-            image: AssetImage('assets/images/ci.png'),
-            width: 20,
-            height: 20,
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class _ReviewItem extends StatelessWidget {
   final String name;

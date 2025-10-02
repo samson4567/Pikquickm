@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:pikquick/app_variable.dart' as app_var;
 import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/component/fancy_container.dart';
+import 'package:pikquick/errand_runer.dart/available_runner/verification_item_widget.dart';
+import 'package:pikquick/features/profile/domain/entities/getrunner_entity.dart';
 import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
 import 'package:pikquick/features/profile/presentation/profile_event.dart';
 import 'package:pikquick/features/profile/presentation/profile_state.dart';
@@ -460,25 +462,49 @@ class _MyProfileState extends State<MyProfile> {
     );
   }
 
+  GetRunnerProfileEntity? profile;
   Widget verification() {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _sectionTitle("Contact Details:"),
-            _contactDetail("Phone number", "+2349075345678"),
-            _contactDetail("Email Address", "morufu@gmail.com"),
-            _sectionTitle("Verified Credentials:"),
-            _verifiedItem("Government ID Verified"),
-            _verifiedItem("Vehicle Registration Verified"),
-            _verifiedItem("International Passport Verified"),
-            _verifiedItem("Background Check Verified"),
-          ],
+    return BlocConsumer<ProfileBloc, ProfileState>(listener: (context, state) {
+      if (state is GetrunnerProfileSuccessState) {
+        profile = state.getProfile;
+        setState(() {});
+      }
+      // if (state is GetClientNotificationErrorState) {
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(content: Text(state.errorMessage)),
+      //   );
+      // }
+    }, builder: (context, state) {
+      return Padding(
+        padding: const EdgeInsets.all(10),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _sectionTitle("Contact Details:"),
+              _contactDetail("Phone number", "${profile?.userPhone ?? "N/A"}"),
+              _contactDetail("Email Address", "${profile?.userEmail ?? "N/A"}"),
+              _sectionTitle("Verified Credentials:"),
+              Column(
+                children: staticListOfDocuments
+                    .where(
+                      (element) => element['isAttendedTo'] ?? false,
+                    )
+                    .map(
+                      (e) => VerificationItemWidget(
+                          e['name'], e['verification_status']),
+                    )
+                    .toList(),
+              )
+              // _verifiedItem("Government ID Verified"),
+              // _verifiedItem("Vehicle Registration Verified"),
+              // _verifiedItem("International Passport Verified"),
+              // _verifiedItem("Background Check Verified"),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _sectionTitle(String text) {
@@ -602,3 +628,5 @@ class _MyProfileState extends State<MyProfile> {
     );
   }
 }
+
+const _sectionContentStyle = TextStyle(fontSize: 14, fontFamily: 'Outfit');
