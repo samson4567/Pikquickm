@@ -335,47 +335,7 @@ class _ClientTaskHistoryState extends State<ClientTaskHistory>
                 // Runner info
                 Row(
                   children: [
-                    FutureBuilder<Object>(
-                        future: () async {
-                          context.read<ProfileBloc>().add(
-                              GetrunnerProfileEvent(userID: task.runnerId!));
-                          return "";
-                        }.call(),
-                        builder: (context, snapshot) {
-                          String? imagePath;
-                          return (snapshot.hasData)
-                              ? CircularProgressIndicator.adaptive()
-                              : BlocConsumer<ProfileBloc, ProfileState>(
-                                  listener: (context, state) {
-                                  if (state is GetrunnerProfileErrorState) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content: Text(state.errorMessage)),
-                                    );
-                                  }
-                                  if (state is GetrunnerProfileSuccessState) {
-                                    setState(() {
-                                      imagePath =
-                                          state.getProfile.profilePictureUrl;
-                                    });
-                                  }
-                                }, builder: (context, state) {
-                                  if (state is GetrunnerProfileLoadingState) {
-                                    return CircularProgressIndicator.adaptive();
-                                  }
-                                  return CircleAvatar(
-                                    radius: 22,
-                                    backgroundImage: (imagePath != null)
-                                        ? NetworkImage(imagePath!)
-                                        : const AssetImage(
-                                            "assets/images/circle.png"),
-                                    child: task.runnerName == null
-                                        ? const Icon(Icons.person,
-                                            color: Colors.white)
-                                        : null,
-                                  );
-                                });
-                        }),
+                    RunnerImageWidget(task: task),
                     const SizedBox(width: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -435,5 +395,83 @@ class _ClientTaskHistoryState extends State<ClientTaskHistory>
         );
       },
     );
+  }
+}
+
+class RunnerImageWidget extends StatefulWidget {
+  final GetTaskForCurrenusersEntity task;
+
+  const RunnerImageWidget({super.key, required this.task});
+
+  @override
+  State<RunnerImageWidget> createState() => _RunnerImageWidgetState();
+}
+
+class _RunnerImageWidgetState extends State<RunnerImageWidget> {
+  String? imagePath;
+  @override
+  void initState() {
+    super.initState();
+    context
+        .read<ProfileBloc>()
+        .add(GetrunnerProfileEvent(userID: widget.task.runnerId!));
+  }
+
+  bool getrunnerProfileEventHasError = false;
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<ProfileBloc, ProfileState>(listener: (context, state) {
+      if (state is GetrunnerProfileErrorState) {
+        getrunnerProfileEventHasError = true;
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text(state.errorMessage)),
+        // );
+      }
+      if (state is GetrunnerProfileSuccessState) {
+        getrunnerProfileEventHasError = false;
+        print(
+            "dnasldalskdandlnasjkasdkj-state.getProfile.profilePictureUrl>>${state.getProfile.profilePictureUrl}");
+        imagePath = state.getProfile.profilePictureUrl;
+        // setState(() {
+
+        // });
+      }
+    }, builder: (context, state) {
+      if (imagePath == null) {
+        if (getrunnerProfileEventHasError) {
+          return CircleAvatar(
+            radius: 22,
+            backgroundImage: const AssetImage("assets/images/circle.png"),
+            child: widget.task.runnerName == null
+                ? const Icon(Icons.person, color: Colors.white)
+                : null,
+          );
+        }
+        return CircularProgressIndicator.adaptive();
+      }
+      return CircleAvatar(
+        radius: 22,
+        backgroundImage: (imagePath != null)
+            ? NetworkImage(imagePath!)
+            : const AssetImage("assets/images/circle.png"),
+        child: widget.task.runnerName == null
+            ? const Icon(Icons.person, color: Colors.white)
+            : null,
+      );
+    });
+
+    // FutureBuilder<Object>(
+    //     future: () async {
+    // context
+    //     .read<ProfileBloc>()
+    //     .add(GetrunnerProfileEvent(userID: widget.task.runnerId!));
+    //       return "";
+    //     }.call(),
+    //     builder: (context, snapshot) {
+    //       print("daknsaslndnasdajkn${snapshot.hasData}");
+    //       return (!snapshot.hasData)
+    //           ? CircularProgressIndicator.adaptive()
+    //           :
+    //     });
   }
 }

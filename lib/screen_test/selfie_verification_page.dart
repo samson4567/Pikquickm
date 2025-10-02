@@ -116,12 +116,8 @@ class _SelfieVerificationPageState extends State<SelfieVerificationPage> {
                       File fileToBeUplloaded = File(imagePath!);
 
                       if (fileToBeUplloaded.lengthSync() / (1024 * 1024) > .7) {
-                        String fileName =
-                            fileToBeUplloaded.path.split('/').last;
-                        String newFileName =
-                            "${fileName.split('.').sublist(0, fileName.split('.').length - 1).join('.')}_compressed.${fileName.split('.').last}";
                         String newFilePath =
-                            "${fileToBeUplloaded.path.split('/').sublist(0, fileToBeUplloaded.path.split('/').length - 1).join('/')}$newFileName";
+                            renameFile(fileToBeUplloaded.path, "_compressed");
                         fileToBeUplloaded = await compressAndGetFile(
                                 fileToBeUplloaded, newFilePath) ??
                             fileToBeUplloaded;

@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:pikquick/features/profile/data/model/wallet_summary_model.dart';
 import 'package:pikquick/features/task/data/model/accept_bid.dart';
 import 'package:pikquick/features/task/data/model/accept_task_model.dart';
 import 'package:pikquick/features/task/data/model/active_task_model.dart';
@@ -201,9 +200,4 @@ class MarkAsCompletedEvent extends TaskEvent {
 
   @override
   List<Object> get props => [markAsCompleted];
-}
-
-class WalletSummaryEvent extends TaskEvent {
-  final WalletSummaryModel model;
-  const WalletSummaryEvent({required this.model});
 }

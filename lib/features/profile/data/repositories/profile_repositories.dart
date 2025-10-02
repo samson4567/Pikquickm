@@ -15,10 +15,6 @@ import 'package:pikquick/features/profile/domain/entities/runner_details_model.d
 import 'package:pikquick/features/profile/domain/entities/runner_performance_entiy.dart';
 import 'package:pikquick/features/profile/domain/entities/search_entity.dart';
 import 'package:pikquick/features/profile/domain/repositories/profile_repositires.dart';
-import 'package:pikquick/features/task/data/model/subscrip_toggle_model.dart';
-import 'package:pikquick/features/task/data/model/unsuscribe_model.dart';
-import 'package:pikquick/features/task/domain/entitties/subscripe_entity.dart';
-import 'package:pikquick/features/task/domain/entitties/unsuscribe_entities.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {
   final ProfileRemoteDatasource profileRemoteDatasource;
@@ -150,33 +146,6 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return right(result);
     } catch (e) {
       return left(mapExceptionToFailure(e));
-    }
-  }
-
-  @override
-  Future<Either<Failure, SubscribeAutoDeductionEntity>> subscribeAutoDeduction({
-    required SubscribeAutoDeductionModel model,
-  }) async {
-    try {
-      final result =
-          await profileRemoteDatasource.subscribeAutoDeduction(model: model);
-      return Right(result);
-    } catch (e) {
-      return Left(mapExceptionToFailure(e));
-    }
-  }
-
-  @override
-  Future<Either<Failure, UnsubscribeAutoDeductionEntity>>
-      unsubscribeAutoDeduction({
-    required UnsubscribeAutoDeductionModel model,
-  }) async {
-    try {
-      final result =
-          await profileRemoteDatasource.unsubscribeAutoDeduction(model: model);
-      return Right(result);
-    } catch (e) {
-      return Left(mapExceptionToFailure(e));
     }
   }
 }

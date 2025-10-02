@@ -264,16 +264,4 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       (data) => emit(MarkAsCompletedSuccessState(message: data)),
     );
   }
-
-  Future<void> _onGetWalletSummary(
-      WalletSummaryEvent event, Emitter<TaskState> emit) async {
-    emit(WalletSummaryLoadingState());
-
-    final result = await taskRepository.getWalletSummary(model: event.model);
-
-    result.fold(
-      (failure) => emit(WalletSummaryErrorState(failure.message)),
-      (summary) => emit(WalletSummarySuccessState(summary)),
-    );
-  }
 }

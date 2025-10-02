@@ -21,6 +21,7 @@ class GetTaskOverviewModel extends GetTaskOverviewEntity {
   });
 
   factory GetTaskOverviewModel.fromJson(Map<String, dynamic> json) {
+    print("adsnknasdkjnaskdjnasd>>>${json['runner_id']}");
     return GetTaskOverviewModel(
       runnerName: json['runner_name'] as String,
       id: json['id'] as String?,

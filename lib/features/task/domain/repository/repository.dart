@@ -1,7 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:pikquick/core/error/failure.dart';
-import 'package:pikquick/features/profile/data/model/wallet_summary_model.dart';
-import 'package:pikquick/features/profile/domain/entities/wallet_entities.dart';
 import 'package:pikquick/features/task/data/model/accept_bid.dart';
 import 'package:pikquick/features/task/data/model/accept_task_model.dart';
 import 'package:pikquick/features/task/data/model/active_task_model.dart';
@@ -91,6 +89,4 @@ abstract class TaskRepository {
   Future<Either<Failure, MarkAsCompletedEntity>> markAsCompleted({
     required MarkAsCompletedModel markAsCompleted,
   });
-  Future<Either<Failure, WalletSummaryEntity>> getWalletSummary(
-      {required WalletSummaryModel model});
 }

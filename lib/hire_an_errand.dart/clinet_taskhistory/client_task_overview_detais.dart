@@ -3,10 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/component/fancy_container.dart';
+import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
+import 'package:pikquick/features/profile/presentation/profile_event.dart';
+import 'package:pikquick/features/profile/presentation/profile_state.dart';
 import 'package:pikquick/features/task/domain/entitties/get_task_overview_entity.dart';
 import 'package:pikquick/features/task/presentation/task_bloc.dart';
 import 'package:pikquick/features/task/presentation/task_event.dart';
 import 'package:pikquick/features/task/presentation/task_state.dart';
+import 'package:pikquick/hire_an_errand.dart/clinet_taskhistory/client_task_hostoy.dart';
 import 'package:pikquick/hire_an_errand.dart/dashboard/message_chat.dart';
 import 'package:pikquick/router/router_config.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -200,11 +204,12 @@ class _ClientTaskOverviewProgressState
                   const SizedBox(height: 20),
                   Row(
                     children: [
-                      CircleAvatar(
-                          radius: 30,
-                          backgroundImage: (userModelG?.imageUrl != null)
-                              ? NetworkImage(userModelG!.imageUrl!)
-                              : AssetImage('assets/images/circle.png')),
+                      RunnerImageWidget2(task: task),
+                      // CircleAvatar(
+                      //     radius: 30,
+                      //     backgroundImage: (userModelG?.imageUrl != null)
+                      //         ? NetworkImage(userModelG!.imageUrl!)
+                      //         : AssetImage('assets/images/circle.png')),
                       const SizedBox(width: 10),
                       Text(task.runnerName ?? '',
                           style: const TextStyle(
@@ -434,5 +439,89 @@ class _ClientTaskOverviewProgressState
         }
       },
     );
+  }
+}
+
+class RunnerImageWidget2 extends StatefulWidget {
+  final GetTaskOverviewEntity task;
+  const RunnerImageWidget2({
+    super.key,
+    required this.task,
+  });
+
+  @override
+  State<RunnerImageWidget2> createState() => _RunnerImageWidget2State();
+}
+
+class _RunnerImageWidget2State extends State<RunnerImageWidget2> {
+  String? imagePath;
+  @override
+  void initState() {
+    super.initState();
+    context
+        .read<ProfileBloc>()
+        .add(GetrunnerProfileEvent(userID: widget.task.runnerId!));
+  }
+
+  bool getrunnerProfileEventHasError = false;
+
+  @override
+  Widget build(BuildContext context) {
+    context
+        .read<ProfileBloc>()
+        .add(GetrunnerProfileEvent(userID: widget.task.runnerId!));
+    return BlocConsumer<ProfileBloc, ProfileState>(listener: (context, state) {
+      if (state is GetrunnerProfileErrorState) {
+        getrunnerProfileEventHasError = true;
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text(state.errorMessage)),
+        // );
+      }
+      if (state is GetrunnerProfileSuccessState) {
+        getrunnerProfileEventHasError = false;
+        print(
+            "dnanjsadnadknasd-state.getProfile.profilePictureUrl>>${state.getProfile.profilePictureUrl}");
+        imagePath = state.getProfile.profilePictureUrl;
+        print("dnanjsadnadknasd>>${imagePath}");
+        setState(() {});
+      }
+    }, builder: (context, state) {
+      print("dnanjsadnadknasd>>${[imagePath, widget.task.runnerId]}");
+      if (imagePath == null) {
+        if (getrunnerProfileEventHasError) {
+          return CircleAvatar(
+            radius: 22,
+            backgroundImage: const AssetImage("assets/images/circle.png"),
+            // child: widget.task.runnerName == null
+            //     ? const Icon(Icons.person, color: Colors.white)
+            //     : null,
+          );
+        }
+        return CircularProgressIndicator.adaptive();
+      }
+      return CircleAvatar(
+        radius: 22,
+        backgroundImage: (imagePath != null)
+            ? NetworkImage(imagePath!)
+            : const AssetImage("assets/images/circle.png"),
+        // child: widget.task.runnerName == null
+        //     ? const Icon(Icons.person, color: Colors.white)
+        //     : null,
+      );
+    });
+
+    // FutureBuilder<Object>(
+    //     future: () async {
+    // context
+    //     .read<ProfileBloc>()
+    //     .add(GetrunnerProfileEvent(userID: widget.task.runnerId!));
+    //       return "";
+    //     }.call(),
+    //     builder: (context, snapshot) {
+    //       print("daknsaslndnasdajkn${snapshot.hasData}");
+    //       return (!snapshot.hasData)
+    //           ? CircularProgressIndicator.adaptive()
+    //           :
+    //     });
   }
 }

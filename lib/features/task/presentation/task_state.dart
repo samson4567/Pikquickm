@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:pikquick/features/profile/domain/entities/wallet_entities.dart';
 import 'package:pikquick/features/task/domain/entitties/accet_bid_enity.dart';
 import 'package:pikquick/features/task/domain/entitties/active_task_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/assign_task_entity.dart';
@@ -502,22 +501,5 @@ final class GetBidingTaskErrorState extends TaskState {
   const GetBidingTaskErrorState({required this.errorMessage});
   final String errorMessage;
   @override
-  List<Object> get props => [errorMessage];
-}
-
-final class WalletSummaryInitial extends TaskState {}
-
-final class WalletSummaryLoadingState extends TaskState {}
-
-final class WalletSummarySuccessState extends TaskState {
-  final WalletSummaryEntity walletSummary;
-
-  const WalletSummarySuccessState(this.walletSummary);
-}
-
-class WalletSummaryErrorState extends TaskState {
-  final String errorMessage;
-
-  const WalletSummaryErrorState(this.errorMessage);
   List<Object> get props => [errorMessage];
 }

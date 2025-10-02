@@ -533,9 +533,6 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
           ),
         ),
-        SizedBox(
-          width: 50,
-        ),
         CircleAvatar(
           radius: size.width * 0.06,
           backgroundColor: Colors.grey.shade100,

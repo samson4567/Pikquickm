@@ -17,8 +17,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<RunnerDetailsInviteSentEvent>(_onViewRunnerDetailsSent);
     on<SearchRunnerEvent>(_onSearchRunner);
     on<InviteSentEvent>(_onInviteSent);
-    on<ToggleSubscribeAutoDeductionEvent>(_onToggleSubscribeAutoDeduction);
-    on<UnsubscribeAutoDeductionEvent>(_onUnsubscribeAutoDeduction);
   }
 
   Future<void> _onProfileSetup(
@@ -34,9 +32,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   Future<void> _onGetprofile(
       GetrunnerProfileEvent event, Emitter<ProfileState> emit) async {
+    print("dnasldalskdandlnas-_onGetprofile_started");
     emit(GetrunnerProfileLoadingState());
+
+    print("dnasldalskdandlnas-result started");
     final result =
         await profileRepository.getRunnerProfile(userID: event.userID);
+    print("dnasldalskdandlnas-result_is>>${result}");
     result.fold(
         (error) =>
             emit(GetrunnerProfileErrorState(errorMessage: error.message)),
@@ -131,35 +133,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     result.fold(
       (error) => emit(InviteSentErrorState(errorMessage: error.message)),
       (data) => emit(InviteSentSuccessState(runners: data)),
-    );
-  }
-
-  Future<void> _onToggleSubscribeAutoDeduction(
-    ToggleSubscribeAutoDeductionEvent event,
-    Emitter<ProfileState> emit,
-  ) async {
-    emit(SubscribeAutoDeductionLoading());
-
-    final result =
-        await profileRepository.subscribeAutoDeduction(model: event.model);
-
-    result.fold(
-      (failure) => emit(SubscribeAutoDeductionError(failure.message)),
-      (subscription) => emit(SubscribeAutoDeductionSuccess(subscription)),
-    );
-  }
-
-  Future<void> _onUnsubscribeAutoDeduction(
-    UnsubscribeAutoDeductionEvent event,
-    Emitter<ProfileState> emit,
-  ) async {
-    emit(UnsubscribeAutoDeductionLoading());
-    final result =
-        await profileRepository.unsubscribeAutoDeduction(model: event.model);
-
-    result.fold(
-      (failure) => emit(UnsubscribeAutoDeductionError(failure.message)),
-      (entity) => emit(UnsubscribeAutoDeductionSuccess(entity)),
     );
   }
 }

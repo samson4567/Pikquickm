@@ -22,3 +22,15 @@ Future<File?> compressAndGetFile(File file, String targetPath) async {
 
   return (result == null) ? null : File(result.path);
 }
+
+String renameFile(String oldPath, String prefix) {
+  // renameFile(fileToBeUplloaded.path, "_compressed");
+  String fileName =
+      //  fileToBeUplloaded.path
+      oldPath.split('/').last;
+  String newFileName =
+      "${fileName.split('.').sublist(0, fileName.split('.').length - 1).join('.')}$prefix.${fileName.split('.').last}";
+  String newFilePath =
+      "${oldPath.split('/').sublist(0, oldPath.split('/').length - 1).join('/')}$newFileName";
+  return newFilePath;
+}

@@ -42,29 +42,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
 
               // Profile Picture Placeholder
               Center(
-                child: FancyContainer2(
-                    width: 120,
-                    height: 120,
-                    radius: 20,
-                    // backgroundColor: Colors.white,
-
-                    // shadows: [
-                    //   BoxShadow(
-                    //     color: Colors.black.withOpacity(0.05),
-                    //     spreadRadius: 0,
-                    //     blurRadius: 20,
-                    //     offset: const Offset(0, 10),
-                    //   ),
-                    // ],
-                    child: SvgPicture.string(kycIcon)
-                    // const Center(
-                    //   child: Icon(
-                    //     Icons.person_outline,
-                    //     size: 60,
-                    //     color: Colors.black,
-                    //   ),
-                    // ),
-                    ),
+                child: Image.asset('assets/images/upload.png'),
               ),
               const SizedBox(height: 48),
 

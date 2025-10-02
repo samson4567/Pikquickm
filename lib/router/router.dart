@@ -66,7 +66,7 @@ import 'package:pikquick/screen_test/adddress_verification_page.dart';
 import 'package:pikquick/screen_test/document_verification_page.dart';
 import 'package:pikquick/screen_test/selfie_verification_page.dart';
 import 'package:pikquick/screen_test/test_site%20copy.dart';
-// import 'package:pikquick/screen_test/test_site.dart';
+import 'package:pikquick/screen_test/test_site.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -79,11 +79,11 @@ class AppRouter {
         path: MyAppRouteConstant.splashScreen,
         builder: (context, state) => const SplashScreen(),
       ),
-      // GoRoute(
-      //   name: MyAppRouteConstant.documentVerificationCamera,
-      //   path: MyAppRouteConstant.documentVerificationCamera,
-      //   builder: (context, state) => const DocumentVerificationCamera(),
-      // ),
+      GoRoute(
+        name: MyAppRouteConstant.documentVerificationCamera,
+        path: MyAppRouteConstant.documentVerificationCamera,
+        builder: (context, state) => const DocumentVerificationCamera(),
+      ),
       GoRoute(
         name: MyAppRouteConstant.selfieVerificationPage,
         path: MyAppRouteConstant.selfieVerificationPage,

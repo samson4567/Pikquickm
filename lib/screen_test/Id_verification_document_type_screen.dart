@@ -27,20 +27,7 @@ class IdVerificationDocumentTypeScreen extends StatelessWidget {
 
               // Profile Picture Placeholder (Reused from previous screen)
               Center(
-                child: FancyContainer2(
-                  width: 120,
-                  height: 120,
-                  radius: 20,
-                  backgroundColor: Colors.white,
-                  child: Center(
-                    child: SvgPicture.string(kycIcon),
-                    // child: Icon(
-                    //   Icons.person_outline,
-                    //   size: 60,
-                    //   color: Colors.black,
-                    // ),
-                  ),
-                ),
+                child: Image.asset('assets/images/upload.png'),
               ),
               const SizedBox(height: 48),
 
