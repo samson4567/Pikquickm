@@ -89,7 +89,6 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
       decoration: BoxDecoration(
         color: const Color(0xFFFAFAFA), // Changed to FAFAFA color
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade300, width: 1.2),
       ),
       child: Material(
         color: Colors.transparent,
@@ -107,7 +106,7 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
             children: [
               // Status badge
               Align(
-                alignment: Alignment.topRight,
+                alignment: Alignment.topLeft,
                 child: Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -133,59 +132,56 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
                   ),
                 ),
               ),
+              const SizedBox(height: 10),
 
-              const SizedBox(height: 8),
+              Text(
+                runner.createdAt?.toString() ?? '',
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 5),
 
-              // Task description
               Text(
                 runner.taskDescription ?? '',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Outfit',
+                ),
+              ),
+              Divider(
+                color: Colors.grey,
+                thickness: 0,
+              ),
+              Text(
+                '₦${runner.taskBudget ?? ''}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Outfit',
+                ),
+              ),
+
+              Text(
+                runner.clientName ?? '',
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'Outfit',
                   color: Colors.black87,
                 ),
               ),
 
-              const SizedBox(height: 10),
-
-              // Budget
+              const SizedBox(width: 6),
               Row(
                 children: [
-                  const SizedBox(width: 6),
-                  Text(
-                    runner.taskBudget ?? '',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Outfit',
-                    ),
+                  Text('Pickup :'),
+                  SizedBox(
+                    width: 20,
                   ),
-                ],
-              ),
-
-              const SizedBox(height: 8),
-
-              // Client
-              Row(
-                children: [
-                  const Icon(Icons.person, size: 18, color: Colors.blueGrey),
-                  const SizedBox(width: 6),
-                  Text(
-                    runner.clientName ?? '',
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Outfit',
-                      color: Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Icon(Icons.location_on, size: 18, color: Colors.redAccent),
-                  const SizedBox(width: 6),
                   Text(
                     runner.pickupAddress ?? '',
                     style: const TextStyle(
@@ -197,10 +193,14 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
                   ),
                 ],
               ),
+
+              const SizedBox(width: 6),
               Row(
                 children: [
-                  Icon(Icons.location_on, size: 18, color: Colors.redAccent),
-                  const SizedBox(width: 6),
+                  Text('Drop-off :'),
+                  SizedBox(
+                    width: 12,
+                  ),
                   Text(
                     runner.dropOffAddress ?? '',
                     style: const TextStyle(
@@ -213,31 +213,12 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
                 ],
               ),
 
-              const SizedBox(height: 8),
-
-              Row(
-                children: [
-                  const Icon(Icons.schedule, size: 18, color: Colors.grey),
-                  const SizedBox(width: 6),
-                  Text(
-                    runner.createdAt?.toString() ?? '',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 8),
-
               Text(
-                "Task ID: ${runner.taskId}",
+                "Task ID:\n${runner.taskId}",
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: Colors.grey,
+                  fontFamily: 'Outfit',
                 ),
               ),
 
