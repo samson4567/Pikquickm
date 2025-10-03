@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:pikquick/features/profile/domain/entities/auto_deduct_entities.dart';
 import 'package:pikquick/features/profile/domain/entities/create_profile_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/getrunner_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/invite_sent_entity.dart';
@@ -7,6 +8,7 @@ import 'package:pikquick/features/profile/domain/entities/runner_details_model.d
 import 'package:pikquick/features/profile/domain/entities/runner_performance_entiy.dart';
 import 'package:pikquick/features/profile/domain/entities/search_entity.dart'
     show SearchRunnerListEntity;
+import 'package:pikquick/features/profile/domain/entities/unto_entities.dart';
 import 'package:pikquick/features/task/data/model/my_document_model.dart';
 import 'package:pikquick/features/task/domain/entitties/my_document_entity.dart';
 
@@ -238,5 +240,43 @@ final class GetVerifiedDocumentsErrorState extends ProfileState {
   List<Object> get props => [errorMessage];
 }
 
+final class SubscribeAutoDeductionInitial extends ProfileState {}
 
-// GetVerifiedDocuments
+final class SubscribeAutoDeductionLoading extends ProfileState {}
+
+final class SubscribeAutoDeductionSuccess extends ProfileState {
+  final SubscribeAutoDeductionEntity subscription;
+
+  const SubscribeAutoDeductionSuccess(this.subscription);
+}
+
+final class SubscribeAutoDeductionError extends ProfileState {
+  final String errorMessage;
+
+  const SubscribeAutoDeductionError(this.errorMessage);
+
+  @override
+  List<Object> get props => [errorMessage];
+}
+
+class UnsubscribeAutoDeductionInitial extends ProfileState {}
+
+class UnsubscribeAutoDeductionLoading extends ProfileState {}
+
+class UnsubscribeAutoDeductionSuccess extends ProfileState {
+  final UnsubscribeAutoDeductionEntity entity;
+
+  const UnsubscribeAutoDeductionSuccess(this.entity);
+
+  @override
+  List<Object> get props => [entity];
+}
+
+class UnsubscribeAutoDeductionError extends ProfileState {
+  final String errorMessage;
+
+  const UnsubscribeAutoDeductionError(this.errorMessage);
+
+  @override
+  List<Object> get props => [errorMessage];
+}
