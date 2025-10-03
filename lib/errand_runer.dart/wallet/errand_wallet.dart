@@ -67,6 +67,92 @@ class _ErrandWalletState extends State<ErrandWallet> {
     context.read<TaskBloc>().add(WalletSummaryEvent(model: summaryModel));
   }
 
+  // 🔵 Custom Dialog
+  void _showCustomDialog({required String title, required String message}) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Container(
+            width: 342,
+            height: 190,
+            padding: const EdgeInsets.all(16),
+            child: Stack(
+              children: [
+                // Close button
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: InkWell(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: const Icon(Icons.close,
+                        size: 20, color: Colors.black54),
+                  ),
+                ),
+
+                // Content
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 10),
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "Outfit",
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      message,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.black,
+                        fontFamily: "Outfit",
+                      ),
+                    ),
+                    const Spacer(),
+
+                    // Action button
+                    Align(
+                        alignment: Alignment.bottomRight,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            minimumSize: const Size(
+                                120, 40), // 👈 set width=120, height=40
+                          ),
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text(
+                            "Dashbord",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "Outfit",
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        )),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -100,25 +186,27 @@ class _ErrandWalletState extends State<ErrandWallet> {
               listener: (context, state) {
                 if (state is SubscribeAutoDeductionSuccess) {
                   setState(() => isAutoDeductionEnabled = true);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Auto-deduction subscribed successfully"),
-                    ),
+                  _showCustomDialog(
+                    title: "Availability Fee Deducted",
+                    message:
+                        "Your wallet has been deducted your daily availability. "
+                        "This fee will make you available for 24 hours.",
                   );
                 } else if (state is UnsubscribeAutoDeductionSuccess) {
                   setState(() => isAutoDeductionEnabled = false);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Auto-deduction unsubscribed successfully"),
-                    ),
+                  _showCustomDialog(
+                    title: "Auto-Deduction Disabled",
+                    message: "You have successfully unsubscribed "
+                        "from auto-deduction.",
                   );
                 } else if (state is SubscribeAutoDeductionError ||
                     state is UnsubscribeAutoDeductionError) {
                   final errorMessage = state is SubscribeAutoDeductionError
                       ? state.errorMessage
                       : (state as UnsubscribeAutoDeductionError).errorMessage;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(errorMessage)),
+                  _showCustomDialog(
+                    title: "Error",
+                    message: errorMessage,
                   );
                 }
               },
@@ -182,7 +270,7 @@ class _ErrandWalletState extends State<ErrandWallet> {
             ),
             const SizedBox(height: 20),
 
-            // Earning Summary (integrated with Bloc)
+            // Earning Summary (Bloc integrated)
             BlocBuilder<TaskBloc, TaskState>(
               builder: (context, state) {
                 if (state is WalletSummaryLoadingState) {
