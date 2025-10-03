@@ -38,7 +38,10 @@ class _TaskOverviewState extends State<TaskOverview>
   bool _isCompleteDialogOpen = false;
 
   final List<Map<String, String>> _taskSteps = [
-    {'status': 'Task Assigned', 'action': 'Start Task'},
+    {
+      'status': 'Not Started',
+      'action': 'Start Task',
+    },
     {'status': 'In Progress', 'action': 'Complete'},
     {'status': 'Task Completed', 'action': 'Submit for Approval'},
   ];
@@ -186,6 +189,7 @@ class _TaskOverviewState extends State<TaskOverview>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: MultiBlocListener(
         listeners: [
           BlocListener<TaskBloc, TaskState>(
@@ -284,8 +288,7 @@ class _TaskOverviewState extends State<TaskOverview>
           Text("₦${task.budget}",
               style: const TextStyle(
                   fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.blue,
+                  fontWeight: FontWeight.bold,
                   fontFamily: 'Outfit')),
           const Divider(height: 20, thickness: 1.2),
           const SizedBox(height: 10),
@@ -329,6 +332,7 @@ class _TaskOverviewState extends State<TaskOverview>
               Text('N/A', style: const TextStyle(fontSize: 14)),
             ],
           ),
+          const SizedBox(height: 10),
           Row(
             children: [
               const Text('DropOff : ', style: TextStyle(fontSize: 14)),
@@ -365,17 +369,7 @@ class _TaskOverviewState extends State<TaskOverview>
                 padding:
                     const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 decoration: BoxDecoration(
-                  border: Border.all(
-                      color: isCurrent ? Colors.blue : Colors.grey.shade300),
                   borderRadius: BorderRadius.circular(10),
-                  color: isCompletedStep ? Colors.blue.shade50 : Colors.white,
-                  boxShadow: [
-                    if (isCurrent)
-                      BoxShadow(
-                          color: Colors.blue.withOpacity(0.2),
-                          offset: const Offset(0, 3),
-                          blurRadius: 6)
-                  ],
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -425,18 +419,24 @@ class _TaskOverviewState extends State<TaskOverview>
                                       Text(
                                         'Started',
                                         style: TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Outfit'),
                                       ),
                                     ],
                                   ),
                                 )
                               : TextButton(
                                   style: TextButton.styleFrom(
-                                    backgroundColor: Colors.blue,
+                                    backgroundColor: Colors.white,
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 12, vertical: 8),
                                     shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(6)),
+                                      borderRadius: BorderRadius.circular(6),
+                                      side: const BorderSide(
+                                        color: Colors.blue, // 👈 border color
+                                        width: 1.5, // 👈 border thickness
+                                      ),
+                                    ),
                                   ),
                                   onPressed: _isStarting
                                       ? null
@@ -446,10 +446,12 @@ class _TaskOverviewState extends State<TaskOverview>
                                             _isStarting = true;
                                           });
                                           _showLoadingDialog(
-                                              "Starting task..."); // dispatch StartTask event
+                                              "Starting task...");
+
                                           final startTaskModel = StartTaskModel(
                                             taskId: task.id ?? '',
                                           );
+
                                           context.read<TaskBloc>().add(
                                               StartTaskEvent(
                                                   startTask: startTaskModel));
@@ -457,12 +459,13 @@ class _TaskOverviewState extends State<TaskOverview>
                                   child: Text(
                                     _isStarting ? 'Starting...' : 'Start Task',
                                     style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Outfit'),
+                                      color: Colors.black,
+                                      fontSize: 13,
+                                      fontFamily: 'Outfit',
+                                    ),
                                   ),
                                 )
+
                           // special handling for the second action (Complete)
                           : index == 1
                               ? _isCompleted

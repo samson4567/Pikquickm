@@ -13,6 +13,7 @@ import 'package:pikquick/features/task/data/model/reject_bid_model.dart';
 import 'package:pikquick/features/task/data/model/rejecttask_model.dart';
 import 'package:pikquick/features/task/data/model/start_task_model.dart';
 import 'package:pikquick/features/task/data/model/taskcreation_model.dart';
+import 'package:pikquick/features/task/data/model/wallet_summary_model.dart';
 import 'package:pikquick/features/task/domain/entitties/acceot_task_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/accet_bid_enity.dart';
 import 'package:pikquick/features/task/domain/entitties/active_task_entity.dart';
@@ -29,6 +30,7 @@ import 'package:pikquick/features/task/domain/entitties/runner_task_entity.dart'
 import 'package:pikquick/features/task/domain/entitties/specialize_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/start_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/taskcreation_entity.dart';
+import 'package:pikquick/features/task/domain/entitties/wallet_entities.dart';
 import 'package:pikquick/features/transaction/domain/entities/user_address_enties.dart';
 
 abstract class TaskRepository {
@@ -89,4 +91,6 @@ abstract class TaskRepository {
   Future<Either<Failure, MarkAsCompletedEntity>> markAsCompleted({
     required MarkAsCompletedModel markAsCompleted,
   });
+  Future<Either<Failure, WalletSummaryEntity>> getWalletSummary(
+      {required WalletSummaryModel model});
 }

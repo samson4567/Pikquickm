@@ -1,10 +1,12 @@
 import 'package:equatable/equatable.dart';
+import 'package:pikquick/features/profile/data/model/auto_sub_daily.dart';
 import 'package:pikquick/features/profile/data/model/create_model.dart';
 import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
 import 'package:pikquick/features/profile/data/model/invite_sent_model.dart';
 import 'package:pikquick/features/profile/data/model/profile_model.dart';
 import 'package:pikquick/features/profile/data/model/runnerdetails_model.dart'
     show RunnersAllDetailsModel;
+import 'package:pikquick/features/profile/data/model/unto_auto_daily.dart';
 import 'package:pikquick/features/task/data/model/my_document_model.dart';
 
 abstract class ProfileEvent extends Equatable {
@@ -127,5 +129,22 @@ class GetVerifiedDocumentsEvent extends ProfileEvent {
   const GetVerifiedDocumentsEvent();
 }
 
+//sbuscription toggle
+class ToggleSubscribeAutoDeductionEvent extends ProfileEvent {
+  final SubscribeAutoDeductionModel model;
 
-// getVerifiedDocuments
+  const ToggleSubscribeAutoDeductionEvent({required this.model});
+
+  @override
+  List<Object> get props => [model];
+}
+
+//unscripeauth
+class UnsubscribeAutoDeductionEvent extends ProfileEvent {
+  final UnsubscribeAutoDeductionModel model;
+
+  const UnsubscribeAutoDeductionEvent({required this.model});
+
+  @override
+  List<Object> get props => [model];
+}

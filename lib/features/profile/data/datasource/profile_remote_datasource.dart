@@ -1,6 +1,7 @@
 import 'package:pikquick/core/api/pickquick_network_client.dart';
 import 'package:pikquick/core/constants/endpoint_constant.dart';
 import 'package:pikquick/core/db/app_preference_service.dart';
+import 'package:pikquick/features/profile/data/model/auto_sub_daily.dart';
 import 'package:pikquick/features/profile/data/model/create_model.dart';
 import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
 import 'package:pikquick/features/profile/data/model/invite_sent_model.dart'
@@ -9,6 +10,7 @@ import 'package:pikquick/features/profile/data/model/profile_model.dart';
 import 'package:pikquick/features/profile/data/model/runner_performance_model.dart';
 import 'package:pikquick/features/profile/data/model/runnerdetails_model.dart';
 import 'package:pikquick/features/profile/data/model/searh_runner_model.dart';
+import 'package:pikquick/features/profile/data/model/unto_auto_daily.dart';
 import 'package:pikquick/features/task/data/model/my_document_model.dart';
 import 'package:pikquick/features/task/domain/entitties/my_document_entity.dart';
 
@@ -39,6 +41,13 @@ abstract class ProfileRemoteDatasource {
   Future<InviteSentToRunnerModel> sendRunnerInvite(
       {required String taskId, required InviteSentToRunnerModel sendInvite});
   Future<List<MyDocumentEntity>> getVerifiedDocuments();
+
+  Future<SubscribeAutoDeductionModel> subscribeAutoDeduction(
+      {required SubscribeAutoDeductionModel model});
+
+  Future<UnsubscribeAutoDeductionModel> unsubscribeAutoDeduction({
+    required UnsubscribeAutoDeductionModel model,
+  });
 }
 
 class ProfileRemoteDatasourceImpl implements ProfileRemoteDatasource {
@@ -199,5 +208,28 @@ class ProfileRemoteDatasourceImpl implements ProfileRemoteDatasource {
         [];
     return result;
     // InviteSentToRunnerModel.fromJson(response.data);
+  }
+
+  @override
+  Future<SubscribeAutoDeductionModel> subscribeAutoDeduction(
+      {required SubscribeAutoDeductionModel model}) async {
+    final response = await networkClient.post(
+      endpoint: EndpointConstant.subscribetoggle,
+      isAuthHeaderRequired: true,
+      data: model.toJson(),
+    );
+    return SubscribeAutoDeductionModel.fromJson(response.data);
+  }
+
+  @override
+  Future<UnsubscribeAutoDeductionModel> unsubscribeAutoDeduction({
+    required UnsubscribeAutoDeductionModel model,
+  }) async {
+    final response = await networkClient.post(
+      endpoint: EndpointConstant.unsubscribetoggle,
+      isAuthHeaderRequired: true,
+      data: model.toJson(),
+    );
+    return UnsubscribeAutoDeductionModel.fromJson(response.data);
   }
 }

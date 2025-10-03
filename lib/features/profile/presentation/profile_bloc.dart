@@ -18,6 +18,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<SearchRunnerEvent>(_onSearchRunner);
     on<InviteSentEvent>(_onInviteSent);
     on<GetVerifiedDocumentsEvent>(_onGetVerifiedDocuments);
+    on<ToggleSubscribeAutoDeductionEvent>(_onToggleSubscribeAutoDeduction);
+    on<UnsubscribeAutoDeductionEvent>(_onUnsubscribeAutoDeduction);
   }
 
 // GetVerifiedDocuments
@@ -153,5 +155,32 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     );
   }
 
-  // _onGetVerifiedDocuments
+  Future<void> _onToggleSubscribeAutoDeduction(
+    ToggleSubscribeAutoDeductionEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
+    emit(SubscribeAutoDeductionLoading());
+
+    final result =
+        await profileRepository.subscribeAutoDeduction(model: event.model);
+
+    result.fold(
+      (failure) => emit(SubscribeAutoDeductionError(failure.message)),
+      (subscription) => emit(SubscribeAutoDeductionSuccess(subscription)),
+    );
+  }
+
+  Future<void> _onUnsubscribeAutoDeduction(
+    UnsubscribeAutoDeductionEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
+    emit(UnsubscribeAutoDeductionLoading());
+    final result =
+        await profileRepository.unsubscribeAutoDeduction(model: event.model);
+
+    result.fold(
+      (failure) => emit(UnsubscribeAutoDeductionError(failure.message)),
+      (entity) => emit(UnsubscribeAutoDeductionSuccess(entity)),
+    );
+  }
 }
