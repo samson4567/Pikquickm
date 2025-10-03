@@ -33,7 +33,8 @@ class TaskReview extends StatelessWidget {
     print("jskdksadkadsjadhasd>>${av.taskModelbeingCreated?.pickupAddress
         // AddressModel.fromEntity(av.taskModelbeingCreated?.pickupAddress)?.fullAddress
         }");
-
+    print(
+        "asdbjadsbjabsdh-TaskReview>${av.taskModelbeingCreated?.dropoffAddress}");
     // AddressModel.fromEntity(av.taskModelbeingCreated?.dropoffAddress)?.fullAddress
     return BlocConsumer<TaskBloc, TaskState>(
       listener: (context, state) {
