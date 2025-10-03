@@ -265,16 +265,16 @@ class _DashboardPageState extends State<DashboardPage> {
                         _buildHeader(size),
                         SizedBox(height: size.height * 0.02),
                         const Text(
-                          "Find an errand runner",
+                          "Find an errand runner\nfor your task now!",
                           style: TextStyle(
                             fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'Gap',
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Outfit',
                             color: Colors.black,
                           ),
                         ),
                         SizedBox(height: size.height * 0.02),
-                        _buildSectionTitle(context, "Featured Categories"),
+                        _buildSectionTitle(context, "Task Category"),
                         SizedBox(height: size.height * 0.015),
                         _buildCategoryGrid(size),
                         SizedBox(height: size.height * 0.04),
@@ -524,15 +524,17 @@ class _DashboardPageState extends State<DashboardPage> {
           },
           child: Expanded(
             child: Text(
-              'Welcome back, ${av.userModelG?.fullName ?? ''}',
+              'Welcome back, ${av.userModelG?.fullName ?? ''}!',
               style: const TextStyle(
-                fontFamily: 'Gap',
-                fontSize: 18,
+                fontFamily: 'Outfit',
+                fontSize: 16,
+                color: Color(0xFF98A2B3),
               ),
               overflow: TextOverflow.ellipsis,
             ),
           ),
         ),
+        Spacer(),
         CircleAvatar(
           radius: size.width * 0.06,
           backgroundColor: Colors.grey.shade100,
@@ -556,9 +558,9 @@ class _DashboardPageState extends State<DashboardPage> {
           title,
           style: const TextStyle(
             fontSize: 16,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w400,
             color: Colors.black,
-            fontFamily: 'Gap',
+            fontFamily: 'Outfit',
           ),
         ),
         GestureDetector(
@@ -578,78 +580,100 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _buildCategoryGrid(Size size) => GridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: _categories.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          crossAxisSpacing: size.width * 0.02,
-          mainAxisSpacing: size.width * 0.02,
-          childAspectRatio: 0.75,
-        ),
-        itemBuilder: (context, index) {
-          final item = _categories[index];
-          final image = item["image"] ?? "";
-          final isUrl = image.startsWith("http");
+  Widget _buildCategoryGrid(Size size) {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: _categories.length,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4,
+        crossAxisSpacing: size.width * 0.03,
+        mainAxisSpacing: size.width * 0.03,
+        childAspectRatio: 0.8, // tweak this to balance icon vs text
+      ),
+      itemBuilder: (context, index) {
+        final item = _categories[index];
+        final image = item["image"] ?? "";
+        final isUrl = image.startsWith("http");
 
-          return GestureDetector(
-            onTap: () {
-              av.taskModelbeingCreated = TaskModel(
-                  categoryId: item['id']!,
-                  taskType: item['name']!,
-                  description: item['description']!,
-                  name: item['name']!,
-                  clientId: av.userModelG?.id);
-              context.push(MyAppRouteConstant.deliveryScreen);
-            },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: size.width * 0.18,
-                  width: size.width * 0.18,
+        return GestureDetector(
+          onTap: () {
+            av.taskModelbeingCreated = TaskModel(
+              categoryId: item['id']!,
+              taskType: item['name']!,
+              description: item['description']!,
+              name: item['name']!,
+              clientId: av.userModelG?.id,
+            );
+            context.push(MyAppRouteConstant.deliveryScreen);
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // --- Category Icon (takes flexible space)
+              Expanded(
+                flex: 7, // more space for icon
+                child: Container(
+                  width: double.infinity,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 5,
-                        offset: const Offset(2, 2),
+                        color: Colors.black.withOpacity(0.07),
+                        blurRadius: 6,
+                        offset: const Offset(2, 4),
                       ),
                     ],
+                    border: Border.all(
+                      color: Colors.grey.shade200,
+                      width: 1,
+                    ),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
                     child: isUrl
                         ? Image.network(
                             image,
                             fit: BoxFit.cover,
                             errorBuilder: (_, __, ___) => const Icon(
                               Icons.broken_image,
-                              size: 40,
+                              size: 30,
                               color: Colors.grey,
                             ),
                           )
                         : Image.asset(image, fit: BoxFit.cover),
                   ),
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  item["title"] ?? "",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                    height: 1.3,
+              ),
+
+              const SizedBox(height: 6),
+
+              // --- Category Title (fixed height, equal for all tiles)
+              Expanded(
+                flex: 3, // ensures all texts have the same height
+                child: Center(
+                  child: Text(
+                    item["title"] ?? "",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Outfit',
+                      color: Colors.black87,
+                      height: 1.3,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-              ],
-            ),
-          );
-        },
-      );
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   Widget _buildLargeContainer(Size size, Color color) {
     return GestureDetector(
@@ -673,28 +697,41 @@ class _DashboardPageState extends State<DashboardPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
-                  Text(
-                    "Book a task now",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontFamily: 'Gap',
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        "Book a task now",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white, // ✅ white
+                          fontFamily: 'Outfit',
+                        ),
+                      ),
+                      Spacer(),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.white, // ✅ white
+                        size: 14,
+                      ),
+                    ],
                   ),
                   SizedBox(height: 8),
                   Text(
-                    "Book an errand runner to take care of your task for you",
-                    style: TextStyle(
+                    "Book an errand runner to take care of\nyour task for you",
+                    style: const TextStyle(
+                      fontFamily: 'Outfit',
+                      fontWeight: FontWeight.w400, // ✅ Regular 400
                       fontSize: 14,
-                      color: Colors.white70,
-                      height: 1.4,
+                      height: 1.4, // ✅ 140% line height
+                      letterSpacing: 0.14,
+                      color: Colors.white,
                     ),
+                    textAlign: TextAlign.start,
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 26),
           ],
         ),
       ),
