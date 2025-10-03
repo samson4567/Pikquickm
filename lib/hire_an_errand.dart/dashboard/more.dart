@@ -174,35 +174,7 @@ class AccountPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Switch to Errand Runner',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
                   const SizedBox(height: 10),
-                  InkWell(
-                    onTap: () => _showSwitchDialog(context),
-                    child: const Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Switch your to Errand Runner mode \nwithout logging out',
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 10),
-                        Icon(
-                          Icons.arrow_forward_ios,
-                          size: 14,
-                        )
-                      ],
-                    ),
-                  ),
                   const Divider(thickness: 1),
                 ],
               ),
