@@ -207,14 +207,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         child: Text('Welcome back',
                                             style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 16)),
+                                                fontSize: 16,
+                                                fontFamily: 'Outfit',
+                                                fontWeight: FontWeight.w700)),
                                       ),
                                       Text(
                                         userModelG?.fullName ?? "",
                                         style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 15,
-                                            fontWeight: FontWeight.bold),
+                                            fontFamily: 'Outfit',
+                                            fontWeight: FontWeight.w600),
                                       ),
                                     ],
                                   ),
@@ -281,8 +284,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
 
                       Container(
-                        width: 390,
-                        height: 155,
+                        width: 400,
+                        height: 160,
                         decoration: BoxDecoration(
                           color: const Color(0xFFFAFAFA),
                           borderRadius: BorderRadius.circular(16),
@@ -306,8 +309,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     onTap: () => context
                                         .go(MyAppRouteConstant.requestpayout),
                                     child: Container(
-                                      height: 40,
-                                      width: 100,
+                                      height: 50,
+                                      width: 140,
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(7),
@@ -342,17 +345,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   onTap: () => context
                                       .push(MyAppRouteConstant.availabeTask),
                                   child: Container(
-                                    height: 60,
-                                    width: 160,
+                                    height: 50,
+                                    width: 140,
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFECFBFF),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     child: const Center(
                                       child: Text(
-                                        'Browse new task',
+                                        'Browse New Tasks',
                                         style: TextStyle(
                                             fontSize: 13,
+                                            fontFamily: 'Outfit',
                                             color: Colors.black,
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -366,17 +370,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   onTap: () => context.push(
                                       MyAppRouteConstant.taskHistoryrunner),
                                   child: Container(
-                                    height: 60,
-                                    width: 142,
+                                    height: 54,
+                                    width: 159,
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFFFECCA),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     child: const Center(
                                       child: Text(
-                                        'Manage active tasks',
+                                        'Manage Active Tasks',
                                         style: TextStyle(
                                             fontSize: 13,
+                                            fontFamily: 'Outfit',
                                             color: Colors.black,
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -703,55 +708,40 @@ Widget _buildTaskCard(
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 8),
-          Row(
-            children: [
-              const Icon(Icons.schedule, size: 18, color: Colors.grey),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  time,
-                  style: const TextStyle(fontSize: 14, color: Colors.black54),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
+          Expanded(
+            child: Text(
+              time,
+              style: const TextStyle(fontSize: 14, fontFamily: 'Outfit'),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-          const Divider(height: 20, thickness: 1, color: Color(0xFFB3E5FC)),
           Row(
             children: [
               const SizedBox(width: 4),
               Text(
                 price,
                 style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green,
-                ),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Outfit'),
               ),
             ],
           ),
-          Row(
-            children: [
-              const Icon(Icons.person, size: 18, color: Colors.blueGrey),
-              const SizedBox(width: 6),
-              Text(
-                clientName,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
+          const SizedBox(width: 6),
+          Text(
+            clientName,
+            style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Outfit'),
           ),
           const SizedBox(height: 5),
           Row(children: [
             Text(
-              'pickupAddress :',
-              style: const TextStyle(
-                fontSize: 14,
-              ),
+              'Pickup :',
+              style: const TextStyle(fontSize: 14, fontFamily: 'Outfit'),
             ),
-            const SizedBox(width: 6),
+            const SizedBox(height: 10),
             Text(
               pickupAddress,
               style: const TextStyle(
@@ -760,11 +750,12 @@ Widget _buildTaskCard(
               ),
             ),
           ]),
-          const SizedBox(height: 5),
+          const SizedBox(height: 10),
           Row(children: [
             Text(
-              'drop-offAddress :',
+              'Drop-off :',
               style: const TextStyle(
+                fontFamily: 'Outfit',
                 fontSize: 14,
               ),
             ),
@@ -776,13 +767,12 @@ Widget _buildTaskCard(
               ),
             ),
           ]),
-          const SizedBox(height: 5),
+          const SizedBox(height: 10),
           Text(
             "Task ID: $taskId",
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: Colors.grey,
             ),
           ),
           const Spacer(),
@@ -918,6 +908,119 @@ Widget performanceSummary() {
     },
   );
 }
+
+class VerificationAlert extends StatelessWidget {
+  final Function()? onVerifyIdentity;
+  final Function()? onClose;
+
+  const VerificationAlert({
+    super.key,
+    this.onVerifyIdentity,
+    this.onClose,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: FancyContainer2(
+        nulledAlign: true,
+        width: MediaQuery.of(context).size.width * 0.75, // smaller width
+        radius: 18, // slightly smaller radius
+        backgroundColor: Colors.white,
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 20), // tighter padding
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Close Button
+            Align(
+              alignment: Alignment.topRight,
+              child: FancyContainer2(
+                action: onClose,
+                isAsync: false,
+                child: Icon(
+                  Icons.close,
+                  size: 17, // smaller close icon
+                  color: Colors.grey.shade600,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // Icon Container
+            FancyContainer2(
+              width: 60,
+              height: 60,
+              radius: 12,
+              backgroundColor: const Color(0xFFFFC107).withOpacity(0.85),
+              child: const Center(
+                child: Icon(
+                  Icons.warning_amber_rounded,
+                  size: 28,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Title
+            FancyText(
+              'Verify Identity',
+              size: 16, // smaller title
+              weight: FontWeight.w700,
+              textColor: Colors.black,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 6),
+
+            // Subtitle/Message
+            FancyText(
+              'You must complete your verification before you can get hired for tasks.',
+              size: 12, // smaller text
+              textColor: Colors.grey.shade600,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+
+            // Action Button
+            _buildActionButton(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButton(BuildContext context) {
+    return FancyContainer2(
+      action: onVerifyIdentity,
+      isAsync: true,
+      width: double.infinity,
+      height: 44, // reduced height
+      radius: 10,
+      backgroundColor: const Color(0xFF4285F4),
+      child: FancyText(
+        'Verify Now',
+        size: 14, // slightly smaller text
+        weight: FontWeight.w600,
+        textColor: Colors.white,
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // SingleChildScrollView Activetask() {
 //   return SingleChildScrollView(
@@ -1225,115 +1328,6 @@ Widget performanceSummary() {
 // RecommendedTask(),
 
 // This widget displays a modal alert prompting the user to verify their identity.
-class VerificationAlert extends StatelessWidget {
-  final Function()? onVerifyIdentity;
-  final Function()? onClose;
-
-  const VerificationAlert({
-    super.key,
-    this.onVerifyIdentity,
-    this.onClose,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // The main container for the modal content
-    return Container(
-      child: Center(
-        child: FancyContainer2(
-          // Typically modals would be wrapped in a container with specific height/width
-          // constraints, but here we let the content size the FancyContainer.
-          nulledAlign: true,
-          width: MediaQuery.of(context).size.width - 30,
-          // height: MediaQuery.of(context).size.height * .7,
-          radius: 20, // Rounded corners for the modal
-          backgroundColor: Colors.white,
-          padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
-          child: Column(
-            mainAxisSize:
-                MainAxisSize.min, // Keep the modal size to its content
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Close Button
-              Align(
-                alignment: Alignment.topRight,
-                child: FancyContainer2(
-                  action: onClose,
-                  isAsync: false,
-                  child: Icon(
-                    Icons.close,
-                    size: 24,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Icon Container (The orange warning icon box)
-              FancyContainer2(
-                width: 80,
-                height: 80,
-                radius: 16,
-                backgroundColor: const Color(0xFFFFC107)
-                    .withOpacity(0.8), // Yellow/Orange color
-                child: const Center(
-                  child: Icon(
-                    Icons.warning_amber_rounded, // Using a similar warning icon
-                    size: 36,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 32),
-
-              // Title
-              FancyText(
-                'Verify Identity',
-                size: 24,
-                weight: FontWeight.w800,
-                textColor: Colors.black,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-
-              // Subtitle/Message
-              FancyText(
-                'You must complete your verification before you can get hired for task.',
-                size: 14,
-                textColor: Colors.grey.shade600,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
-
-              // Action Button
-              _buildActionButton(context),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActionButton(BuildContext context) {
-    // The main blue button
-    return FancyContainer2(
-      action: onVerifyIdentity,
-      isAsync: true, // Assuming verification process might be async
-      width: double.infinity,
-      height: 56,
-      radius: 12,
-      backgroundColor: const Color(0xFF4285F4), // A standard blue color
-      child: FancyText(
-        'Verify Identity',
-        size: 16,
-        weight: FontWeight.bold,
-        textColor: Colors.white,
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-}
-
 
 // Example of how to show this as a bottom sheet:
 /*

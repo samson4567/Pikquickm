@@ -293,9 +293,10 @@ class _TaskOverviewState extends State<TaskOverview>
             children: [
               CircleAvatar(
                   radius: 30,
-                  backgroundImage: (userModelG?.imageUrl != null)
-                      ? NetworkImage(userModelG!.imageUrl!)
-                      : AssetImage('assets/images/circle.png')),
+                  backgroundImage:
+                      //(userModelG?.imageUrl != null)
+                      //     ? NetworkImage(userModelG!.imageUrl!)
+                      AssetImage('assets/images/circle.png')),
               const SizedBox(width: 10),
               Text(task.clientName ?? "No Name",
                   style: const TextStyle(
