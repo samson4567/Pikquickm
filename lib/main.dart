@@ -13,7 +13,7 @@ import 'package:pikquick/router/router.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 bool hasInternet = true;
-
+//
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // MapboxOptions.setAccessToken(MAPBOX_ACCESS_TOKEN);
