@@ -129,8 +129,8 @@ class AddressModel extends AddressEntity {
       country: json['country'] ?? '     ',
       countryCode: null,
       //  json['countryCode'] ?? '     ',
-      latitude: json['latitude'] ?? 0,
-      longitude: json['longitude'] ?? 0,
+      latitude: double.tryParse(json['latitude'].toString()) ?? 0,
+      longitude: double.tryParse(json['latitude'].toString()) ?? 0,
       isDefault: json['isDefault'] ?? false,
       label: json['label'] ?? '     ',
       // description: json['description'] ?? '     ',
@@ -162,20 +162,24 @@ class AddressModel extends AddressEntity {
     return {
       'addressLine1': addressLine1,
       'addressLine2': addressLine2,
-      'city': city,
-      'state': state,
+      'city': (city?.isEmpty ?? true) ? "    " : city,
+      'state': (state?.isEmpty ?? true) ? "    " : state,
       'postalCode':
           (postalCode?.isEmpty ?? true) ? "000000" : postalCode.toString(),
-      'country': country,
-      'countryCode': countryCode,
-      'latitude': latitude,
-      'longitude': longitude,
+      'country': (country?.isEmpty ?? true) ? "    " : country,
+      'countryCode': (countryCode?.isEmpty ?? true) ? "  " : countryCode,
+
+      // 'country': country ?? "    ",
+      // 'countryCode': countryCode ?? "  ",
+      'latitude': latitude ?? 0,
+      'longitude': longitude ?? 0,
       'isDefault': isDefault,
       // 'description': label,
     };
   }
 
-  String get fullAddress => ' ${addressLine1}, ${city}, ${country}';
+  String get fullAddress =>
+      '${(addressLine1?.isNotEmpty ?? false) ? "${addressLine1}," : ""} ${(city?.isNotEmpty ?? false) ? "${city}," : ""}, ${(country?.isNotEmpty ?? false) ? "${country}," : ""}';
   @override
   toString() {
     // return super.toString() + "with";

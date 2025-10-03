@@ -57,6 +57,7 @@ class _TasklocationState extends State<Tasklocation> {
 
   @override
   Widget build(BuildContext context) {
+    print("asdbjadsbjabsdh${taskModelbeingCreated?.dropoffAddress}");
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 100),

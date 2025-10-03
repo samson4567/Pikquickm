@@ -87,6 +87,7 @@ class _GoogleMapFlutterState extends State<GoogleMapFlutter> {
     }
 
     if (permission == LocationPermission.deniedForever) {
+      // permission = await Geolocator.requestPermission();
       return Future.error('Location permissions are permanently denied');
     }
 
