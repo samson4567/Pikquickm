@@ -91,9 +91,9 @@ class _RunnerProfileHiredState extends State<RunnerProfileHired> {
                 // 👇 Blue button-like container
                 GestureDetector(
                   onTap: () {
-                    Navigator.pop(context); // close dialog
+                    // Navigator.pop(context); // close dialog
                     // Navigate to dashboard or trigger action here
-                    context.pushNamed(MyAppRouteConstant.dashBoardScreen);
+                    context.pop();
                   },
                   child: Container(
                     width: double.infinity,

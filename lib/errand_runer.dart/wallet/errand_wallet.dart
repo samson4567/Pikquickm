@@ -423,12 +423,7 @@ Expanded transactionList() {
           final transactions = state.transactionHistory;
 
           if (transactions.isEmpty) {
-            return const Center(
-              child: Text(
-                "No transactions yet",
-                style: TextStyle(fontFamily: 'Outfit'),
-              ),
-            );
+            return Center(child: Image.asset('assets/images/tract.png'));
           }
 
           return ListView.separated(

@@ -36,7 +36,7 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios),
                 onPressed: () {
-                  context.go(MyAppRouteConstant.dashboard);
+                  context.pop();
                 },
               ),
               title: const Text('Notification'),
@@ -98,7 +98,7 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
 
   Widget buildNotificationList(List<ClientNotificationEntity> notifications) {
     if (notifications.isEmpty) {
-      return const Center(child: Text("No notifications found."));
+      return Center(child: Image.asset('assets/images/note.png'));
     }
 
     return ListView.builder(

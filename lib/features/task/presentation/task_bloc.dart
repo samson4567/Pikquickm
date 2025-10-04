@@ -29,6 +29,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<BidRejectEvent>(_onBidReject);
     on<StartTaskEvent>(_onStartTask);
     on<MarkAsCompletedEvent>(_onMarkAsCompleted);
+    on<WalletSummaryEvent>(_onGetWalletSummary);
   }
 
 // taskcreation
