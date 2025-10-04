@@ -94,12 +94,7 @@ class _WalletState extends State<Wallet> {
             final transactions = state.transactionHistory;
 
             if (transactions.isEmpty) {
-              return const Center(
-                child: Text(
-                  "No transactions yet",
-                  style: TextStyle(fontFamily: 'Outfit'),
-                ),
-              );
+              return Center(child: Image.asset('assets/images/tract.png'));
             }
 
             return ListView.separated(
@@ -246,8 +241,8 @@ class _WalletState extends State<Wallet> {
           ),
           const Spacer(),
           SizedBox(
-            width: 120,
-            height: 60,
+            width: 141,
+            height: 48,
             child: ElevatedButton(
               onPressed: () {
                 context.go(MyAppRouteConstant.addfunds);
@@ -263,7 +258,6 @@ class _WalletState extends State<Wallet> {
                 "+ Add Funds",
                 style: TextStyle(
                   fontSize: 17,
-                  fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
               ),

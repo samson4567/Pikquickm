@@ -38,32 +38,75 @@ class _RunnerProfileState extends State<RunnerProfile> {
   }
 
   void _showInviteSentModal() {
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) {
-        return Container(
-          padding: const EdgeInsets.all(20),
-          width: 450,
-          height: 220,
-          child: Column(
-            children: [
-              Image.asset('assets/images/con2.png', height: 60, width: 100),
-              const SizedBox(height: 16),
-              const Text('Invite Sent',
+      barrierDismissible: false, // user must press button to close
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Container(
+            width: 342,
+            height: 230,
+            decoration: BoxDecoration(
+              color: Colors.white, // Blue dashboard background
+              borderRadius: BorderRadius.circular(20),
+            ),
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('assets/images/con2.png', height: 60, width: 100),
+                const SizedBox(height: 16),
+                const Text(
+                  'Invite Sent',
                   style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Outfit')),
-              const SizedBox(height: 8),
-              const Text(
-                'An invite has being sent to this runner  .',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Colors.black54),
-              ),
-            ],
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Outfit',
+                    color: Colors.black, // white on blue
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'An invite has been sent to this runner.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black, // softer white
+                    fontFamily: 'Outfit',
+                  ),
+                ),
+                const Spacer(),
+                Align(
+                    alignment: Alignment.bottomRight,
+                    child: SizedBox(
+                      width: 150, // 👈 set custom width
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                        ),
+                        onPressed: () =>
+                            context.goNamed(MyAppRouteConstant.dashboard),
+                        child: const Text(
+                          "Dashbord",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "Outfit",
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    )),
+              ],
+            ),
           ),
         );
       },

@@ -89,16 +89,7 @@ class _ClientTaskHistoryState extends State<ClientTaskHistory>
         }
         return allTasks.isNotEmpty
             ? _buildTaskHistoryUI()
-            : const Center(
-                child: Text(
-                  "No tasks available",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: 'Outfit',
-                  ),
-                ),
-              );
+            : Center(child: Image.asset('assets/images/taskun.png'));
       }),
     );
   }
@@ -185,12 +176,7 @@ class _ClientTaskHistoryState extends State<ClientTaskHistory>
     final filtered = _filterTasks(status);
 
     if (filtered.isEmpty) {
-      return const Center(
-        child: Text(
-          "No tasks available",
-          style: TextStyle(fontSize: 14, fontFamily: 'Outfit'),
-        ),
-      );
+      return Center(child: Image.asset('assets/images/taskun.png'));
     }
 
     return SingleChildScrollView(
