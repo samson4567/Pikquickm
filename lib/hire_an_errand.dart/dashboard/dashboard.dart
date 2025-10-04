@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pikquick/app_variable.dart' as av;
@@ -85,6 +86,12 @@ class _DashboardPageState extends State<DashboardPage> {
     context.read<TaskBloc>().add(
           GetTaskForCurrenusersEvent(mode: "bidding"),
         );
+
+    // SchedulerBinding.instance.addPostFrameCallback(
+    //   (timeStamp) {
+    //     context.pushNamed(MyAppRouteConstant.clientNotification);
+    //   },
+    // );
   }
 
   Future<void> _refreshAccessToken() async {

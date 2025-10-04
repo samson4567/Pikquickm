@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pikquick/component/dash_boardered_container.dart';
 import 'package:pikquick/features/task/data/model/active_task_model.dart';
 import 'package:pikquick/features/task/domain/entitties/active_task_entity.dart';
 import 'package:pikquick/features/task/presentation/task_bloc.dart';
@@ -83,6 +84,17 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
 
   // ✅ Task Card
   Widget _buildTaskCard(ActiveTaskPendingEntity runner) {
+    Color themeColor = ((runner.status?.toLowerCase() == "completed") ||
+                runner.status?.toLowerCase() == "active")
+            ? Colors.green
+            // .withOpacity(0.15)
+            : (runner.status?.toLowerCase() == "in progress")
+                ? Colors.orange
+                // .withOpacity(0.15)
+                : Colors.red
+        // .withOpacity(0.15);
+        ;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
@@ -107,27 +119,29 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
               // Status badge
               Align(
                 alignment: Alignment.topLeft,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: (runner.status?.toLowerCase() == "completed")
-                        ? Colors.green.withOpacity(0.15)
-                        : (runner.status?.toLowerCase() == "in progress")
-                            ? Colors.orange.withOpacity(0.15)
-                            : Colors.red.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    runner.status ?? 'Unknown',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: (runner.status?.toLowerCase() == "completed")
-                          ? Colors.green[800]
-                          : (runner.status?.toLowerCase() == "in progress")
-                              ? Colors.orange[800]
-                              : Colors.red[700],
+                child: DashBorderedContainer(
+                  backgroundColor: themeColor.withAlpha(20),
+                  borderColor: themeColor,
+                  cornerRadius: 20,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      // color: themeColor.withAlpha(20),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      runner.status ?? 'Unknown',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: themeColor,
+                        // (runner.status?.toLowerCase() == "completed")
+                        //     ? Colors.green[800]
+                        //     : (runner.status?.toLowerCase() == "in progress")
+                        //         ? Colors.orange[800]
+                        //         : Colors.red[700],
+                      ),
                     ),
                   ),
                 ),

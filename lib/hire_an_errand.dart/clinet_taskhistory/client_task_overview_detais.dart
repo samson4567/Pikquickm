@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pikquick/app_variable.dart';
+import 'package:pikquick/component/dash_boardered_container.dart';
 import 'package:pikquick/component/fancy_container.dart';
 import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
 import 'package:pikquick/features/profile/presentation/profile_event.dart';
@@ -178,7 +179,17 @@ class _ClientTaskOverviewProgressState
         } else if (state is GetTaskOverviiewSuccessState) {
           final GetTaskOverviewEntity task = state.taskOverView;
           final completedSteps = _getCompletedSteps(task.status);
-
+          Color themeColor = (task.status?.toLowerCase() == "completed")
+              ? Colors.green
+              : (task.status?.toLowerCase() == "inprogress")
+                  ? Colors.orange
+                  : (task.status?.toLowerCase() == "pending")
+                      ? Colors.blue
+                      : (task.status?.toLowerCase() == "cancel")
+                          ? Colors.red
+                          : (task.status?.toLowerCase() == "bidding")
+                              ? Colors.purple
+                              : Colors.grey;
           return Scaffold(
             body: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
@@ -274,14 +285,35 @@ class _ClientTaskOverviewProgressState
                   ),
                   const SizedBox(height: 10),
                   const Divider(),
-                  Text(
-                    task.status ?? '',
-                    style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.green,
-                        fontFamily: 'Outfit'),
+                  DashBorderedContainer(
+                    backgroundColor: themeColor.withAlpha(20),
+                    borderColor: themeColor,
+                    child: FancyContainer2(
+                      nulledAlign: true,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Text(
+                          task.status ?? "Unknown",
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: themeColor
+                              //  Colors.white,
+                              ),
+                        ),
+                      ),
+                    ),
                   ),
+
+                  // Text(
+                  //   task.status ?? '',
+                  //   style: TextStyle(
+                  //       fontSize: 13,
+                  //       fontWeight: FontWeight.w400,
+                  //       color: themeColor,
+                  //       //  Colors.green,
+                  //       fontFamily: 'Outfit'),
+                  // ),
                   const SizedBox(height: 10),
                   Text(task.description ?? '',
                       style: const TextStyle(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
@@ -75,6 +76,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   pickupAddress: "",
                   dropOffAddress: "")),
         );
+    // SchedulerBinding.instance.addPostFrameCallback(
+    //   (timeStamp) {
+    //     context.push(MyAppRouteConstant.errandNotification);
+    //   },
+    // );
   }
 
   Future<void> _refreshAccessToken() async {

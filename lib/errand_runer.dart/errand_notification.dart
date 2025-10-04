@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:pikquick/app_variable.dart';
+import 'package:pikquick/component/components.dart';
+import 'package:pikquick/core/constants/svgs.dart';
 import 'package:pikquick/features/wallet/domain/entities/client_notification.enity.dart';
 import 'package:pikquick/features/wallet/presentation/wallet_bloc.dart';
 import 'package:pikquick/features/wallet/presentation/wallet_event.dart';
@@ -8,6 +13,7 @@ import 'package:pikquick/features/wallet/presentation/wallet_state.dart';
 import 'package:pikquick/features/wallet/data/model/client_notification_model.dart';
 import 'package:pikquick/router/router_config.dart';
 
+// import 'package:google_fonts/google_fonts.dart' as gf;
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
 
@@ -86,7 +92,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
     if (state is GetClientNotificationLoadingState) {
       return const Center(child: CircularProgressIndicator());
     } else if (state is GetClientNotificationsSucessState) {
-      final allNotifications = state.clientNotification;
+      List<ClientNotificationEntity> allNotifications =
+          state.clientNotification;
+      // allNotifications = [];
 
       final taskUpdateNotifications = allNotifications
           .where((n) =>
@@ -127,7 +135,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   Widget buildNotificationList(List<ClientNotificationEntity> notifications) {
     if (notifications.isEmpty) {
-      return const Center(child: Text("No notifications found."));
+      return Center(child: buildEmptyNotificationList());
     }
 
     return ListView.builder(
@@ -186,14 +194,28 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   ),
                 ),
                 Positioned(
+                    top: 10,
+                    left: 10,
+                    child: FancyContainer2(
+                      borderColor: getFigmaColor("FFC57D00"),
+                      borderwidth: 5,
+                      height: 20,
+                      width: 20,
+                      radius: 20,
+
+                      hasBorder: true,
+                      // child: Text("`data`"),
+                    )),
+                Positioned(
                   top: 10,
-                  left: 10,
-                  child: Image.asset(
-                    'assets/icons/com.png',
-                    width: 24,
-                    height: 24,
-                    fit: BoxFit.cover,
+                  right: 10,
+                  child: Text(
+                    "just now",
+                    style: GoogleFonts.outfit(
+                        fontWeight: FontWeight.w500, fontSize: 12),
+                    textAlign: TextAlign.center,
                   ),
+                  // Text("just now")
                 ),
                 if (isBid)
                   Positioned(
@@ -242,7 +264,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 else
                   Positioned(
                     bottom: 15,
-                    right: 15,
+                    left: 15,
                     child: GestureDetector(
                       onTap: () {
                         // Completely block click for "New Task assign"
@@ -258,8 +280,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color:
-                              isNewTaskAssign ? Colors.grey : Colors.blueAccent,
+                          // color:
+                          //     isNewTaskAssign ? Colors.grey : Colors.blueAccent,
                           borderRadius: BorderRadius.circular(6),
                         ),
                         constraints: const BoxConstraints(
@@ -269,8 +291,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         child: Text(
                           item.message ?? '',
                           style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
+                            color: Colors.blue,
+                            fontSize: 16,
                             fontWeight: FontWeight.w500,
                             decoration: isNewTaskAssign
                                 ? TextDecoration.lineThrough

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pikquick/app_variable.dart';
+import 'package:pikquick/component/dash_boardered_container.dart';
 import 'package:pikquick/component/fancy_container.dart';
 import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
 import 'package:pikquick/features/profile/presentation/profile_event.dart';
@@ -201,6 +202,18 @@ class _ClientTaskHistoryState extends State<ClientTaskHistory>
               );
             }
 
+            Color themeColor = (task.status?.toLowerCase() == "completed")
+                ? Colors.green
+                : (task.status?.toLowerCase() == "inprogress")
+                    ? Colors.orange
+                    : (task.status?.toLowerCase() == "pending")
+                        ? Colors.blue
+                        : (task.status?.toLowerCase() == "cancel")
+                            ? Colors.red
+                            : (task.status?.toLowerCase() == "bidding")
+                                ? Colors.purple
+                                : Colors.grey;
+
             return InkWell(
               onTap: navigateToOverview,
               borderRadius: BorderRadius.circular(16),
@@ -218,43 +231,41 @@ class _ClientTaskHistoryState extends State<ClientTaskHistory>
                     // Status badge
                     Align(
                       alignment: Alignment.topLeft,
-                      child: Chip(
-                        avatar: Icon(
-                          task.status?.toLowerCase() == "completed"
-                              ? Icons.check_circle
-                              : task.status?.toLowerCase() == "inprogress"
-                                  ? Icons.timelapse
-                                  : task.status?.toLowerCase() == "pending"
-                                      ? Icons.pending_actions
-                                      : task.status?.toLowerCase() == "cancel"
-                                          ? Icons.cancel
-                                          : task.status?.toLowerCase() ==
-                                                  "bidding"
-                                              ? Icons.gavel
-                                              : Icons.info,
-                          size: 16,
-                          color: Colors.white,
+                      child: DashBorderedContainer(
+                        backgroundColor: themeColor.withAlpha(20),
+                        borderColor: themeColor,
+                        child: FancyContainer2(
+                          // child: Icon(
+                          //   task.status?.toLowerCase() == "completed"
+                          //       ? Icons.check_circle
+                          //       : task.status?.toLowerCase() == "inprogress"
+                          //           ? Icons.timelapse
+                          //           : task.status?.toLowerCase() == "pending"
+                          //               ? Icons.pending_actions
+                          //               : task.status?.toLowerCase() == "cancel"
+                          //                   ? Icons.cancel
+                          //                   : task.status?.toLowerCase() ==
+                          //                           "bidding"
+                          //                       ? Icons.gavel
+                          //                       : Icons.info,
+                          //   size: 16,
+                          //   color: Colors.white,
+                          // ),
+                          nulledAlign: true,
+
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Text(
+                              task.status ?? "Unknown",
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: themeColor
+                                  //  Colors.white,
+                                  ),
+                            ),
+                          ),
                         ),
-                        label: Text(
-                          task.status ?? "Unknown",
-                          style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white),
-                        ),
-                        backgroundColor: (task.status?.toLowerCase() ==
-                                "completed")
-                            ? Colors.green
-                            : (task.status?.toLowerCase() == "inprogress")
-                                ? Colors.orange
-                                : (task.status?.toLowerCase() == "pending")
-                                    ? Colors.blue
-                                    : (task.status?.toLowerCase() == "cancel")
-                                        ? Colors.red
-                                        : (task.status?.toLowerCase() ==
-                                                "bidding")
-                                            ? Colors.purple
-                                            : Colors.grey,
                       ),
                     ),
 

@@ -71,6 +71,7 @@ import 'package:pikquick/screen_test/test_site.dart';
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation:
+        // MyAppRouteConstant.testSite,
         // MyAppRouteConstant.splashScreen,
         MyAppRouteConstant.login,
     routes: [
@@ -94,8 +95,13 @@ class AppRouter {
         path: MyAppRouteConstant.addressDocumentUploadScreen,
         builder: (context, state) => const AddressDocumentUploadScreen(),
       ),
+      GoRoute(
+        name: MyAppRouteConstant.testSite,
+        path: MyAppRouteConstant.testSite,
+        builder: (context, state) => const TestSite(),
+      ),
 
-// AddressDocumentUploadScreen
+// TestSite
       GoRoute(
         name: MyAppRouteConstant.accountInfoScreen,
         path: MyAppRouteConstant.accountInfoScreen,

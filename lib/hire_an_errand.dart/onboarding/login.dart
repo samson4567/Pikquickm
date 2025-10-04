@@ -35,8 +35,8 @@ class _LoginPageState extends State<LoginPage> {
     if (kDebugMode) {
       emailController.text =
           //
-          // "keder.runner1@gmaiil.com";
-          'sam.client1@gmail.com';
+          "keder.runner1@gmaiil.com";
+      // 'sam.client1@gmail.com';
       passwordController.text = 'Password@123';
     }
   }

@@ -2,6 +2,9 @@ import 'package:dartz/dartz.dart' as task;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:pikquick/app_variable.dart';
+import 'package:pikquick/component/components.dart';
 import 'package:pikquick/features/wallet/domain/entities/client_notification.enity.dart';
 import 'package:pikquick/features/wallet/presentation/wallet_bloc.dart';
 import 'package:pikquick/features/wallet/presentation/wallet_event.dart';
@@ -61,7 +64,9 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
     if (state is GetClientNotificationLoadingState) {
       return const Center(child: CircularProgressIndicator());
     } else if (state is GetClientNotificationsSucessState) {
-      final allNotifications = state.clientNotification;
+      List<ClientNotificationEntity> allNotifications =
+          state.clientNotification;
+      allNotifications = [];
 
       final taskUpdateNotifications = allNotifications.where((n) {
         final title = n.title?.trim().toLowerCase() ?? '';
@@ -98,7 +103,7 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
 
   Widget buildNotificationList(List<ClientNotificationEntity> notifications) {
     if (notifications.isEmpty) {
-      return Center(child: Image.asset('assets/images/note.png'));
+      return Center(child: buildEmptyNotificationList());
     }
 
     return ListView.builder(
@@ -149,15 +154,39 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
                     ],
                   ),
                 ),
+                // Positioned(
+                //   top: 10,
+                //   left: 10,
+                //   child: Image.asset(
+                //     'assets/icons/com.png',
+                //     width: 24,
+                //     height: 24,
+                //     fit: BoxFit.cover,
+                //   ),
+                // ),
+                Positioned(
+                    top: 10,
+                    left: 10,
+                    child: FancyContainer2(
+                      borderColor: getFigmaColor("FFC57D00"),
+                      borderwidth: 5,
+                      height: 20,
+                      width: 20,
+                      radius: 20,
+
+                      hasBorder: true,
+                      // child: Text("`data`"),
+                    )),
                 Positioned(
                   top: 10,
-                  left: 10,
-                  child: Image.asset(
-                    'assets/icons/com.png',
-                    width: 24,
-                    height: 24,
-                    fit: BoxFit.cover,
+                  right: 10,
+                  child: Text(
+                    "just now",
+                    style: GoogleFonts.outfit(
+                        fontWeight: FontWeight.w500, fontSize: 12),
+                    textAlign: TextAlign.center,
                   ),
+                  // Text("just now")
                 ),
                 if (isBid)
                   Positioned(
@@ -206,7 +235,7 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
                 else
                   Positioned(
                     bottom: 15,
-                    right: 15,
+                    left: 15,
                     child: GestureDetector(
                       onTap: isTaskRejected
                           ? null
@@ -224,8 +253,8 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          color:
-                              isTaskRejected ? Colors.grey : Colors.blueAccent,
+                          // color:
+                          //     isTaskRejected ? Colors.grey : Colors.blueAccent,
                           borderRadius: BorderRadius.circular(6),
                         ),
                         constraints: const BoxConstraints(
@@ -234,10 +263,13 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
                         ),
                         child: Text(
                           item.message ?? '',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 16,
                             fontWeight: FontWeight.w500,
+                            // decoration: isNewTaskAssign
+                            //     ? TextDecoration.lineThrough
+                            //     : TextDecoration.none,
                           ),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,

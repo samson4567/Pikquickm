@@ -82,7 +82,9 @@ class MyAppRouteConstant {
   static const String idVerificationDocumentTypeScreen =
       '/idVerificationDocumentTypeScreen';
   static const String selfieVerificationPage = '/selfieVerificationPage';
-static const String addressDocumentUploadScreen = '/addressDocumentUploadScreen';
+  static const String addressDocumentUploadScreen =
+      '/addressDocumentUploadScreen';
+  static const String testSite = '/testSite';
 
-  // addressDocumentUploadScreen
+  // testSite
 }
