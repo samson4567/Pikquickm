@@ -16,6 +16,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<NewUserSignUpEvent>(_onNewUserSignUpEvent);
     on<VerifyNewSignUpEmailEvent>(_onVerifyNewSignUpEmailEvent);
     on<LoginEvent>(_onLoginEvent);
+
     on<ResendOtpEvent>(_onResendOtpEvent);
     on<ForgotPasswordEvent>(_onForgotPasswordEvent);
     on<ChangePasswordEvent>(_onChangePassword);
@@ -26,8 +27,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<ShareFeedbackEvent>(_onShareFeedBack);
     on<UploadkycDocumentEvent>(_onUploadkycDocument);
     on<GetRunnerVerificationDetailsEvent>(_onGetRunnerVerificationDetails);
+    on<LogOutEvent>(_onLogOutEvent);
   }
-  // GetRunnerVerificationDetails
+  // logOut
   Future<void> _onNewUserSignUpEvent(
     NewUserSignUpEvent event,
     Emitter<AuthState> emit,
@@ -70,6 +72,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (error) => emit(LoginErrorState(errorMessage: error.message)),
       (data) {
         userModelG = UserModel.createFromLogin(data['user']);
+
         emit(LoginSuccessState(
           accessToken: data['access_token'],
           // refreshToken: data["refresh_token"],
@@ -218,5 +221,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 runnerVerificationDetailsEntity:
                     runnerVerificationDetailsEntity)));
   }
-  // _onGetRunnerVerificationDetails
+
+  Future<void> _onLogOutEvent(
+      LogOutEvent event, Emitter<AuthState> emit) async {
+    emit(LogOutLoadingState());
+
+    final result = await authenticationRepository.logOut();
+    result.fold((error) => emit(LogOutErrorState(errorMessage: error.message)),
+        (message) => emit(LogOutSuccessState(message: message)));
+  }
+  // _onLogOutEvent
 }

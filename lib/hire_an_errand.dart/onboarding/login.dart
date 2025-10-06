@@ -6,6 +6,9 @@ import 'package:pikquick/app_variable.dart' as av;
 import 'package:pikquick/component/extraction.dart';
 import 'package:pikquick/component/fancy_container.dart';
 import 'package:pikquick/component/textfilled.dart';
+import 'package:pikquick/core/di/injector.dart';
+import 'package:pikquick/features/authentication/data/models/usermodel.dart';
+import 'package:pikquick/features/authentication/data/repositories/authentication_repository_impl.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_event.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_state.dart';
@@ -59,7 +62,14 @@ class _LoginPageState extends State<LoginPage> {
         }
         if (state is LoginSuccessState) {
           // ignore: unused_local_variable
-
+          // if()
+          getItInstance<AuthenticationRepositoryImpl>()
+              .authenticationLocalDatasource
+              .storeRemainLoggedinvalue(rememberMe);
+          getItInstance<AuthenticationRepositoryImpl>()
+              .authenticationLocalDatasource
+              .cacheUserData(UserModel.fromEntity(state.user));
+          UserModel;
           final taskId = av.taskId?.taskId ?? '';
           if (state.user.role == 'client') {
             context.go(
@@ -71,6 +81,7 @@ class _LoginPageState extends State<LoginPage> {
             );
             return;
           }
+
           if (state.user.role == 'runner') {
             context.go(MyAppRouteConstant.dashBoardScreen);
             return;
@@ -174,20 +185,38 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 10),
 
                   // Forgot Password
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        context.push(MyAppRouteConstant.forgetPassword);
-                      },
-                      child: const Text(
-                        "Forgot Password?",
-                        style: TextStyle(color: Colors.blue),
-                      ),
-                    ),
-                  ),
+                  // Align(
+                  //   alignment: Alignment.centerRight,
+                  //   child:
+                  // ),
                   const SizedBox(height: 30),
 
+// remember me
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        "Remember me",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                      Checkbox(
+                        value: rememberMe,
+                        onChanged: (value) {
+                          rememberMe = value ?? rememberMe;
+                        },
+                      ),
+                      Spacer(),
+                      TextButton(
+                        onPressed: () {
+                          context.push(MyAppRouteConstant.forgetPassword);
+                        },
+                        child: const Text(
+                          "Forgot Password?",
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ),
+                    ],
+                  ),
                   // Login Button
                   BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, state) {
@@ -260,4 +289,6 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
+  bool rememberMe = false;
 }

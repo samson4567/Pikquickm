@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_bloc.dart';
+import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_event.dart';
+import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_state.dart';
 import 'package:pikquick/hire_an_errand.dart/menu/account_info/account_info.dart';
 import 'package:pikquick/hire_an_errand.dart/menu/account_settings/Account_settings.dart';
 import 'package:pikquick/hire_an_errand.dart/menu/account_settings/safety.dart';
@@ -146,59 +150,76 @@ class AccountPage extends StatelessWidget {
       {
         'title': 'Log out',
         'icon': 'logout.png',
-        'onTap': () {},
+        'onTap': () {
+          context.read<AuthBloc>().add(LogOutEvent());
+        },
       },
     ];
 
     return Scaffold(
-      body: ListView.builder(
-        itemCount: settings.length + 1,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return Padding(
-              padding: const EdgeInsets.only(top: 70, left: 15, right: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      context.pushReplacement(MyAppRouteConstant.dashboard);
-                    },
-                    child: const Icon(Icons.arrow_back_ios_new, size: 24),
-                  ),
-                  const SizedBox(height: 18),
-                  const Text(
-                    'Your account',
-                    style: TextStyle(
-                      fontSize: 14,
+      body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
+        if (state is LogOutSuccessState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+          context.go(
+            MyAppRouteConstant.selction,
+          );
+        } else if (state is LogOutErrorState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.errorMessage)),
+          );
+        }
+      }, builder: (context, state) {
+        return ListView.builder(
+          itemCount: settings.length + 1,
+          itemBuilder: (context, index) {
+            if (index == 0) {
+              return Padding(
+                padding: const EdgeInsets.only(top: 70, left: 15, right: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        context.pushReplacement(MyAppRouteConstant.dashboard);
+                      },
+                      child: const Icon(Icons.arrow_back_ios_new, size: 24),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  const SizedBox(height: 10),
-                  const Divider(thickness: 1),
-                ],
-              ),
-            );
-          } else {
-            final setting = settings[index - 1];
-            return Column(
-              children: [
-                ListTile(
-                  leading: Image.asset(
-                    'assets/icons/${setting['icon']}',
-                    width: 30,
-                    height: 30,
-                  ),
-                  title: Text(setting['title']),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: setting['onTap'],
+                    const SizedBox(height: 18),
+                    const Text(
+                      'Your account',
+                      style: TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const SizedBox(height: 10),
+                    const Divider(thickness: 1),
+                  ],
                 ),
-                const SizedBox(height: 10),
-              ],
-            );
-          }
-        },
-      ),
+              );
+            } else {
+              final setting = settings[index - 1];
+              return Column(
+                children: [
+                  ListTile(
+                    leading: Image.asset(
+                      'assets/icons/${setting['icon']}',
+                      width: 30,
+                      height: 30,
+                    ),
+                    title: Text(setting['title']),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: setting['onTap'],
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              );
+            }
+          },
+        );
+      }),
     );
   }
 }

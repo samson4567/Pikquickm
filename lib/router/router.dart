@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pikquick/app_constants.dart';
+import 'package:pikquick/core/constants/app_constants.dart';
+import 'package:pikquick/errand_runer.dart/chat_screen.dart';
 import 'package:pikquick/errand_runer.dart/newtask/available_runner.dart.dart';
 import 'package:pikquick/errand_runer.dart/errand_dashboard/errand_dashboard.dart';
 import 'package:pikquick/errand_runer.dart/errand_menu/errand_more.dart';
@@ -100,8 +102,20 @@ class AppRouter {
         path: MyAppRouteConstant.testSite,
         builder: (context, state) => const TestSite(),
       ),
+      GoRoute(
+        name: MyAppRouteConstant.chatScreen,
+        path: MyAppRouteConstant.chatScreen,
+        builder: (context, state) {
+          // MessagePage
+          Map data = state.extra as Map;
+          return ChatScreen(
+              taskId: data['taskId'],
+              userId: data['userId'],
+              wsUrl: data['wsUrl'] ?? wsUrlG);
+        },
+      ),
 
-// TestSite
+// ChatScreen
       GoRoute(
         name: MyAppRouteConstant.accountInfoScreen,
         path: MyAppRouteConstant.accountInfoScreen,

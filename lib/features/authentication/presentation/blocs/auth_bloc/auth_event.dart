@@ -135,6 +135,18 @@ class GetRunnerVerificationDetailsEvent extends AuthEvent {
   List<Object> get props => [];
 }
 
+class GetRemainLoggedinvalueEvent extends AuthEvent {
+  const GetRemainLoggedinvalueEvent();
+  @override
+  List<Object> get props => [];
+}
+
+class LogOutEvent extends AuthEvent {
+  const LogOutEvent();
+  @override
+  List<Object> get props => [];
+}
 
 
-// GetRunnerVerificationDetails
+
+// GetRemainLoggedinvalue

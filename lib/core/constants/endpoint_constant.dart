@@ -74,6 +74,7 @@ class EndpointConstant {
   // static const String fetchCoinPrice = "/market/klines?symbol=";
   static const String uploadKYCVerificationDocument = "/runner-documents";
   static const String getVerifiedDocuments = "/runner-documents/my-documents";
+  static const String logout = "/auth/logout";
 
   ///runner-documents/my-documents
 }

@@ -17,6 +17,8 @@ abstract class AuthenticationLocalDatasource {
   Future<void> cacheRefreshToken(String refreshToken);
   Future<String?> getCachedRefreshToken();
   Future<void> clearCachedRefreshToken();
+  Future<void> storeRemainLoggedinvalue(bool rememberMe);
+  Future<bool> getRemainLoggedinvalue();
 }
 
 class AuthenticationLocalDatasourceImpl
@@ -76,5 +78,18 @@ class AuthenticationLocalDatasourceImpl
   @override
   Future<void> clearCachedRefreshToken() async {
     await appPreferenceService.removeValue(SecureKey.refreshTokenKey);
+  }
+
+  @override
+  Future<bool> getRemainLoggedinvalue() async {
+    return await appPreferenceService.getValue(
+          SecureKey.refreshTokenKey,
+        ) ??
+        false;
+  }
+
+  @override
+  Future<void> storeRemainLoggedinvalue(bool rememberMe) async {
+    await appPreferenceService.saveValue(SecureKey.refreshTokenKey, rememberMe);
   }
 }

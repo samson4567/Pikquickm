@@ -40,8 +40,9 @@ abstract class AuthenticationRemoteDatasource {
   Future<String> uploadkycDocument(
       {required KycRequestEntity kycRequestEntity});
   Future<RunnerVerificationDetailsEntity> getRunnerVerificationDetails();
+  Future<String> logOut();
 
-  //getRunnerVerificationDetails
+  //logOut
 }
 
 class AuthenticationRemoteDatasourceImpl
@@ -272,5 +273,15 @@ class AuthenticationRemoteDatasourceImpl
     );
     print('Response data********************: ${response.message}');
     return RunnerVerificationDetailsModel.fromJson(response.data);
+  }
+
+  @override
+  Future<String> logOut() async {
+    final response = await networkClient.post(
+      endpoint: EndpointConstant.logout,
+      isAuthHeaderRequired: true,
+    );
+    print('Response data********************: ${response.message}');
+    return response.message;
   }
 }

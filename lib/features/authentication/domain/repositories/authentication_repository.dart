@@ -36,6 +36,9 @@ abstract class AuthenticationRepository {
       {required KycRequestEntity kycRequestEntity});
   Future<Either<Failure, RunnerVerificationDetailsEntity>>
       getRunnerVerificationDetails();
+  Future<Either<Failure, bool>> getRemainLoggedinvalue();
+  Future<Either<Failure, void>> storeRemainLoggedinvalue(bool rememberMe);
+  Future<Either<Failure, String>> logOut();
 }
 
 //VerifyResetOTPEvent

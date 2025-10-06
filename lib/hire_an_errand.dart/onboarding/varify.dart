@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/component/fancy_container.dart';
+import 'package:pikquick/core/di/injector.dart';
+import 'package:pikquick/features/authentication/data/models/usermodel.dart';
+import 'package:pikquick/features/authentication/data/repositories/authentication_repository_impl.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_event.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_state.dart';
@@ -9,6 +13,7 @@ import 'package:pikquick/router/router_config.dart';
 
 class VerifyEmail extends StatefulWidget {
   final String email;
+  //
 
   const VerifyEmail({super.key, required this.email});
 
@@ -130,7 +135,10 @@ class _VerifyEmailState extends State<VerifyEmail> {
                 onPressed: () {
                   Navigator.pop(context);
                   if (type == 'success') {
-                    context.go(MyAppRouteConstant.welcome);
+                    context.read<AuthBloc>().add(LoginEvent(
+                        email: signUpProcessEmail,
+                        password: signUpProcessPassword));
+                    context.pop();
                   }
                 },
                 child: Text(type == 'success' ? 'Continue' : 'Try Again'),
@@ -157,6 +165,40 @@ class _VerifyEmailState extends State<VerifyEmail> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
+        if (state is LoginErrorState) {}
+        if (state is LoginLoadingState) {
+          setState(() {
+            isVerifying = true;
+          });
+        }
+        if (state is LoginSuccessState) {
+          setState(() {
+            isVerifying = false;
+          });
+          getItInstance<AuthenticationRepositoryImpl>()
+              .authenticationLocalDatasource
+              .storeRemainLoggedinvalue(false);
+          getItInstance<AuthenticationRepositoryImpl>()
+              .authenticationLocalDatasource
+              .cacheUserData(UserModel.fromEntity(state.user));
+
+          if (state.user.role == 'client') {
+            context.go(
+              MyAppRouteConstant.dashboard,
+              extra: {
+                'taskId': '39a9e988-1a3c-414e-9f1c-84c8ada685c3',
+                'bidId': '8fb5eba5-6764-4493-bf5f-046998010bf1'
+              },
+            );
+            return;
+          }
+
+          if (state.user.role == 'runner') {
+            context.go(MyAppRouteConstant.dashBoardScreen);
+            return;
+          }
+        }
+
         if (state is VerifyNewSignUpEmailLoadingState) {
           setState(() {
             isVerifying = true;
@@ -165,6 +207,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
           setState(() {
             isVerifying = false;
           });
+
           _showDialog(
             type: 'success',
             title: 'Verified!',

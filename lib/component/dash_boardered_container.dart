@@ -28,10 +28,11 @@ class _DashBorderedContainerState extends State<DashBorderedContainer> {
       radius: widget.cornerRadius,
       backgroundColor: widget.backgroundColor,
       child: DottedBorder(
-          borderType: BorderType.RRect,
-          color: widget.borderColor ?? Colors.black,
-          radius: Radius.circular(widget.cornerRadius ?? 10),
-          child: widget.child ?? SizedBox()),
+        borderType: BorderType.RRect,
+        color: widget.borderColor ?? Colors.black,
+        radius: Radius.circular(widget.cornerRadius ?? 10),
+        child: widget.child ?? SizedBox(),
+      ),
     );
   }
 }

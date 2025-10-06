@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/component/extraction.dart';
 import 'package:pikquick/component/fancy_container.dart';
 import 'package:pikquick/component/textfilled.dart';
@@ -119,6 +120,9 @@ class _CreateRunnerAccountState extends State<CreateRunnerAccount> {
         child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state is NewUserSignUpSuccessState) {
+              signUpProcessEmail = _emailController.text;
+              signUpProcessPassword = _passwordController.text;
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.message)),
               );

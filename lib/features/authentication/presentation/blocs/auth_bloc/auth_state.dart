@@ -286,3 +286,25 @@ final class GetRunnerVerificationDetailsErrorState extends AuthState {
 
 
 // GetRunnerVerificationDetails
+
+
+
+
+
+///LogOut
+
+final class LogOutLoadingState extends AuthState {}
+
+final class LogOutSuccessState extends AuthState {
+  const LogOutSuccessState({required this.message});
+  final String message;
+  @override
+  List<Object> get props => [message];
+}
+
+final class LogOutErrorState extends AuthState {
+  const LogOutErrorState({required this.errorMessage});
+  final String errorMessage;
+  @override
+  List<Object> get props => [errorMessage];
+}

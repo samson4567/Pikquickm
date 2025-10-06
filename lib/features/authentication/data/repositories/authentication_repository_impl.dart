@@ -185,4 +185,41 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
       return left(mapExceptionToFailure(e));
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> getRemainLoggedinvalue() async {
+    try {
+      final result =
+          await authenticationLocalDatasource.getRemainLoggedinvalue();
+      return right(result);
+    } catch (e) {
+      return left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> storeRemainLoggedinvalue(
+      bool rememberMe) async {
+    try {
+      final result = await authenticationLocalDatasource
+          .storeRemainLoggedinvalue(rememberMe);
+      return right(result);
+    } catch (e) {
+      return left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> logOut() async {
+    try {
+      final result = await authenticationRemoteDatasource.logOut();
+      await authenticationLocalDatasource.clearCachedAuthToken();
+      await authenticationLocalDatasource.clearCachedRefreshToken();
+      await authenticationLocalDatasource.clearCachedUserData();
+
+      return right(result);
+    } catch (e) {
+      return left(mapExceptionToFailure(e));
+    }
+  }
 }

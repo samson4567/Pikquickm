@@ -23,6 +23,9 @@ import 'package:pikquick/features/transaction/presentation/transaction_event.dar
 import 'package:pikquick/router/router_config.dart';
 
 UserEntity? userModelG;
+String signUpProcessEmail = "";
+String signUpProcessPassword = "";
+
 RunnerPerformanceEntity? runnerPerformance;
 GetRunnerProfileEntity? getRunner;
 RunnersAllDetailsEntity? allDetails;

@@ -80,9 +80,11 @@ class _TaskOverviewState extends State<TaskOverview>
     );
   }
 
-  void _navigateToMessagePage() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const MessagePage()));
+  void _navigateToMessagePage(RunnerTaskOverviewEntity task) {
+    // Navigator.push(
+    //     context, MaterialPageRoute(builder: (_) => const MessagePage()));
+    context.push(MyAppRouteConstant.chatScreen,
+        extra: {"taskId": task.id, "userId": task.clientId});
   }
 
   void _showLoadingDialog(String message, {bool isStart = true}) {
@@ -706,7 +708,10 @@ class _TaskOverviewState extends State<TaskOverview>
         ),
         const Text("|", style: TextStyle(fontSize: 17, color: Colors.grey)),
         GestureDetector(
-          // onTap: _navigateToMessagePage,
+          onTap: () {
+            if (_task == null) return;
+            _navigateToMessagePage(_task!);
+          },
           child: Row(
             children: [
               Image.asset('assets/images/message.png', fit: BoxFit.cover),

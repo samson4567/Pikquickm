@@ -127,9 +127,11 @@ class _ClientTaskOverviewProgressState
     );
   }
 
-  void _navigateToMessagePage() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (_) => const MessagePage()));
+  void _navigateToMessagePage(GetTaskOverviewEntity task) {
+    // Navigator.push(
+    //     context, MaterialPageRoute(builder: (_) => const MessagePage()));
+    context.push(MyAppRouteConstant.chatScreen,
+        extra: {"taskId": task.id, "userId": task.runnerId});
   }
 
   /// 🔹 Handle bottom button tap logic
@@ -267,19 +269,24 @@ class _ClientTaskOverviewProgressState
                               fontSize: 17,
                               fontFamily: 'Outfit',
                               color: Colors.grey)),
-                      Row(
-                        children: [
-                          Image.asset('assets/images/message.png'),
-                          const SizedBox(width: 10),
-                          GestureDetector(
-                            onTap: _navigateToMessagePage,
-                            child: const Text("Message",
-                                style: TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue)),
-                          ),
-                        ],
+                      GestureDetector(
+                        // onTap: ,
+                        child: Row(
+                          children: [
+                            Image.asset('assets/images/message.png'),
+                            const SizedBox(width: 10),
+                            GestureDetector(
+                              onTap: () {
+                                _navigateToMessagePage(task);
+                              },
+                              child: const Text("Message",
+                                  style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue)),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

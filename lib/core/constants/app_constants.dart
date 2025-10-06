@@ -1,0 +1,1 @@
+String wsUrlG = "websocket-event://";
