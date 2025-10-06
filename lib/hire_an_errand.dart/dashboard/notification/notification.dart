@@ -66,7 +66,7 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
     } else if (state is GetClientNotificationsSucessState) {
       List<ClientNotificationEntity> allNotifications =
           state.clientNotification;
-      allNotifications = [];
+      // allNotifications = [];
 
       final taskUpdateNotifications = allNotifications.where((n) {
         final title = n.title?.trim().toLowerCase() ?? '';

@@ -15,7 +15,7 @@ class AccountSelection extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
-                context.pop(MyAppRouteConstant.login);
+                context.push(MyAppRouteConstant.login);
               },
               child: const Icon(Icons.arrow_back_ios, size: 28),
             ),

@@ -58,7 +58,7 @@ dependencies:
   mapbox_maps_flutter: ^2.9.0
   mapbox_search:
   flutter_staggered_animations: ^1.1.1
-  dotted_border: ^3.1.0
+  dotted_border: 2.1.0
 
   google_maps_flutter: ^2.13.1
   google_maps_flutter_android: ^2.18.2
@@ -72,6 +72,8 @@ dependencies:
   path_provider: ^2.1.5
   flutter_svg: ^2.2.1
   camera: ^0.11.2
+  google_fonts: ^6.3.2
+  web_socket_channel: ^3.0.3
 
 dev_dependencies:
   flutter_test:
