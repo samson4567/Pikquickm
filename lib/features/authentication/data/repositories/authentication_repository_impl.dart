@@ -6,6 +6,7 @@ import 'package:pikquick/features/authentication/data/models/new_user_request_mo
 import 'package:pikquick/features/authentication/data/models/share_feee_model.dart';
 import 'package:pikquick/features/authentication/data/models/taskcategories_model.dart';
 import 'package:pikquick/features/authentication/data/models/token_model.dart';
+import 'package:pikquick/features/authentication/data/models/usermodel.dart';
 import 'package:pikquick/features/authentication/domain/entities/kyc_request_entity.dart';
 import 'package:pikquick/features/authentication/domain/entities/runner_verification_details_entity.dart';
 import 'package:pikquick/features/authentication/domain/entities/share_feed_entites.dart';
@@ -187,26 +188,23 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> getRemainLoggedinvalue() async {
+  Future<bool> getRemainLoggedinvalue() async {
     try {
       final result =
           await authenticationLocalDatasource.getRemainLoggedinvalue();
-      return right(result);
+      return result;
     } catch (e) {
-      return left(mapExceptionToFailure(e));
+      return false;
     }
   }
 
   @override
-  Future<Either<Failure, void>> storeRemainLoggedinvalue(
-      bool rememberMe) async {
+  Future<void> storeRemainLoggedinvalue(bool rememberMe) async {
     try {
       final result = await authenticationLocalDatasource
           .storeRemainLoggedinvalue(rememberMe);
-      return right(result);
-    } catch (e) {
-      return left(mapExceptionToFailure(e));
-    }
+      return result;
+    } catch (e) {}
   }
 
   @override
@@ -220,6 +218,94 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
       return right(result);
     } catch (e) {
       return left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<void> cacheAuthToken(TokenModel tokenModel) async {
+    try {
+      final result =
+          await authenticationLocalDatasource.cacheAuthToken(tokenModel);
+      return result;
+    } catch (e) {}
+  }
+
+  @override
+  Future<void> cacheRefreshToken(String refreshToken) async {
+    try {
+      final result =
+          await authenticationLocalDatasource.cacheRefreshToken(refreshToken);
+      return result;
+    } catch (e) {}
+  }
+
+  @override
+  Future<void> cacheUserData(UserModel userModel) async {
+    try {
+      final result =
+          await authenticationLocalDatasource.cacheUserData(userModel);
+      return result;
+    } catch (e) {}
+  }
+
+  @override
+  Future<void> clearCachedAuthToken() async {
+    try {
+      final result = await authenticationLocalDatasource.clearCachedAuthToken();
+      return result;
+    } catch (e) {}
+  }
+
+  @override
+  Future<void> clearCachedRefreshToken() async {
+    try {
+      final result =
+          await authenticationLocalDatasource.clearCachedRefreshToken();
+      return result;
+    } catch (e) {
+      print("debug_print-clearCachedRefreshToken-error_is${e}");
+      // return null;
+    }
+  }
+
+  @override
+  Future<void> clearCachedUserData() async {
+    try {
+      final result = await authenticationLocalDatasource.clearCachedUserData();
+      return result;
+    } catch (e) {
+      print("debug_print-clearCachedRefreshToken-error_is${e}");
+    }
+  }
+
+  @override
+  Future<TokenModel?> getCachedAuthToken() async {
+    try {
+      final result = await authenticationLocalDatasource.getCachedAuthToken();
+      return result;
+    } catch (e) {
+      print("debug_print-clearCachedRefreshToken-error_is${e}");
+    }
+  }
+
+  @override
+  Future<String?> getCachedRefreshToken() async {
+    try {
+      final result =
+          await authenticationLocalDatasource.getCachedRefreshToken();
+      return result;
+    } catch (e) {
+      print("debug_print-clearCachedRefreshToken-error_is${e}");
+    }
+  }
+
+  @override
+  Future<UserModel?> getCachedUserData() async {
+    try {
+      final result = await authenticationLocalDatasource.getCachedUserData();
+      return result;
+    } catch (e) {
+      print("debug_print-clearCachedRefreshToken-error_is${e}");
     }
   }
 }

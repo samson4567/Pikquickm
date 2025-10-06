@@ -7,7 +7,7 @@ import 'package:pikquick/features/wallet/domain/entities/client_notification.eni
 import 'package:pikquick/features/wallet/domain/entities/runner_model_entity.dart';
 import 'package:pikquick/features/wallet/domain/entities/wallet_entiea.dart';
 
-abstract class WalletRepository {
+abstract class ChatRepository {
   Future<Either<Failure, WalletBalanceEntity>> walletBalance(
       {required WalletBalanceModel walletBalance});
   Future<Either<Failure, RunnerAvailableEntity>> runnerAvailabel(
