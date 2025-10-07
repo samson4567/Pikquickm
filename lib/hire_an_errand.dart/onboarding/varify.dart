@@ -208,9 +208,21 @@ class _VerifyEmailState extends State<VerifyEmail> {
           setState(() => isVerifying = false);
           getItInstance<AuthenticationRepositoryImpl>()
               .authenticationLocalDatasource
+          setState(() {
+            isVerifying = true;
+          });
+        }
+        if (state is LoginSuccessState) {
+          setState(() {
+            isVerifying = false;
+          });
+          context
+              .read<AuthBloc>()
+              .authenticationRepository
               .storeRemainLoggedinvalue(false);
-          getItInstance<AuthenticationRepositoryImpl>()
-              .authenticationLocalDatasource
+          context
+              .read<AuthBloc>()
+              .authenticationRepository
               .cacheUserData(UserModel.fromEntity(state.user));
 
           if (state.user.role == 'client') {

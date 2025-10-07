@@ -3,6 +3,8 @@ import 'package:pikquick/features/authentication/data/models/new_user_request_mo
 import 'package:dartz/dartz.dart';
 import 'package:pikquick/features/authentication/data/models/share_feee_model.dart';
 import 'package:pikquick/features/authentication/data/models/taskcategories_model.dart';
+import 'package:pikquick/features/authentication/data/models/token_model.dart';
+import 'package:pikquick/features/authentication/data/models/usermodel.dart';
 import 'package:pikquick/features/authentication/domain/entities/kyc_request_entity.dart';
 import 'package:pikquick/features/authentication/domain/entities/runner_verification_details_entity.dart';
 import 'package:pikquick/features/authentication/domain/entities/share_feed_entites.dart';
@@ -36,9 +38,20 @@ abstract class AuthenticationRepository {
       {required KycRequestEntity kycRequestEntity});
   Future<Either<Failure, RunnerVerificationDetailsEntity>>
       getRunnerVerificationDetails();
-  Future<Either<Failure, bool>> getRemainLoggedinvalue();
-  Future<Either<Failure, void>> storeRemainLoggedinvalue(bool rememberMe);
+  Future<bool> getRemainLoggedinvalue();
+  Future<void> storeRemainLoggedinvalue(bool rememberMe);
   Future<Either<Failure, String>> logOut();
+  Future<void> cacheAuthToken(TokenModel tokenModel);
+  Future<TokenModel?> getCachedAuthToken();
+  Future<void> clearCachedAuthToken();
+
+  Future<void> cacheUserData(UserModel userModel);
+  Future<UserModel?> getCachedUserData();
+  Future<void> clearCachedUserData();
+  // ✅ New methods for refresh token
+  Future<void> cacheRefreshToken(String refreshToken);
+  Future<String?> getCachedRefreshToken();
+  Future<void> clearCachedRefreshToken();
 }
 
 //VerifyResetOTPEvent

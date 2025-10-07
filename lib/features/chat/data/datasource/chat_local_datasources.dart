@@ -1,8 +1,8 @@
 import 'package:pikquick/core/db/app_preference_service.dart';
 
-abstract class WalletLocalDatasources {}
+abstract class ChatLocalDatasources {}
 
-class WalletLocalDatasourcesIml implements WalletLocalDatasources {
+class ChatLocalDatasourcesIml implements ChatLocalDatasources {
   final AppPreferenceService appPreferenceService;
-  WalletLocalDatasourcesIml({required this.appPreferenceService});
+  ChatLocalDatasourcesIml({required this.appPreferenceService});
 }

@@ -63,11 +63,13 @@ class _LoginPageState extends State<LoginPage> {
         if (state is LoginSuccessState) {
           // ignore: unused_local_variable
           // if()
-          getItInstance<AuthenticationRepositoryImpl>()
-              .authenticationLocalDatasource
+          context
+              .read<AuthBloc>()
+              .authenticationRepository
               .storeRemainLoggedinvalue(rememberMe);
-          getItInstance<AuthenticationRepositoryImpl>()
-              .authenticationLocalDatasource
+          context
+              .read<AuthBloc>()
+              .authenticationRepository
               .cacheUserData(UserModel.fromEntity(state.user));
           UserModel;
           final taskId = av.taskId?.taskId ?? '';
