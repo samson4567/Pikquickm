@@ -9,8 +9,9 @@ import 'package:pikquick/router/router_config.dart';
 
 class ErrandVerifyEmail extends StatefulWidget {
   final String email;
+  final String otp;
 
-  const ErrandVerifyEmail({super.key, required this.email});
+  const ErrandVerifyEmail({super.key, required this.email, required this.otp});
 
   @override
   State<ErrandVerifyEmail> createState() => _ErrandVerifyEmailState();
@@ -134,7 +135,9 @@ class _ErrandVerifyEmailState extends State<ErrandVerifyEmail> {
     });
 
     _startResendTimer();
-    context.read<AuthBloc>().add(ResendOtpEvent(email: widget.email));
+    context
+        .read<AuthBloc>()
+        .add(ResendOtpEvent(email: widget.email, otp: widget.otp));
   }
 
   void _showDialog({

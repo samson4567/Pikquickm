@@ -13,8 +13,8 @@ import 'package:pikquick/router/router_config.dart';
 
 class VerifyEmail extends StatefulWidget {
   final String email;
-
-  const VerifyEmail({super.key, required this.email});
+  final String otp;
+  const VerifyEmail({super.key, required this.email, required this.otp});
 
   @override
   State<VerifyEmail> createState() => _VerifyEmailState();
@@ -92,7 +92,9 @@ class _VerifyEmailState extends State<VerifyEmail> {
     });
 
     _startResendTimer();
-    context.read<AuthBloc>().add(ResendOtpEvent(email: widget.email));
+    context
+        .read<AuthBloc>()
+        .add(ResendOtpEvent(email: widget.email, otp: widget.otp));
   }
 
   void _showDialog({
@@ -102,47 +104,83 @@ class _VerifyEmailState extends State<VerifyEmail> {
   }) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: Colors.white,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                type == 'success' ? Icons.check_circle : Icons.error,
-                color: type == 'success' ? Colors.green : Colors.red,
-                size: 60,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                title,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+          backgroundColor: const Color(0xFFF9F9F9),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
+          content: SizedBox(
+            width: 300,
+            height: 295,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  type == 'success'
+                      ? 'assets/images/con2.png'
+                      : 'assets/images/con.png',
+                  width: 70,
+                  height: 70,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                message,
-                style: const TextStyle(color: Colors.black87, fontSize: 14),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  if (type == 'success') {
-                    context.read<AuthBloc>().add(LoginEvent(
-                        email: signUpProcessEmail,
-                        password: signUpProcessPassword));
-                    context.pop();
-                  }
-                },
-                child: Text(type == 'success' ? 'Continue' : 'Try Again'),
-              ),
-            ],
+                const SizedBox(height: 20),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  message,
+                  style: const TextStyle(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    height: 1.4,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const Spacer(),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      if (type == 'success') {
+                        context.read<AuthBloc>().add(LoginEvent(
+                              email: signUpProcessEmail,
+                              password: signUpProcessPassword,
+                            ));
+                        context.pushNamed(MyAppRouteConstant.dashBoardScreen);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: type == 'success'
+                          ? const Color(0xFF007BFF)
+                          : Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: Text(
+                      type == 'success' ? 'Continue' : 'Try Again',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -210,7 +248,6 @@ class _VerifyEmailState extends State<VerifyEmail> {
       },
       child: GestureDetector(
         onTap: () {
-          // When tapping outside the fields → re-hide all digits
           FocusScope.of(context).unfocus();
           setState(() {
             for (int i = 0; i < _isObscured.length; i++) {
@@ -219,6 +256,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
           });
         },
         child: Scaffold(
+          backgroundColor: Colors.white,
           appBar: AppBar(
             backgroundColor: Colors.white,
             elevation: 0,
@@ -227,7 +265,6 @@ class _VerifyEmailState extends State<VerifyEmail> {
               onPressed: () => context.pop(),
             ),
           ),
-          backgroundColor: Colors.white,
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
@@ -243,42 +280,31 @@ class _VerifyEmailState extends State<VerifyEmail> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Row(
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        style: const TextStyle(
-                          fontSize: 15,
-                          color: Color(0xFF98A2B3),
-                          fontFamily: 'Outfit',
-                          height: 1.3,
-                        ),
-                        children: [
-                          const TextSpan(text: 'A 6-digit code was sent to '),
-                          TextSpan(
-                            text: widget.email,
-                            style: const TextStyle(
-                              color: Color(0xFF4285F4),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
+                RichText(
+                  textAlign: TextAlign.start,
+                  text: TextSpan(
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF98A2B3),
+                      fontFamily: 'Outfit',
+                      height: 1.4,
                     ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                const Text(
-                  'enter the code to continue',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Color(0xFF98A2B3),
-                    fontFamily: 'Outfit',
+                    children: [
+                      const TextSpan(text: 'A 6-digit code was sent to '),
+                      TextSpan(
+                        text: widget.email,
+                        style: const TextStyle(
+                          color: Color(0xFF4285F4),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const TextSpan(text: '\nEnter the code to continue'),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 30),
 
-                // ✅ Secure OTP Inputs
+                /// OTP fields
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(6, (index) {
@@ -295,7 +321,6 @@ class _VerifyEmailState extends State<VerifyEmail> {
                             keyboardType: TextInputType.number,
                             obscureText: _isObscured[index],
                             obscuringCharacter: '●',
-                            cursorColor: Color(0xFFF9F9F9),
                             decoration: InputDecoration(
                               counterText: '',
                               border: OutlineInputBorder(
@@ -308,9 +333,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
                             style: const TextStyle(
                                 fontSize: 18, color: Colors.black),
                             onTap: () {
-                              setState(() {
-                                _isObscured[index] = false;
-                              });
+                              setState(() => _isObscured[index] = false);
                             },
                             onChanged: (value) {
                               if (value.isNotEmpty && index < 5) {
@@ -322,9 +345,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
                                   () {
                                 if (mounted &&
                                     _controllers[index].text.isNotEmpty) {
-                                  setState(() {
-                                    _isObscured[index] = true;
-                                  });
+                                  setState(() => _isObscured[index] = true);
                                 }
                               });
                             },
@@ -339,7 +360,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
                 Row(
                   children: [
                     const Text(
-                      "  Didn't get a code? ",
+                      "Didn't get a code? ",
                       style: TextStyle(
                         color: Color(0xFF070D17),
                         fontSize: 16,
@@ -362,6 +383,8 @@ class _VerifyEmailState extends State<VerifyEmail> {
                   ],
                 ),
                 const Spacer(),
+
+                /// Confirm button with smaller loader
                 Center(
                   child: FancyContainer(
                     onTap:
@@ -374,11 +397,11 @@ class _VerifyEmailState extends State<VerifyEmail> {
                     color: _buttonColor,
                     child: isVerifying
                         ? const SizedBox(
-                            height: 20,
-                            width: 20,
+                            height: 18,
+                            width: 18,
                             child: CircularProgressIndicator(
                               color: Colors.white,
-                              strokeWidth: 2.0,
+                              strokeWidth: 2.5,
                             ),
                           )
                         : const Center(

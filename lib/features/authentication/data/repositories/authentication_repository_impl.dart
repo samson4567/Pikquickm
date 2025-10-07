@@ -107,6 +107,7 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
     try {
       final result = await authenticationRemoteDatasource.verifyResetOtp(
           email: email, otp: otp);
+
       return right(result);
     } catch (e) {
       return left(mapExceptionToFailure(e));

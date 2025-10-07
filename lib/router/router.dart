@@ -335,9 +335,14 @@ class AppRouter {
         path: MyAppRouteConstant.verifyEmail,
         builder: (context, state) {
           final email = state.extra;
+          final otp = state.extra;
           final safeEmail = email is String ? email : '';
+          final otpSave = email is String ? email : '';
 
-          return VerifyEmail(email: safeEmail);
+          return VerifyEmail(
+            email: safeEmail,
+            otp: otpSave,
+          );
         },
       ),
 
@@ -354,9 +359,14 @@ class AppRouter {
           path: MyAppRouteConstant.forgetPasswordVerifyOtp,
           builder: (context, state) {
             final email = state.extra;
+            final otp = state.extra;
             final safeEmail = email is String ? email : '';
+            final otpsave = otp is String ? otp : '';
 
-            return VerifyResetOtp(email: safeEmail);
+            return VerifyResetOtp(
+              email: safeEmail,
+              otp: otpsave,
+            );
           }),
 
       GoRoute(
@@ -364,9 +374,14 @@ class AppRouter {
         path: MyAppRouteConstant.errandVerify,
         builder: (context, state) {
           final email = state.extra;
+          final otp = state.extra;
           final safeEmail = email is String ? email : '';
+          final otpSave = otp is String ? otp : '';
 
-          return ErrandVerifyEmail(email: safeEmail);
+          return ErrandVerifyEmail(
+            email: safeEmail,
+            otp: otpSave,
+          );
         },
       ),
       // GoRoute(
