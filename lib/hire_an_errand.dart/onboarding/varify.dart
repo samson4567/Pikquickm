@@ -207,7 +207,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
         } else if (state is LoginSuccessState) {
           setState(() => isVerifying = false);
           getItInstance<AuthenticationRepositoryImpl>()
-              .authenticationLocalDatasource
+              .authenticationLocalDatasource;
           setState(() {
             isVerifying = true;
           });

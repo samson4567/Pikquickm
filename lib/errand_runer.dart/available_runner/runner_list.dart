@@ -107,30 +107,33 @@ class _ErrandRunnerScreenState extends State<ErrandRunnerScreen> {
                               onPressed: () {
                                 context.go(MyAppRouteConstant.dashboard);
                               },
-                              icon: Icon(Icons.home))),
-                      // IconButton(
-                      //   icon: const Icon(Icons.arrow_back_ios_new, size: 22),
-                      //   onPressed: () => Navigator.pop(context),
-                      // ),
+                              icon: const Icon(Icons.arrow_back_ios_new,
+                                  size: 22))),
                       const SizedBox(width: 20),
                     ],
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    'Check out the runners for you!',
+                    'Available Runners for you! ',
                     style: TextStyle(
                       fontSize: 16,
                       fontFamily: 'Outfit',
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 10),
                   TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
-                      hintText: "Search...",
-                      prefixIcon: const Icon(Icons.search),
+                      hintText: "Search task type",
+                      hintStyle: const TextStyle(
+                        color: Color(0xFF98A2B3),
+                        fontWeight: FontWeight.w600, // makes it bold
+                      ),
+                      fillColor: const Color(0xFF98A2B3),
+                      prefixIcon: Image.asset('assets/images/3.png'),
                       border: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Color(0xFFE4E7EC)),
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
@@ -143,7 +146,7 @@ class _ErrandRunnerScreenState extends State<ErrandRunnerScreen> {
                       height: 44,
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
-                        color: Colors.grey[200],
+                        color: Color(0XFFFAFAFA),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
@@ -193,7 +196,7 @@ class _ErrandRunnerScreenState extends State<ErrandRunnerScreen> {
                                     margin: const EdgeInsets.only(bottom: 16),
                                     width: double.infinity,
                                     decoration: BoxDecoration(
-                                      color: Colors.grey[100],
+                                      color: Color(0XFFFAFAFA),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                     padding: const EdgeInsets.all(16),
@@ -215,7 +218,7 @@ class _ErrandRunnerScreenState extends State<ErrandRunnerScreen> {
                                               ),
                                             ),
                                             Text(
-                                              "10 minutes away",
+                                              "10 min away",
                                               style: TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.w300,
@@ -246,8 +249,7 @@ class _ErrandRunnerScreenState extends State<ErrandRunnerScreen> {
                                                   Row(
                                                     children: [
                                                       Text(
-                                                        runner.userName ??
-                                                            "N/A",
+                                                        "${runner.userName ?? 'N/A'}•",
                                                         style: const TextStyle(
                                                           fontSize: 18,
                                                           fontWeight:
@@ -265,13 +267,14 @@ class _ErrandRunnerScreenState extends State<ErrandRunnerScreen> {
                                                   ),
                                                   const SizedBox(height: 5),
                                                   const Text(
-                                                    "Experienced & Reliable",
+                                                    "Experienced errand runner with a\nfocus on reliability and speed",
                                                     style: TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w300,
-                                                      fontFamily: 'Outfit',
-                                                    ),
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontFamily: 'Outfit',
+                                                        color:
+                                                            Color(0XFF434953)),
                                                   ),
                                                   const SizedBox(height: 8),
                                                   Row(
@@ -280,26 +283,37 @@ class _ErrandRunnerScreenState extends State<ErrandRunnerScreen> {
                                                           color: Colors.orange,
                                                           size: 18),
                                                       const SizedBox(width: 4),
-                                                      const Text(
-                                                        "reviews (72)",
-                                                        style: TextStyle(
-                                                            fontSize: 10,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w100),
+                                                      Text(
+                                                        (runner.averageRating !=
+                                                                null)
+                                                            ? runner
+                                                                .averageRating!
+                                                                .toStringAsFixed(
+                                                                    1)
+                                                            : '',
+                                                        style: const TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                        ),
                                                       ),
                                                       Text(
-                                                        " | ${runner.distance ?? "0"} km away",
+                                                        "  ${runner.distance ?? "0"} ",
                                                         style: const TextStyle(
-                                                            fontSize: 10),
+                                                            fontSize: 14,
+                                                            fontFamily:
+                                                                'OutFit',
+                                                            color: Color(
+                                                                0XFF98A2B3)),
                                                       ),
-                                                      Flexible(
-                                                        child: Text(
-                                                          " | ${runner.totalTasksCompleted ?? "0"} task completed",
-                                                          style:
-                                                              const TextStyle(
-                                                                  fontSize: 10),
-                                                        ),
+                                                      Text(
+                                                        " | ${runner.totalTasksCompleted ?? ''} task completed",
+                                                        style: const TextStyle(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                            color: Color(
+                                                                0XFF98A2B3)),
                                                       ),
                                                     ],
                                                   ),
@@ -332,7 +346,8 @@ class _ErrandRunnerScreenState extends State<ErrandRunnerScreen> {
                                             },
                                             borderRadius:
                                                 BorderRadius.circular(10),
-                                            border: Border.all(),
+                                            border:
+                                                Border.all(color: Colors.blue),
                                             height: 50,
                                             width: 342,
                                             child: const Center(
@@ -373,9 +388,10 @@ class _ErrandRunnerScreenState extends State<ErrandRunnerScreen> {
         });
       },
       child: Container(
+        height: 30,
         padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.blue[100] : Colors.transparent,
+          color: isSelected ? Colors.white : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
