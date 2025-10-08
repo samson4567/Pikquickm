@@ -9,8 +9,9 @@ import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/au
 
 class VerifyResetOtp extends StatefulWidget {
   final String email;
+  final String otp;
 
-  const VerifyResetOtp({super.key, required this.email});
+  const VerifyResetOtp({super.key, required this.email, required this.otp});
 
   @override
   State<VerifyResetOtp> createState() => _VerifyResetOtpState();
@@ -94,7 +95,9 @@ class _VerifyResetOtpState extends State<VerifyResetOtp> {
 
     _startResendTimer();
 
-    context.read<AuthBloc>().add(ResendOtpEvent(email: widget.email));
+    context
+        .read<AuthBloc>()
+        .add(ResendOtpEvent(email: widget.email, otp: widget.otp));
     await Future.delayed(const Duration(seconds: 2));
 
     setState(() {

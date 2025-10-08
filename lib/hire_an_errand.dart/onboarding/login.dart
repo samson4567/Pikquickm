@@ -135,7 +135,6 @@ class _LoginPageState extends State<LoginPage> {
                   // Email Field
                   TextFormFieldWithCustomStyles(
                     controller: emailController,
-                    label: "Email",
                     hintText: "Enter your email",
                     fillColor: Colors.white,
                     labelColor: const Color(0xFF98A2B3),
@@ -165,7 +164,6 @@ class _LoginPageState extends State<LoginPage> {
                   // Password Field
                   TextFormFieldWithCustomStyles(
                     controller: passwordController,
-                    label: "Password",
                     hintText: "Enter your password",
                     fillColor: Colors.white,
                     labelColor: const Color(0xFF98A2B3),

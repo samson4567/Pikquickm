@@ -482,8 +482,8 @@ class _MyProfileState extends State<MyProfile> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _sectionTitle("Contact Details:"),
-              _contactDetail("Phone number", "${profile?.userPhone ?? "N/A"}"),
-              _contactDetail("Email Address", "${profile?.userEmail ?? "N/A"}"),
+              _contactDetail("Phone number", "${userModelG?.phone ?? "N/A"}"),
+              _contactDetail("Email Address", "${userModelG?.email ?? "N/A"}"),
               _sectionTitle("Verified Credentials:"),
               Column(
                 children: staticListOfDocuments

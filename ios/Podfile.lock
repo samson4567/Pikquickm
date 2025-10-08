@@ -38,17 +38,17 @@ PODS:
   - Mantle (2.2.0):
     - Mantle/extobjc (= 2.2.0)
   - Mantle/extobjc (2.2.0)
-  - mapbox_maps_flutter (2.10.0):
+  - mapbox_maps_flutter (2.11.0):
     - Flutter
-    - MapboxMaps (= 11.14.0)
+    - MapboxMaps (= 11.15.0)
     - Turf (= 4.0.0)
-  - MapboxCommon (24.14.0):
+  - MapboxCommon (24.15.0):
     - Turf (= 4.0.0)
-  - MapboxCoreMaps (11.14.0):
-    - MapboxCommon (= 24.14.0)
-  - MapboxMaps (11.14.0):
-    - MapboxCommon (= 24.14.0)
-    - MapboxCoreMaps (= 11.14.0)
+  - MapboxCoreMaps (11.15.0):
+    - MapboxCommon (= 24.15.0)
+  - MapboxMaps (11.15.0):
+    - MapboxCommon (= 24.15.0)
+    - MapboxCoreMaps (= 11.15.0)
     - Turf (= 4.0.0)
   - path_provider_foundation (0.0.1):
     - Flutter
@@ -128,10 +128,10 @@ SPEC CHECKSUMS:
   image_picker_ios: 7fe1ff8e34c1790d6fff70a32484959f563a928a
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
   Mantle: c5aa8794a29a022dfbbfc9799af95f477a69b62d
-  mapbox_maps_flutter: 63957d7c8978bba514fb113906e0d87767eadb5f
-  MapboxCommon: 7aa10394fbcfc1d5a737d2a157c35388666e77e5
-  MapboxCoreMaps: fddb4a008e3200c963a68074afccd8f6d816544c
-  MapboxMaps: 308bb0be5e7a59c9f68a3b06f48998ccb4477583
+  mapbox_maps_flutter: 6220e913bbf2852055cdd00085a5d183edbaf3af
+  MapboxCommon: ef26c7dbfabd869e6f11d70bf99ea44437afabfe
+  MapboxCoreMaps: 4a3655bedc9a9a920221b3e8ebc34a45fa2d9fd3
+  MapboxMaps: 02180eafd7d246c581fcb52cdf161350a63f5611
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   SDWebImage: 9f177d83116802728e122410fb25ad88f5c7608a
   SDWebImageWebPCoder: e38c0a70396191361d60c092933e22c20d5b1380
@@ -141,4 +141,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 888fdfd9f7e611bd06e28e698a98f2199b60bbcf
 
-COCOAPODS: 1.16.2
+COCOAPODS: 1.15.2

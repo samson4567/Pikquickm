@@ -34,26 +34,109 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
         return DefaultTabController(
           length: 4,
           child: Scaffold(
-            appBar: AppBar(
-              automaticallyImplyLeading: true, // Enables back arrow
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios),
-                onPressed: () {
-                  context.pop();
-                },
-              ),
-              title: const Text('Notification'),
-              bottom: const TabBar(
-                isScrollable: true,
-                tabs: [
-                  Tab(text: 'All'),
-                  Tab(text: 'Task Update'),
-                  Tab(text: 'Bid & Offers'),
-                  Tab(text: 'Payment'),
+            body: SafeArea(
+              child: Column(
+                children: [
+                  // Header - Updated to vertical layout
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(
+                                Icons.arrow_back_ios,
+                                color: Colors.black,
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                context.go(MyAppRouteConstant.dashboard);
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          '  Notification',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Tabs - Updated to container style
+                  Container(
+                    width: 342,
+                    height: 44,
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFAFAFA),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: TabBar(
+                      isScrollable: true,
+                      labelColor: Colors.black,
+                      unselectedLabelColor: Colors.black,
+                      indicator: BoxDecoration(
+                        color: Colors
+                            .white, // Selection indicator color #FFFFFF would be white, using blue for visibility
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      indicatorSize: TabBarIndicatorSize.label,
+                      labelPadding: const EdgeInsets.symmetric(horizontal: 16),
+                      tabs: const [
+                        Tab(
+                          child: Text(
+                            'All',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        Tab(
+                          child: Text(
+                            'Task Update',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        Tab(
+                          child: Text(
+                            'Bid & Offers',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        Tab(
+                          child: Text(
+                            'Payment',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Tab content
+                  Expanded(child: _buildBody(context, state)),
                 ],
               ),
             ),
-            body: _buildBody(context, state),
           ),
         );
       },
@@ -66,7 +149,7 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
     } else if (state is GetClientNotificationsSucessState) {
       List<ClientNotificationEntity> allNotifications =
           state.clientNotification;
-      allNotifications = [];
+      // allNotifications = [];
 
       final taskUpdateNotifications = allNotifications.where((n) {
         final title = n.title?.trim().toLowerCase() ?? '';
@@ -126,23 +209,47 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
                   height: isBid ? 260 : 230,
                   margin: const EdgeInsets.symmetric(vertical: 6),
                   padding: EdgeInsets.only(
-                      left: 16, right: 16, top: 40, bottom: isBid ? 70 : 20),
+                      left: 16, right: 16, top: 16, bottom: isBid ? 70 : 20),
                   decoration: BoxDecoration(
                     color: const Color(0xFFF2FAFF),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 10),
-                      Text(
-                        item.title ?? '',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                      // Title, icon and timestamp in the same row - Icon comes first
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          FancyContainer2(
+                            borderColor: getFigmaColor("FFC57D00"),
+                            borderwidth: 5,
+                            height: 20,
+                            width: 20,
+                            radius: 20,
+                            hasBorder: true,
+                          ),
+                          const SizedBox(width: 15),
+                          Expanded(
+                            child: Text(
+                              item.title ?? '',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            "just now",
+                            style: GoogleFonts.outfit(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 4),
                       const SizedBox(height: 12),
                       Text(
                         item.message ?? '',
@@ -153,40 +260,6 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
                       ),
                     ],
                   ),
-                ),
-                // Positioned(
-                //   top: 10,
-                //   left: 10,
-                //   child: Image.asset(
-                //     'assets/icons/com.png',
-                //     width: 24,
-                //     height: 24,
-                //     fit: BoxFit.cover,
-                //   ),
-                // ),
-                Positioned(
-                    top: 10,
-                    left: 10,
-                    child: FancyContainer2(
-                      borderColor: getFigmaColor("FFC57D00"),
-                      borderwidth: 5,
-                      height: 20,
-                      width: 20,
-                      radius: 20,
-
-                      hasBorder: true,
-                      // child: Text("`data`"),
-                    )),
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: Text(
-                    "just now",
-                    style: GoogleFonts.outfit(
-                        fontWeight: FontWeight.w500, fontSize: 12),
-                    textAlign: TextAlign.center,
-                  ),
-                  // Text("just now")
                 ),
                 if (isBid)
                   Positioned(
@@ -253,8 +326,6 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          // color:
-                          //     isTaskRejected ? Colors.grey : Colors.blueAccent,
                           borderRadius: BorderRadius.circular(6),
                         ),
                         constraints: const BoxConstraints(
@@ -267,9 +338,6 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
                             color: Colors.blue,
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            // decoration: isNewTaskAssign
-                            //     ? TextDecoration.lineThrough
-                            //     : TextDecoration.none,
                           ),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
