@@ -39,14 +39,12 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
   void _filterTasks() {
     final status = _getTabStatus();
     setState(() {
-      // filter by status
       List<ActiveTaskPendingEntity> tasks = (status == "all")
           ? _allTasks
           : _allTasks
               .where((task) => task.status?.toLowerCase() == status)
               .toList();
 
-      // filter by search text
       if (_searchQuery.isNotEmpty) {
         tasks = tasks
             .where((task) =>
@@ -82,26 +80,28 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
     super.dispose();
   }
 
-  // ✅ Task Card
   Widget _buildTaskCard(ActiveTaskPendingEntity runner) {
     Color themeColor = ((runner.status?.toLowerCase() == "completed") ||
-                runner.status?.toLowerCase() == "active")
-            ? Colors.green
-            // .withOpacity(0.15)
-            : (runner.status?.toLowerCase() == "in progress")
-                ? Colors.orange
-                // .withOpacity(0.15)
-                : Colors.red
-        // .withOpacity(0.15);
-        ;
-    //
+            runner.status?.toLowerCase() == "active")
+        ? Colors.green
+        : (runner.status?.toLowerCase() == "in progress")
+            ? Colors.orange
+            : Colors.red;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAFAFA), // Changed to FAFAFA color
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.05),
+            blurRadius: 6,
+            spreadRadius: 1,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Material(
         color: Colors.transparent,
@@ -117,7 +117,6 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Status badge
               Align(
                 alignment: Alignment.topLeft,
                 child: DashBorderedContainer(
@@ -127,28 +126,18 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
                   child: Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      // color: themeColor.withAlpha(20),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
                     child: Text(
                       runner.status ?? 'Unknown',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                         color: themeColor,
-                        // (runner.status?.toLowerCase() == "completed")
-                        //     ? Colors.green[800]
-                        //     : (runner.status?.toLowerCase() == "in progress")
-                        //         ? Colors.orange[800]
-                        //         : Colors.red[700],
                       ),
                     ),
                   ),
                 ),
               ),
               const SizedBox(height: 10),
-
               Text(
                 runner.createdAt?.toString() ?? '',
                 style: const TextStyle(
@@ -157,77 +146,73 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
                   color: Colors.black,
                 ),
               ),
-              const SizedBox(height: 5),
-
+              const SizedBox(height: 6),
               Text(
                 runner.taskDescription ?? '',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Outfit',
-                ),
-              ),
-              Divider(
-                color: Colors.grey,
-                thickness: 0,
-              ),
-              Text(
-                '₦${runner.taskBudget ?? ''}',
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Outfit',
                 ),
               ),
-
+              const SizedBox(height: 6),
+              Divider(thickness: 0.5, color: Colors.grey),
+              const SizedBox(height: 6),
+              Text(
+                '₦${runner.taskBudget ?? ''}',
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Outfit',
+                ),
+              ),
+              const SizedBox(height: 4),
               Text(
                 runner.clientName ?? '',
                 style: const TextStyle(
-                  fontSize: 15,
+                  fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  fontFamily: 'Outfit',
                   color: Colors.black87,
+                  fontFamily: 'Outfit',
                 ),
               ),
-
-              const SizedBox(width: 6),
+              const SizedBox(height: 8),
               Row(
                 children: [
-                  Text('Pickup :'),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text(
-                    runner.pickupAddress ?? '',
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Outfit',
-                      color: Colors.black87,
+                  const Text("Pickup:"),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      runner.pickupAddress ?? '',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
+                        fontFamily: 'Outfit',
+                      ),
                     ),
                   ),
                 ],
               ),
-
-              const SizedBox(width: 6),
+              const SizedBox(height: 4),
               Row(
                 children: [
-                  Text('Drop-off :'),
-                  SizedBox(
-                    width: 12,
-                  ),
-                  Text(
-                    runner.dropOffAddress ?? '',
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Outfit',
-                      color: Colors.black87,
+                  const Text("Drop-off:"),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      runner.dropOffAddress ?? '',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
+                        fontFamily: 'Outfit',
+                      ),
                     ),
                   ),
                 ],
               ),
-
+              const SizedBox(height: 6),
               Text(
                 "Task ID:\n${runner.taskId}",
                 style: const TextStyle(
@@ -236,9 +221,7 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
                   fontFamily: 'Outfit',
                 ),
               ),
-
               const SizedBox(height: 14),
-
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
@@ -252,12 +235,12 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
                   style: OutlinedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.lightBlue,
-                    side: BorderSide(
-                        color: Colors.lightBlue.shade200, width: 1.5),
+                    side:
+                        BorderSide(color: const Color(0xFFB3DAF7), width: 1.2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
                   child: const Text(
                     "View Details",
@@ -276,21 +259,17 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
     );
   }
 
-  // ✅ Search UI styled like Available Task
   Widget _buildSearchBar() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: const Color(0xFFE4E7EC),
-        ),
+        border: Border.all(color: const Color(0xFFE4E7EC)),
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.search,
-          ),
+          const Icon(Icons.search, color: Colors.black54),
           const SizedBox(width: 10),
           Expanded(
             child: TextField(
@@ -300,8 +279,8 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
               },
               style: const TextStyle(fontSize: 15, fontFamily: 'Outfit'),
               decoration: const InputDecoration(
-                hintText: "Search by description or client...",
-                hintStyle: TextStyle(color: Colors.black54, fontSize: 14),
+                hintText: "Search task type",
+                hintStyle: TextStyle(color: Colors.black45, fontSize: 14),
                 border: InputBorder.none,
               ),
             ),
@@ -314,6 +293,7 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
       body: BlocConsumer<TaskBloc, TaskState>(
         listener: (context, state) {
           if (state is ActivetaskSuccessState) {
@@ -328,7 +308,6 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Back + Centered Title
                   Row(
                     children: [
                       IconButton(
@@ -353,15 +332,9 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
                       const SizedBox(width: 48),
                     ],
                   ),
-
                   const SizedBox(height: 20),
-
-                  // Search bar
                   _buildSearchBar(),
-
                   const SizedBox(height: 20),
-
-                  // Tabs
                   Container(
                     decoration: BoxDecoration(
                       color: const Color(0xFFFAFAFA),
@@ -370,14 +343,11 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
                     child: TabBar(
                       controller: _tabController,
                       indicator: BoxDecoration(
-                        color:
-                            Colors.white, // White background for selected tab
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      indicatorSize: TabBarIndicatorSize
-                          .tab, // Makes indicator cover entire tab
-                      labelColor:
-                          Colors.lightBlue, // Color for selected tab text
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      labelColor: Colors.lightBlue,
                       unselectedLabelColor: Colors.black54,
                       tabs: const [
                         Tab(text: "All"),
@@ -387,10 +357,7 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
                       ],
                     ),
                   ),
-
                   const SizedBox(height: 20),
-
-                  // Task list
                   Expanded(
                     child: state is ActivetaskLoadingState
                         ? const Center(child: CircularProgressIndicator())
