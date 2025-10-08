@@ -31,6 +31,8 @@ abstract class AuthenticationRepository {
     required String newPassword,
   });
   Future<Either<Failure, String>> refreshToken({required String refreshToken});
+  Future<String> refreshTokenPlain({required String refreshToken});
+
   Future<Either<Failure, List<CustomCategoryTaskEntity>>> taskCategories();
   Future<Either<Failure, ShareFeedbackEntity>> shareFeedback(
       {required ShareFeedbackModel shared});

@@ -1,1 +1,1 @@
-String wsUrlG = "websocket-event://";
+String wsUrlG = "wss://app.pikquick.com";

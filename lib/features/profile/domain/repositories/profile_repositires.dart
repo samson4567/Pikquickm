@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:pikquick/core/error/failure.dart';
 import 'package:pikquick/features/profile/data/model/auto_sub_daily.dart';
@@ -62,5 +64,8 @@ abstract class ProfileRepository {
   Future<Either<Failure, UnsubscribeAutoDeductionEntity>>
       unsubscribeAutoDeduction({
     required UnsubscribeAutoDeductionModel model,
+  });
+  Future<Either<Failure, String>> uploadProfilePicture({
+    required File file,
   });
 }

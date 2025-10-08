@@ -141,6 +141,17 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
   }
 
   @override
+  Future<String> refreshTokenPlain({required String refreshToken}) async {
+    try {
+      final result = await authenticationRemoteDatasource.refreshToken(
+          refreshToken: refreshToken);
+      return result;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
   Future<Either<Failure, List<CustomCategoryTaskEntity>>>
       taskCategories() async {
     try {
@@ -189,11 +200,17 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
 
   @override
   Future<bool> getRemainLoggedinvalue() async {
+    print(
+        "jdasjdbksjdkabjd>>isloggedIn-AuthenticationRepositoryImpl-getRemainLoggedinvalue_started");
     try {
       final result =
           await authenticationLocalDatasource.getRemainLoggedinvalue();
+      print(
+          "jdasjdbksjdkabjd>>isloggedIn-AuthenticationRepositoryImpl-getRemainLoggedinvalue_SUCCESS");
       return result;
     } catch (e) {
+      print(
+          "jdasjdbksjdkabjd>>isloggedIn-AuthenticationRepositoryImpl-getRemainLoggedinvalue_ERROR");
       return false;
     }
   }
@@ -210,7 +227,9 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
   @override
   Future<Either<Failure, String>> logOut() async {
     try {
-      final result = await authenticationRemoteDatasource.logOut();
+      final refreshToken = await getCachedRefreshToken();
+      print("dajsdbadjaajsdbasd>>${refreshToken}");
+      final result = await authenticationRemoteDatasource.logOut(refreshToken!);
       await authenticationLocalDatasource.clearCachedAuthToken();
       await authenticationLocalDatasource.clearCachedRefreshToken();
       await authenticationLocalDatasource.clearCachedUserData();
@@ -235,8 +254,14 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
     try {
       final result =
           await authenticationLocalDatasource.cacheRefreshToken(refreshToken);
+      print(
+          "dlasjkdbhjdbakjsbdaskjdak>>cacheRefreshToken-SUCCESS${await authenticationLocalDatasource.getCachedRefreshToken()}");
+
+      ;
       return result;
-    } catch (e) {}
+    } catch (e) {
+      print("dlasjkdbhjdbakjsbdaskjdak>>cacheRefreshToken-ERROR");
+    }
   }
 
   @override
@@ -290,11 +315,15 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
 
   @override
   Future<String?> getCachedRefreshToken() async {
+    print("dasnakdnjasbdhjasdbakdba");
+    // authenticationLocalDatasource
     try {
       final result =
           await authenticationLocalDatasource.getCachedRefreshToken();
+      print("dasnakdnjasbdhjasdbakdba-result>>${result}");
       return result;
     } catch (e) {
+      print("dasnakdnjasbdhjasdbakdba-e>>${e}");
       print("debug_print-clearCachedRefreshToken-error_is${e}");
     }
   }

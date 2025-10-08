@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:pikquick/core/error/failure.dart';
 import 'package:pikquick/core/mapper/failure_mapper.dart';
@@ -188,6 +190,18 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return Right(result);
     } catch (e) {
       return Left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> uploadProfilePicture(
+      {required File file}) async {
+    try {
+      final result =
+          await profileRemoteDatasource.uploadProfilePicture(file: file);
+      return right(result);
+    } catch (e) {
+      return left(mapExceptionToFailure(e));
     }
   }
 }

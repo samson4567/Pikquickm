@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:pikquick/features/profile/data/model/auto_sub_daily.dart';
 import 'package:pikquick/features/profile/data/model/create_model.dart';
@@ -148,3 +150,16 @@ class UnsubscribeAutoDeductionEvent extends ProfileEvent {
   @override
   List<Object> get props => [model];
 }
+
+class UploadProfilePictureEvent extends ProfileEvent {
+  final File file;
+
+  const UploadProfilePictureEvent({required this.file});
+
+  @override
+  List<Object> get props => [file];
+}
+
+
+
+// UploadProfilePicture

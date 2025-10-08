@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/core/di/injector.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_bloc.dart';
+import 'package:pikquick/features/chat/presentation/chat_bloc.dart';
 import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
 import 'package:pikquick/features/task/presentation/task_bloc.dart';
 import 'package:pikquick/features/transaction/presentation/transaction_bloc.dart';
@@ -64,6 +65,7 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (_) => getItInstance<TaskBloc>()),
         BlocProvider(create: (_) => getItInstance<WalletBloc>()),
         BlocProvider(create: (_) => getItInstance<TransactionBloc>()),
+        BlocProvider(create: (_) => getItInstance<ChatBloc>()),
         BlocProvider(create: (_) => PrmpMapCubit())
       ],
       child: MaterialApp.router(

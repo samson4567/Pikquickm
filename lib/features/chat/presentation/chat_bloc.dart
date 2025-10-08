@@ -26,6 +26,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     _currentUserId = event.userId;
 
     try {
+      Uri.parse(event.url);
+      print("dasjdnjkandkajsndakjnda>>${Uri.parse(event.url)}");
       _channel = WebSocketChannel.connect(Uri.parse(event.url));
 
       _socketSubscription = _channel!.stream.listen(

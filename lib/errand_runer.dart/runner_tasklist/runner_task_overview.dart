@@ -10,6 +10,7 @@ import 'package:pikquick/features/task/domain/entitties/runner_task_entity.dart'
 import 'package:pikquick/features/task/presentation/task_bloc.dart';
 import 'package:pikquick/features/task/presentation/task_event.dart';
 import 'package:pikquick/features/task/presentation/task_state.dart';
+import 'package:pikquick/global_objects.dart';
 import 'package:pikquick/hire_an_errand.dart/dashboard/message_chat.dart';
 import 'package:pikquick/router/router_config.dart';
 
@@ -70,11 +71,52 @@ class _TaskOverviewState extends State<TaskOverview>
       context: context,
       builder: (_) => AlertDialog(
         title: const Text("Client's Phone Number"),
-        content: const Text("Call +234 901 234 5678"),
+        content: Text("Call ${_task!.clientPhone}"),
         actions: [
+          // TextButton(
+          //     onPressed: () {
+          //       Navigator.pop(context);
+
+          //       makePhoneCall(_task!.clientPhone!);
+          //     },
+          //     child: const Text("Close"))
           TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Close"))
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.blue,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+            onPressed: () async {
+              Navigator.pop(context);
+
+              makePhoneCall(_task!.clientPhone!);
+            },
+            child: const Text("Call",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Outfit')),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.red,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+            onPressed: () {
+              // context.pushNamed(MyAppRouteConstant.task);
+              Navigator.pop(context);
+            },
+            child: const Text("Cancel",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Outfit')),
+          ),
         ],
       ),
     );
@@ -692,7 +734,14 @@ class _TaskOverviewState extends State<TaskOverview>
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         GestureDetector(
-          onTap: _showPhoneNumberDialog,
+          onTap: () {
+            if (_task?.clientPhone != null) {
+              _showPhoneNumberDialog();
+            } else {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(generalSnackBar("No Phone number Provided"));
+            }
+          },
           child: Row(
             children: [
               Image.asset('assets/images/call.png', fit: BoxFit.cover),

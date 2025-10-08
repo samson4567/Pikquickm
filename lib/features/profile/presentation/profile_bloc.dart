@@ -20,9 +20,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<GetVerifiedDocumentsEvent>(_onGetVerifiedDocuments);
     on<ToggleSubscribeAutoDeductionEvent>(_onToggleSubscribeAutoDeduction);
     on<UnsubscribeAutoDeductionEvent>(_onUnsubscribeAutoDeduction);
+    on<UploadProfilePictureEvent>(_onUploadProfilePicture);
   }
 
-// GetVerifiedDocuments
+// UploadProfilePicture
   Future<void> _onProfileSetup(
       ProfileSetupEvent event, Emitter<ProfileState> emit) async {
     emit(ProfileLoadingState());
@@ -183,4 +184,21 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (entity) => emit(UnsubscribeAutoDeductionSuccess(entity)),
     );
   }
+
+  Future<void> _onUploadProfilePicture(
+    UploadProfilePictureEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
+    emit(UploadProfilePictureLoadingState());
+    final result =
+        await profileRepository.uploadProfilePicture(file: event.file);
+
+    result.fold(
+      (failure) =>
+          emit(UploadProfilePictureErrorState(errorMessage: failure.message)),
+      (entity) => emit(UploadProfilePictureSuccessState(message: entity)),
+    );
+  }
+
+  // _onUploadProfilePicture
 }

@@ -9,8 +9,8 @@ class UserModel extends UserEntity {
     required super.role,
     required super.status,
     required super.isActive,
-    required super.createdAt,
-    required super.updatedAt,
+    super.createdAt,
+    super.updatedAt,
     required super.imageUrl,
   });
 
@@ -22,9 +22,9 @@ class UserModel extends UserEntity {
       phone: json['phone'] ?? '',
       role: json['role'] ?? '',
       status: json['status'] ?? '',
-      isActive: json['is_active'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      isActive: (json['is_active'] == 1) ? true : false,
+      createdAt: DateTime.tryParse(json['created_at'] ?? ""),
+      updatedAt: DateTime.tryParse(json['updated_at'] ?? ""),
       imageUrl: json['image'],
     );
   }
@@ -38,8 +38,8 @@ class UserModel extends UserEntity {
       'role': role,
       'status': status,
       'is_active': isActive ? 1 : 0,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
     };
   }
 

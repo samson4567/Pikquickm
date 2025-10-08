@@ -47,6 +47,7 @@ class AuthenticationLocalDatasourceImpl
 
   @override
   Future<void> cacheUserData(UserModel userModel) async {
+    print("asknaSNajsnkjnsaS>${userModel.toJson()}");
     await appPreferenceService.saveValue(
         SecureKey.loginUserDataKey, jsonEncode(userModel.toJson()));
   }
@@ -58,10 +59,14 @@ class AuthenticationLocalDatasourceImpl
 
   @override
   Future<UserModel?> getCachedUserData() async {
+    print("dsklndjsandlasndknad-internal-start");
     final userModel =
         appPreferenceService.getValue<String>(SecureKey.loginUserDataKey);
+    print("dsklndjsandlasndknad-userModel_is>>${userModel}");
     if (userModel == null) return null;
-    return UserModel.fromJson(jsonDecode(userModel));
+    UserModel u = UserModel.fromJson(jsonDecode(userModel));
+    print("dsklndjsandlasndknad-uasbjkbjas_is>>$u");
+    return u;
   }
 
   @override
@@ -82,14 +87,14 @@ class AuthenticationLocalDatasourceImpl
 
   @override
   Future<bool> getRemainLoggedinvalue() async {
-    return await appPreferenceService.getValue(
-          SecureKey.refreshTokenKey,
+    return appPreferenceService.getValue<bool>(
+          SecureKey.preloginStatus,
         ) ??
         false;
   }
 
   @override
   Future<void> storeRemainLoggedinvalue(bool rememberMe) async {
-    await appPreferenceService.saveValue(SecureKey.refreshTokenKey, rememberMe);
+    await appPreferenceService.saveValue(SecureKey.preloginStatus, rememberMe);
   }
 }

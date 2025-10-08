@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:pikquick/core/api/pickquick_network_client.dart';
 import 'package:pikquick/core/constants/endpoint_constant.dart';
 import 'package:pikquick/core/db/app_preference_service.dart';
@@ -48,6 +51,9 @@ abstract class ProfileRemoteDatasource {
   Future<UnsubscribeAutoDeductionModel> unsubscribeAutoDeduction({
     required UnsubscribeAutoDeductionModel model,
   });
+  Future<String> uploadProfilePicture({
+    required File file,
+  });
 }
 
 class ProfileRemoteDatasourceImpl implements ProfileRemoteDatasource {
@@ -91,6 +97,28 @@ class ProfileRemoteDatasourceImpl implements ProfileRemoteDatasource {
       isAuthHeaderRequired: true,
     );
     return RunnerPerformanceModel.fromJson(response.data);
+  }
+
+  @override
+  Future<String> uploadProfilePicture({required File file}) async {
+    print("dsajajbkjsbdjabskdbas");
+    final fileBetter = await MultipartFile.fromFile(
+      file!.path,
+      filename: file!.path.split('/').last,
+    );
+    // mapToUpload.remove("file");
+    Map mapToUpload = {};
+    mapToUpload["file"] = file;
+
+    final formData = FormData.fromMap({...mapToUpload});
+    final response = await networkClient.post(
+      endpoint: EndpointConstant.uploadKYCVerificationDocument,
+      isAuthHeaderRequired: true,
+      data: formData,
+    );
+    print('Response data********************: ${response.message}');
+    return response.message;
+    // ShareFeedbackModel.fromJson(response.data);
   }
 
   // @override

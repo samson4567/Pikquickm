@@ -188,7 +188,11 @@ class ErrandAccountPage extends StatelessWidget {
       body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
         if (state is LogOutSuccessState) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
+            SnackBar(
+                content: Text(
+              "Successfully Logged out",
+              // style: TextStyle(color: Colors.white),
+            )),
           );
           context.go(
             MyAppRouteConstant.selction,

@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pikquick/app_variable.dart';
+import 'package:pikquick/features/authentication/data/models/token_model.dart';
 import 'package:pikquick/features/authentication/data/models/usermodel.dart';
 import 'package:pikquick/features/authentication/domain/entities/Refresh_entiy.dart';
 import 'package:pikquick/features/authentication/domain/entities/user_entity.dart';
@@ -71,25 +72,36 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     result.fold(
       (error) => emit(LoginErrorState(errorMessage: error.message)),
       (data) {
+        print("dlasjkdbhjdbakjsbdaskjdak>>acted");
         userModelG = UserModel.createFromLogin(data['user']);
+        authenticationRepository
+            .cacheAuthToken(TokenModel(accessToken: data['access_token']));
+        print(
+            "dlasjkdbhjdbakjsbdaskjdak>>refr_token_to_be_stored>>${data['refresh_token']}");
+        authenticationRepository.cacheRefreshToken(data['refresh_token']).then(
+          (value) {
+            print("dlasjkdbhjdbakjsbdaskjdak>>refre_SUCCESS");
+          },
+        );
 
         emit(LoginSuccessState(
-          accessToken: data['access_token'],
-          // refreshToken: data["refresh_token"],
-          message: "Login Successful",
-          user: UserEntity(
-            id: '',
-            fullName: '',
-            email: '',
-            phone: '',
-            role: userModelG?.role ?? '',
-            status: '',
-            isActive: false,
-            createdAt: DateTime.now(),
-            updatedAt: DateTime.now(),
-            imageUrl: null,
-          ),
-        ));
+            accessToken: data['access_token'],
+            // refreshToken: data["refresh_token"],
+            message: "Login Successful",
+            user: UserModel.fromJson(data["user"])
+            // UserEntity(
+            //   id: '',
+            //   fullName: '',
+            //   email: '',
+            //   phone: '',
+            //   role: userModelG?.role ?? '',
+            //   status: '',
+            //   isActive: false,
+            //   createdAt: DateTime.now(),
+            //   updatedAt: DateTime.now(),
+            //   imageUrl: null,
+            // ),
+            ));
       },
     );
   }

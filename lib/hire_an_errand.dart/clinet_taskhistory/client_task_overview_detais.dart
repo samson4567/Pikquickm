@@ -11,6 +11,7 @@ import 'package:pikquick/features/task/domain/entitties/get_task_overview_entity
 import 'package:pikquick/features/task/presentation/task_bloc.dart';
 import 'package:pikquick/features/task/presentation/task_event.dart';
 import 'package:pikquick/features/task/presentation/task_state.dart';
+import 'package:pikquick/global_objects.dart';
 import 'package:pikquick/hire_an_errand.dart/clinet_taskhistory/client_task_hostoy.dart';
 import 'package:pikquick/hire_an_errand.dart/dashboard/message_chat.dart';
 import 'package:pikquick/router/router_config.dart';
@@ -44,6 +45,7 @@ class _ClientTaskOverviewProgressState
     context.read<TaskBloc>().add(GetTaskOverviewEvent(taskId: widget.taskId));
   }
 
+  String? phone;
   void _showPhoneNumberDialog() {
     showDialog(
       context: context,
@@ -59,8 +61,8 @@ class _ClientTaskOverviewProgressState
                 color: Colors.grey[100],
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Text(
-                "+1 234 567 8901",
+              child: Text(
+                "${phone}",
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -71,34 +73,25 @@ class _ClientTaskOverviewProgressState
             Row(
               children: [
                 Expanded(
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      final Uri phoneUri =
-                          Uri(scheme: 'tel', path: '+12345678901');
-                      if (await canLaunchUrl(phoneUri)) {
-                        await launchUrl(phoneUri);
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Could not launch phone app')),
-                        );
-                      }
-                    },
-                    child: const Text("Call",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Outfit')),
+                    child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                ),
+                  onPressed: () async {
+                    Navigator.pop(context);
+
+                    makePhoneCall(phone!);
+                  },
+                  child: const Text("Call",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Outfit')),
+                )),
                 const SizedBox(width: 20),
                 Expanded(
                   child: TextButton(
@@ -165,6 +158,7 @@ class _ClientTaskOverviewProgressState
     return 0;
   }
 
+  GetTaskOverviewEntity? task;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TaskBloc, TaskState>(
@@ -179,17 +173,21 @@ class _ClientTaskOverviewProgressState
         if (state is GetTaskOverviiewLoadingState) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is GetTaskOverviiewSuccessState) {
-          final GetTaskOverviewEntity task = state.taskOverView;
-          final completedSteps = _getCompletedSteps(task.status);
-          Color themeColor = (task.status?.toLowerCase() == "completed")
+          task = state.taskOverView;
+          context
+              .read<ProfileBloc>()
+              .add(GetrunnerProfileEvent(userID: task!.runnerId!));
+          ;
+          final completedSteps = _getCompletedSteps(task!.status);
+          Color themeColor = (task!.status?.toLowerCase() == "completed")
               ? Colors.green
-              : (task.status?.toLowerCase() == "inprogress")
+              : (task!.status?.toLowerCase() == "inprogress")
                   ? Colors.orange
-                  : (task.status?.toLowerCase() == "pending")
+                  : (task!.status?.toLowerCase() == "pending")
                       ? Colors.blue
-                      : (task.status?.toLowerCase() == "cancel")
+                      : (task!.status?.toLowerCase() == "cancel")
                           ? Colors.red
-                          : (task.status?.toLowerCase() == "bidding")
+                          : (task!.status?.toLowerCase() == "bidding")
                               ? Colors.purple
                               : Colors.grey;
           return Scaffold(
@@ -217,14 +215,14 @@ class _ClientTaskOverviewProgressState
                   const SizedBox(height: 20),
                   Row(
                     children: [
-                      RunnerImageWidget2(task: task),
+                      RunnerImageWidget2(task: task!),
                       // CircleAvatar(
                       //     radius: 30,
                       //     backgroundImage: (userModelG?.imageUrl != null)
                       //         ? NetworkImage(userModelG!.imageUrl!)
                       //         : AssetImage('assets/images/circle.png')),
                       const SizedBox(width: 10),
-                      Text(task.runnerName ?? '',
+                      Text(task!.runnerName ?? '',
                           style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w300,
@@ -249,21 +247,41 @@ class _ClientTaskOverviewProgressState
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      GestureDetector(
-                        onTap: _showPhoneNumberDialog,
-                        child: Row(
-                          children: [
-                            Image.asset('assets/images/call.png'),
-                            const SizedBox(width: 10),
-                            const Text("Call",
-                                style: TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Outfit',
-                                    color: Colors.blue)),
-                          ],
-                        ),
-                      ),
+                      BlocConsumer<ProfileBloc, ProfileState>(
+                          listener: (context, state) {
+                        if (state is GetrunnerProfileErrorState) {
+                          setState(() {});
+                        }
+                        if (state is GetrunnerProfileSuccessState) {
+                          if (task!.runnerId == state.runnerID) {
+                            phone = state.getProfile.userPhone;
+                            setState(() {});
+                          }
+                        }
+                      }, builder: (context, state) {
+                        return GestureDetector(
+                          onTap: () {
+                            if (phone != null)
+                              _showPhoneNumberDialog();
+                            else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  generalSnackBar("No Phone number Provided"));
+                            }
+                          },
+                          child: Row(
+                            children: [
+                              Image.asset('assets/images/call.png'),
+                              const SizedBox(width: 10),
+                              const Text("Call",
+                                  style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Outfit',
+                                      color: Colors.blue)),
+                            ],
+                          ),
+                        );
+                      }),
                       const Text("|",
                           style: TextStyle(
                               fontSize: 17,
@@ -277,7 +295,7 @@ class _ClientTaskOverviewProgressState
                             const SizedBox(width: 10),
                             GestureDetector(
                               onTap: () {
-                                _navigateToMessagePage(task);
+                                _navigateToMessagePage(task!);
                               },
                               child: const Text("Message",
                                   style: TextStyle(
@@ -300,7 +318,7 @@ class _ClientTaskOverviewProgressState
                       child: Padding(
                         padding: const EdgeInsets.all(4.0),
                         child: Text(
-                          task.status ?? "Unknown",
+                          task!.status ?? "Unknown",
                           style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
@@ -322,20 +340,20 @@ class _ClientTaskOverviewProgressState
                   //       fontFamily: 'Outfit'),
                   // ),
                   const SizedBox(height: 10),
-                  Text(task.description ?? '',
+                  Text(task!.description ?? '',
                       style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                           fontFamily: 'Outfit')),
                   const SizedBox(height: 10),
-                  Text("₦${task.budget ?? '0'}",
+                  Text("₦${task!.budget ?? '0'}",
                       style: const TextStyle(
                           color: Colors.blue,
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                           fontFamily: 'Outfit')),
                   const SizedBox(height: 4),
-                  Text("${task.status ?? ''} | ${task.updatedAt ?? ''}",
+                  Text("${task!.status ?? ''} | ${task!.updatedAt ?? ''}",
                       style: const TextStyle(
                           color: Colors.grey,
                           fontSize: 9,
@@ -377,7 +395,7 @@ class _ClientTaskOverviewProgressState
                           fontSize: 10,
                           fontWeight: FontWeight.w400,
                           fontFamily: 'Outfit')),
-                  Text(task.additionalNotes ?? 'N/A',
+                  Text(task!.additionalNotes ?? 'N/A',
                       style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w300,
@@ -388,7 +406,7 @@ class _ClientTaskOverviewProgressState
                           fontSize: 10,
                           fontWeight: FontWeight.w500,
                           fontFamily: 'Outfit')),
-                  Text("#${task.id ?? 'N/A'}",
+                  Text("#${task!.id ?? 'N/A'}",
                       style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w300,
@@ -451,14 +469,14 @@ class _ClientTaskOverviewProgressState
 
                   // Bottom Button
                   FancyContainer(
-                    onTap: () => _handleBottomAction(task),
+                    onTap: () => _handleBottomAction(task!),
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: Colors.blue),
                     height: 50,
                     width: double.infinity,
                     child: Center(
                       child: Text(
-                        _getBottomText(task.status),
+                        _getBottomText(task!.status),
                         style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -515,15 +533,13 @@ class _RunnerImageWidget2State extends State<RunnerImageWidget2> {
         // ScaffoldMessenger.of(context).showSnackBar(
         //   SnackBar(content: Text(state.errorMessage)),
         // );
-        print(
-            "dnanjsadnadknasd>>getrunnerProfileEventHasError${getrunnerProfileEventHasError}");
+
         setState(() {});
       }
       if (state is GetrunnerProfileSuccessState) {
         if (widget.task.runnerId == state.runnerID) {
           getrunnerProfileEventHasError = false;
-          print(
-              "dnasldalskdandlnasjkasdkj-state.getProfile.profilePictureUrl>>${state.getProfile.profilePictureUrl}");
+
           imagePath = state.getProfile.profilePictureUrl;
           setState(() {});
         }

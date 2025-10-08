@@ -8,8 +8,8 @@ class UserEntity {
   String? imageUrl;
 
   final bool isActive;
-  final DateTime createdAt;
-  final DateTime updatedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   UserEntity({
     required this.id,
@@ -19,8 +19,8 @@ class UserEntity {
     required this.role,
     required this.status,
     required this.isActive,
-    required this.createdAt,
-    required this.updatedAt,
+     this.createdAt,
+     this.updatedAt,
     this.imageUrl,
   });
 }

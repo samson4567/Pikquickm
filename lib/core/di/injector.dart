@@ -7,6 +7,10 @@ import 'package:pikquick/features/authentication/data/datasources/authentication
 import 'package:pikquick/features/authentication/data/repositories/authentication_repository_impl.dart';
 import 'package:pikquick/features/authentication/domain/repositories/authentication_repository.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_bloc.dart';
+import 'package:pikquick/features/chat/data/datasource/chat_local_datasources.dart';
+import 'package:pikquick/features/chat/data/datasource/chat_romote_datasources.dart';
+import 'package:pikquick/features/chat/domain/repositories/chat_repository.dart';
+import 'package:pikquick/features/chat/presentation/chat_bloc.dart';
 import 'package:pikquick/features/profile/data/datasource/profile_local_datasources.dart';
 import 'package:pikquick/features/profile/data/datasource/profile_remote_datasource.dart';
 import 'package:pikquick/features/profile/data/repositories/profile_repositories.dart';
@@ -153,5 +157,27 @@ Future<void> init() async {
   );
   getItInstance.registerLazySingleton<WalletBloc>(() => WalletBloc(
         walletRepository: getItInstance<WalletRepository>(),
+      ));
+
+  // Chat
+  // getItInstance.registerLazySingleton<ChatRomoteDatasources>(
+  //     () => ChatRemoteDatasourcesImpl(
+  //           networkClient: getItInstance<PikquickNetworkClient>(),
+  //           appPreferenceService: getItInstance<AppPreferenceService>(),
+  //         ));
+
+  // getItInstance.registerLazySingleton<ChatLocalDatasources>(
+  //     () => ChatLocalDatasourcesIml(
+  //           appPreferenceService: getItInstance<AppPreferenceService>(),
+  //         ));
+  // getItInstance.registerLazySingleton<ChatRepository>(
+  //   () => ChatRepositoryImpl(
+  //     ChatRemoteDatasource: getItInstance<ChatRomoteDatasources>(),
+  //     ChatLocalDatasource: getItInstance<ChatLocalDatasources>(),
+  //   ),
+  // );
+  getItInstance.registerLazySingleton<ChatBloc>(() => ChatBloc(
+
+      //  : getItInstance<ChatRepository>(),
       ));
 }

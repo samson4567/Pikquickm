@@ -40,7 +40,7 @@ abstract class AuthenticationRemoteDatasource {
   Future<String> uploadkycDocument(
       {required KycRequestEntity kycRequestEntity});
   Future<RunnerVerificationDetailsEntity> getRunnerVerificationDetails();
-  Future<String> logOut();
+  Future<String> logOut(String refreshToken);
 
   //logOut
 }
@@ -191,10 +191,10 @@ class AuthenticationRemoteDatasourceImpl
         endpoint: EndpointConstant.refreshToken,
         isAuthHeaderRequired: true,
         data: {
-          'refreshToken': refreshToken,
+          'refresh_token': refreshToken,
         });
 
-    return response.data;
+    return response.data["access_token"];
   }
 
   @override
@@ -276,11 +276,11 @@ class AuthenticationRemoteDatasourceImpl
   }
 
   @override
-  Future<String> logOut() async {
+  Future<String> logOut(String refreshToken) async {
     final response = await networkClient.post(
-      endpoint: EndpointConstant.logout,
-      isAuthHeaderRequired: true,
-    );
+        endpoint: EndpointConstant.logout,
+        isAuthHeaderRequired: true,
+        data: {"refresh_token": refreshToken});
     print('Response data********************: ${response.message}');
     return response.message;
   }

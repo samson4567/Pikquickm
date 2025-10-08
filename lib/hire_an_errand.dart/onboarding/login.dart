@@ -71,16 +71,16 @@ class _LoginPageState extends State<LoginPage> {
               .read<AuthBloc>()
               .authenticationRepository
               .cacheUserData(UserModel.fromEntity(state.user));
-          UserModel;
+
           final taskId = av.taskId?.taskId ?? '';
           if (state.user.role == 'client') {
-            context.go(
-              MyAppRouteConstant.dashboard,
-              extra: {
-                'taskId': '39a9e988-1a3c-414e-9f1c-84c8ada685c3',
-                'bidId': '8fb5eba5-6764-4493-bf5f-046998010bf1'
-              },
-            );
+            // context.go(
+            //   MyAppRouteConstant.dashboard,
+            //   extra: {
+            //     'taskId': '39a9e988-1a3c-414e-9f1c-84c8ada685c3',
+            //     'bidId': '8fb5eba5-6764-4493-bf5f-046998010bf1'
+            //   },
+            // );
             return;
           }
 
@@ -103,12 +103,17 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 100),
 
                   // Welcome Text
-                  const Text(
-                    "Welcome Back",
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                  GestureDetector(
+                    onTap: () {
+                      context.go(MyAppRouteConstant.splashScreen);
+                    },
+                    child: const Text(
+                      "Welcome Back",
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -203,8 +208,13 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       Checkbox(
                         value: rememberMe,
+                        // fillColor: WidgetStatePropertyAll(Colors.blue),
+                        // checkColor: Colors.blue,
+                        activeColor: Colors.blue,
+                        // c
                         onChanged: (value) {
                           rememberMe = value ?? rememberMe;
+                          setState(() {});
                         },
                       ),
                       Spacer(),

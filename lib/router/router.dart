@@ -74,8 +74,8 @@ class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation:
         // MyAppRouteConstant.testSite,
-        // MyAppRouteConstant.splashScreen,
-        MyAppRouteConstant.login,
+        MyAppRouteConstant.splashScreen,
+    // MyAppRouteConstant.login,
     routes: [
       GoRoute(
         name: MyAppRouteConstant.splashScreen,

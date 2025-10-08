@@ -525,9 +525,11 @@ class _DashboardPageState extends State<DashboardPage> {
       children: [
         GestureDetector(
           onTap: () {
-            context.read<TaskBloc>().add(
-                  GetTaskForCurrenusersEvent(mode: "bidding"),
-                );
+            context.go(MyAppRouteConstant.splashScreen);
+
+            // context.read<TaskBloc>().add(
+            //       GetTaskForCurrenusersEvent(mode: "bidding"),
+            //     );
           },
           child: Expanded(
             child: Text(

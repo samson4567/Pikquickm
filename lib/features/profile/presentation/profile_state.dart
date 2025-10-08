@@ -280,3 +280,29 @@ class UnsubscribeAutoDeductionError extends ProfileState {
   @override
   List<Object> get props => [errorMessage];
 }
+
+// UploadProfilePicture
+
+final class UploadProfilePictureInitial extends ProfileState {
+  const UploadProfilePictureInitial();
+}
+
+final class UploadProfilePictureLoadingState extends ProfileState {}
+
+final class UploadProfilePictureSuccessState extends ProfileState {
+  final String message;
+
+  const UploadProfilePictureSuccessState({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+final class UploadProfilePictureErrorState extends ProfileState {
+  final String errorMessage;
+
+  const UploadProfilePictureErrorState({required this.errorMessage});
+
+  @override
+  List<Object> get props => [errorMessage];
+}
