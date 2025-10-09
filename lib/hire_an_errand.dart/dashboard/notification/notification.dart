@@ -19,7 +19,16 @@ class CleintNotificatiion extends StatefulWidget {
   State<CleintNotificatiion> createState() => _CleintNotificatiionState();
 }
 
-class _CleintNotificatiionState extends State<CleintNotificatiion> {
+class _CleintNotificatiionState extends State<CleintNotificatiion>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 4, vsync: this);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<WalletBloc, WalletState>(
@@ -31,29 +40,85 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
         }
       },
       builder: (context, state) {
-        return DefaultTabController(
-          length: 4,
-          child: Scaffold(
-            appBar: AppBar(
-              automaticallyImplyLeading: true, // Enables back arrow
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios),
-                onPressed: () {
-                  context.pop();
-                },
-              ),
-              title: const Text('Notification'),
-              bottom: const TabBar(
-                isScrollable: true,
-                tabs: [
-                  Tab(text: 'All'),
-                  Tab(text: 'Task Update'),
-                  Tab(text: 'Bid & Offers'),
-                  Tab(text: 'Payment'),
-                ],
-              ),
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Back button + title (VERTICAL)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_ios,
+                            color: Colors.black),
+                        onPressed: () {
+                          context.go(MyAppRouteConstant.dashboard);
+                        },
+                      ),
+                      Text(
+                        'Notification',
+                        style: GoogleFonts.outfit(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 24,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Tab Bar
+                Container(
+                  color: Colors.white,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8F8F8),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TabBar(
+                      controller: _tabController,
+                      isScrollable: true,
+                      indicator: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      indicatorPadding: const EdgeInsets.symmetric(
+                          horizontal: 4, vertical: 4),
+                      labelColor: Colors.black,
+                      unselectedLabelColor: Colors.black.withOpacity(0.6),
+                      labelStyle: GoogleFonts.outfit(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                      unselectedLabelStyle: GoogleFonts.outfit(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                      ),
+                      labelPadding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 6),
+                      tabs: const [
+                        Tab(text: 'All'),
+                        Tab(text: 'Tasks Updates'),
+                        Tab(text: 'Bids & Offers'),
+                        Tab(text: 'Payments'),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                // Tab content
+                Expanded(child: _buildBody(context, state)),
+              ],
             ),
-            body: _buildBody(context, state),
           ),
         );
       },
@@ -66,7 +131,6 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
     } else if (state is GetClientNotificationsSucessState) {
       List<ClientNotificationEntity> allNotifications =
           state.clientNotification;
-      allNotifications = [];
 
       final taskUpdateNotifications = allNotifications.where((n) {
         final title = n.title?.trim().toLowerCase() ?? '';
@@ -82,6 +146,7 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
           allNotifications.where((n) => n.type == 'Payment').toList();
 
       return TabBarView(
+        controller: _tabController,
         children: [
           buildNotificationList(allNotifications),
           buildNotificationList(taskUpdateNotifications),
@@ -107,179 +172,93 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(12),
       itemCount: notifications.length,
       itemBuilder: (context, index) {
         final item = notifications[index];
-        final isBid = item.title == "You received a new bid";
         final isTaskRejected =
             item.title?.trim().toLowerCase() == "task rejected";
 
-        return Center(
-          child: SizedBox(
-            width: 342,
-            height: isBid ? 260 : 230,
-            child: Stack(
-              children: [
-                Container(
-                  width: 342,
-                  height: isBid ? 260 : 230,
-                  margin: const EdgeInsets.symmetric(vertical: 6),
-                  padding: EdgeInsets.only(
-                      left: 16, right: 16, top: 40, bottom: isBid ? 70 : 20),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF2FAFF),
-                    borderRadius: BorderRadius.circular(12),
+        return Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFFEFF8FE),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header (icon + title + time)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FancyContainer2(
+                    borderColor: getFigmaColor("FFC57D00"),
+                    borderwidth: 5,
+                    height: 20,
+                    width: 20,
+                    radius: 20,
+                    hasBorder: true,
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 10),
-                      Text(
-                        item.title ?? '',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      item.title ?? '',
+                      style: GoogleFonts.outfit(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black,
                       ),
-                      const SizedBox(height: 4),
-                      const SizedBox(height: 12),
-                      Text(
-                        item.message ?? '',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          height: 1.4,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-                // Positioned(
-                //   top: 10,
-                //   left: 10,
-                //   child: Image.asset(
-                //     'assets/icons/com.png',
-                //     width: 24,
-                //     height: 24,
-                //     fit: BoxFit.cover,
-                //   ),
-                // ),
-                Positioned(
-                    top: 10,
-                    left: 10,
-                    child: FancyContainer2(
-                      borderColor: getFigmaColor("FFC57D00"),
-                      borderwidth: 5,
-                      height: 20,
-                      width: 20,
-                      radius: 20,
-
-                      hasBorder: true,
-                      // child: Text("`data`"),
-                    )),
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: Text(
-                    "just now",
+                  Text(
+                    'Just now',
                     style: GoogleFonts.outfit(
-                        fontWeight: FontWeight.w500, fontSize: 12),
-                    textAlign: TextAlign.center,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black.withOpacity(0.6),
+                    ),
                   ),
-                  // Text("just now")
+                ],
+              ),
+
+              const SizedBox(height: 10),
+
+              // Message
+              Text(
+                item.message ?? '',
+                style: GoogleFonts.outfit(
+                  fontSize: 14,
+                  height: 1.5,
+                  color: Colors.black.withOpacity(0.8),
                 ),
-                if (isBid)
-                  Positioned(
-                    bottom: 12,
-                    left: 0,
-                    right: 0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: const Text(
-                            'Accept Bid',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          child: const Text(
-                            'Reject Bid',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                else
-                  Positioned(
-                    bottom: 15,
-                    left: 15,
-                    child: GestureDetector(
-                      onTap: isTaskRejected
-                          ? null
-                          : () {
-                              final taskId = item.taskId ?? '';
-                              final userId = item.relatedUserId ?? '';
-                              print(
-                                  'Navigating to runner profile with userId: $userId');
-                              context.goNamed(
-                                MyAppRouteConstant.runnerProfileHired,
-                                extra: {'userId': userId, 'taskId': taskId},
-                              );
-                            },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          // color:
-                          //     isTaskRejected ? Colors.grey : Colors.blueAccent,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        constraints: const BoxConstraints(
-                          minWidth: 50,
-                          maxWidth: 200,
-                        ),
-                        child: Text(
-                          item.message ?? '',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            // decoration: isNewTaskAssign
-                            //     ? TextDecoration.lineThrough
-                            //     : TextDecoration.none,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          softWrap: false,
-                        ),
-                      ),
-                    ),
-                  )
-              ],
-            ),
+              ),
+
+              const SizedBox(height: 10),
+
+              // Action link
+              GestureDetector(
+                onTap: isTaskRejected
+                    ? null
+                    : () {
+                        final taskId = item.taskId ?? '';
+                        final userId = item.relatedUserId ?? '';
+                        context.goNamed(
+                          MyAppRouteConstant.runnerProfileHired,
+                          extra: {'userId': userId, 'taskId': taskId},
+                        );
+                      },
+                child: Text(
+                  "View Task",
+                  style: GoogleFonts.outfit(
+                    color: Colors.blue,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },
