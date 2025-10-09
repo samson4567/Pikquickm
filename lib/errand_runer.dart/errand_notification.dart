@@ -13,6 +13,7 @@ import 'package:pikquick/features/wallet/presentation/wallet_state.dart';
 import 'package:pikquick/features/wallet/data/model/client_notification_model.dart';
 import 'package:pikquick/router/router_config.dart';
 
+// import 'package:google_fonts/google_fonts.dart' as gf;
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
 
@@ -38,96 +39,42 @@ class _NotificationScreenState extends State<NotificationScreen> {
             body: SafeArea(
               child: Column(
                 children: [
-                  // Header - Updated to vertical layout
+                  // Header
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    child: Row(
                       children: [
-                        Row(
-                          children: [
-                            IconButton(
-                              icon: const Icon(
-                                Icons.arrow_back_ios_new,
-                                color: Colors.black,
-                                size: 20,
-                              ),
-                              onPressed: () => context.pop(),
-                            ),
-                          ],
+                        IconButton(
+                          icon: const Icon(
+                            Icons.arrow_back_ios_new,
+                            color: Colors.black,
+                          ),
+                          onPressed: () => context.pop(),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(width: 8),
                         const Text(
-                          '  Notification',
+                          'Notification',
                           style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
                     ),
                   ),
 
-                  // Tabs - Updated to container style
-                  Container(
-                    width: 342,
-                    height: 44,
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFAFAFA),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: TabBar(
-                      isScrollable: true,
-                      labelColor: Colors.black,
-                      unselectedLabelColor: Colors.black,
-                      indicator: BoxDecoration(
-                        color: Colors.white, // Selection indicator color
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      indicatorSize: TabBarIndicatorSize.label,
-                      labelPadding: const EdgeInsets.symmetric(horizontal: 16),
-                      tabs: const [
-                        Tab(
-                          child: Text(
-                            'All',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        Tab(
-                          child: Text(
-                            'Task Update',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        Tab(
-                          child: Text(
-                            'Bid & Offers',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        Tab(
-                          child: Text(
-                            'Payment',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  // Tabs
+                  const TabBar(
+                    isScrollable: true,
+                    labelColor: Colors.blue,
+                    unselectedLabelColor: Colors.black54,
+                    tabs: [
+                      Tab(text: 'All'),
+                      Tab(text: 'Task Update'),
+                      Tab(text: 'Bid & Offers'),
+                      Tab(text: 'Payment'),
+                    ],
                   ),
 
                   // Tab content
@@ -211,7 +158,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   height: isBid ? 260 : 230,
                   margin: const EdgeInsets.symmetric(vertical: 6),
                   padding: EdgeInsets.only(
-                      left: 16, right: 16, top: 16, bottom: isBid ? 70 : 20),
+                      left: 16, right: 16, top: 40, bottom: isBid ? 70 : 20),
                   decoration: BoxDecoration(
                     color: const Color(0xFFF2FAFF),
                     borderRadius: BorderRadius.circular(12),
@@ -219,40 +166,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Title, icon and timestamp in the same row - Icon comes first
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          FancyContainer2(
-                            borderColor: getFigmaColor("FFC57D00"),
-                            borderwidth: 5,
-                            height: 20,
-                            width: 20,
-                            radius: 20,
-                            hasBorder: true,
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              item.title ?? '',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            "just now",
-                            style: GoogleFonts.outfit(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
+                      const SizedBox(height: 10),
+                      Text(
+                        item.title ?? '',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -272,6 +192,30 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       ),
                     ],
                   ),
+                ),
+                Positioned(
+                    top: 10,
+                    left: 10,
+                    child: FancyContainer2(
+                      borderColor: getFigmaColor("FFC57D00"),
+                      borderwidth: 5,
+                      height: 20,
+                      width: 20,
+                      radius: 20,
+
+                      hasBorder: true,
+                      // child: Text("`data`"),
+                    )),
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: Text(
+                    "just now",
+                    style: GoogleFonts.outfit(
+                        fontWeight: FontWeight.w500, fontSize: 12),
+                    textAlign: TextAlign.center,
+                  ),
+                  // Text("just now")
                 ),
                 if (isBid)
                   Positioned(
@@ -336,6 +280,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
+                          // color:
+                          //     isNewTaskAssign ? Colors.grey : Colors.blueAccent,
                           borderRadius: BorderRadius.circular(6),
                         ),
                         constraints: const BoxConstraints(

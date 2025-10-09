@@ -203,11 +203,11 @@ class _ClientTaskHistoryState extends State<ClientTaskHistory>
             }
 
             Color themeColor = (task.status?.toLowerCase() == "completed")
-                ? Color(0XFF0B869)
+                ? Colors.green
                 : (task.status?.toLowerCase() == "inprogress")
                     ? Colors.orange
                     : (task.status?.toLowerCase() == "pending")
-                        ? Color(0XFF9747FF)
+                        ? Colors.blue
                         : (task.status?.toLowerCase() == "cancel")
                             ? Colors.red
                             : (task.status?.toLowerCase() == "bidding")

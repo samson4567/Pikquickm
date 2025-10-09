@@ -31,12 +31,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   Color _buttonColor = const Color(0xFF98A2B3);
 
   String? _selectedRole;
+  // ignore: unused_field
   final List<String> _roles = ['client'];
 
   @override
   void initState() {
     super.initState();
-    _selectedRole = 'client';
+    _selectedRole = 'client'; // Preselect
     _fullNameController.addListener(_validateFields);
     _emailController.addListener(_validateFields);
     _phoneController.addListener(_validateFields);
@@ -54,16 +55,6 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     super.dispose();
   }
 
-  bool _isValidEmail(String email) {
-    final regex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    return regex.hasMatch(email);
-  }
-
-  bool _isValidPhone(String phone) {
-    final regex = RegExp(r'^[0-9]{10}$');
-    return regex.hasMatch(phone);
-  }
-
   bool _isValidPassword(String password) {
     final regex =
         RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$');
@@ -73,13 +64,13 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   void _validateFields() {
     final isValid = _fullNameController.text.isNotEmpty &&
         _selectedRole != null &&
-        _isValidEmail(_emailController.text) &&
-        _isValidPhone(_phoneController.text) &&
+        _emailController.text.isNotEmpty &&
+        _phoneController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty &&
         _confirmPasswordController.text.isNotEmpty &&
         _passwordController.text == _confirmPasswordController.text &&
-        _isValidPassword(_passwordController.text) &&
-        _isChecked;
+        _isChecked &&
+        _isValidPassword(_passwordController.text);
 
     setState(() {
       _buttonColor =
@@ -88,61 +79,33 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   }
 
   void _handleCreateAccount() {
-    FocusScope.of(context).unfocus();
+    final isValid = _fullNameController.text.isNotEmpty &&
+        _selectedRole != null &&
+        _emailController.text.isNotEmpty &&
+        _phoneController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty &&
+        _confirmPasswordController.text.isNotEmpty &&
+        _passwordController.text == _confirmPasswordController.text &&
+        _isChecked &&
+        _isValidPassword(_passwordController.text);
 
-    if (_fullNameController.text.isEmpty) {
-      _showError('Full name is required.');
-      return;
+    if (isValid) {
+      final newUserRequest = NewUserRequestModel(
+        fullName: _fullNameController.text.trim(),
+        email: _emailController.text.trim(),
+        phone: _phoneController.text.trim(),
+        password: _passwordController.text.trim(),
+        role: _selectedRole!,
+      );
+
+      context.read<AuthBloc>().add(
+            NewUserSignUpEvent(newUserRequest: newUserRequest),
+          );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please complete all fields correctly.')),
+      );
     }
-
-    if (!_isValidEmail(_emailController.text)) {
-      _showError('Please enter a valid email address.');
-      return;
-    }
-
-    if (!_isValidPhone(_phoneController.text)) {
-      _showError('Enter a valid 10-digit phone number.');
-      return;
-    }
-
-    if (!_isValidPassword(_passwordController.text)) {
-      _showError(
-          'Password must be at least 8 characters with upper, lower, number, and special symbol.');
-      return;
-    }
-
-    if (_passwordController.text != _confirmPasswordController.text) {
-      _showError('Passwords do not match.');
-      return;
-    }
-
-    if (!_isChecked) {
-      _showError('Please agree to the Terms of Service.');
-      return;
-    }
-
-    final fullPhone = '+234${_phoneController.text.trim()}';
-
-    final newUserRequest = NewUserRequestModel(
-      fullName: _fullNameController.text.trim(),
-      email: _emailController.text.trim(),
-      phone: fullPhone,
-      password: _passwordController.text.trim(),
-      role: _selectedRole!,
-    );
-
-    context.read<AuthBloc>().add(
-          NewUserSignUpEvent(newUserRequest: newUserRequest),
-        );
-  }
-
-  void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red.shade600,
-      ),
-    );
   }
 
   @override
@@ -158,15 +121,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
           listener: (context, state) {
             if (state is NewUserSignUpSuccessState) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.green,
-                ),
+                SnackBar(content: Text(state.message)),
               );
               context.go(MyAppRouteConstant.verifyEmail,
                   extra: _emailController.text);
             } else if (state is NewUserSignUpErrorState) {
-              _showError(state.errorMessage);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.errorMessage)),
+              );
             }
           },
           builder: (context, state) {
@@ -177,8 +139,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    onTap: () => context.push(MyAppRouteConstant.selction),
-                    child: Icon(Icons.arrow_back_ios_new, size: 25),
+                    onTap: () => context.pop(),
+                    child: Icon(Icons.arrow_back_ios_new,
+                        size: w * 0.07, color: Colors.black),
                   ),
                   SizedBox(height: h * 0.015),
                   Text(
@@ -199,29 +162,25 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                     ),
                   ),
                   SizedBox(height: h * 0.02),
-                  _buildLabeledField("Full Name", _fullNameController,
-                      "e.g., joe doe rookeeb"),
-                  _buildLabeledField("Email", _emailController,
+                  _buildInputField(
+                      "Full Name", _fullNameController, "e.g., John Doe"),
+                  _buildInputField("Email", _emailController,
                       "e.g., johndoe@email.com", TextInputType.emailAddress),
                   _buildPhoneNumberField(),
                   _buildPasswordField(
                     "Password",
                     _passwordController,
                     _obscurePassword,
-                    () {
-                      setState(() => _obscurePassword = !_obscurePassword);
-                    },
+                    () => setState(() => _obscurePassword = !_obscurePassword),
                     helperText:
-                        "Must contain at least 8 characters, including uppercase, lowercase, number, and special symbol.",
+                        "Must contain at least 8 characters, with uppercase, lowercase, number, and special symbol.",
                   ),
                   _buildPasswordField(
                     "Confirm Password",
                     _confirmPasswordController,
                     _obscureConfirmPassword,
-                    () {
-                      setState(() =>
-                          _obscureConfirmPassword = !_obscureConfirmPassword);
-                    },
+                    () => setState(() =>
+                        _obscureConfirmPassword = !_obscureConfirmPassword),
                     helperText: "Re-enter your password for confirmation.",
                   ),
                   Row(
@@ -290,15 +249,21 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                         style: TextStyle(
                             fontFamily: "Outfit", fontSize: w * 0.035),
                       ),
-                      TextButton(
-                        onPressed: () => context.push(MyAppRouteConstant.login),
-                        child: Text(
-                          'Sign In',
-                          style: TextStyle(
-                            fontFamily: "Outfit",
-                            fontSize: w * 0.035,
-                            color: const Color(0xFF4378CD),
-                            fontWeight: FontWeight.w600,
+                      GestureDetector(
+                        onTap: () {
+                          context.go(MyAppRouteConstant.login);
+                        },
+                        child: TextButton(
+                          onPressed: () =>
+                              context.push(MyAppRouteConstant.login),
+                          child: Text(
+                            'Sign In',
+                            style: TextStyle(
+                              fontFamily: "Outfit",
+                              fontSize: w * 0.035,
+                              color: const Color(0xFF4378CD),
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
@@ -315,129 +280,69 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
     );
   }
 
-  // ===== INPUT FIELDS WITH LABELS ABOVE =====
-
-  Widget _buildLabeledField(
+  Widget _buildInputField(
       String label, TextEditingController controller, String hint,
       [TextInputType? keyboardType]) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("$label ",
-              style: const TextStyle(
-                  fontFamily: "Outfit",
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black)),
-          const SizedBox(height: 5),
-          TextFormFieldWithCustomStyles(
-            controller: controller,
-            hintText: hint,
-            fillColor: Colors.white,
-            labelColor: const Color(0xFF98A2B3),
-            hintColor: const Color(0xFF98A2B3),
-            textColor: const Color(0xFF98A2B3),
-            keyboardType: keyboardType ?? TextInputType.text,
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("$label *",
+            style: const TextStyle(fontFamily: "Outfit", color: Colors.black)),
+        const SizedBox(height: 5),
+        TextFormFieldWithCustomStyles(
+          controller: controller,
+          label: label,
+          hintText: hint,
+          fillColor: Colors.white,
+          labelColor: const Color(0xFF98A2B3),
+          hintColor: const Color(0xFF98A2B3),
+          textColor: const Color(0xFF98A2B3),
+          keyboardType: keyboardType ?? TextInputType.text,
+        ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 
   Widget _buildPhoneNumberField() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Phone Number ",
-            style: TextStyle(
-              fontFamily: "Outfit",
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-            ),
-          ),
-          const SizedBox(height: 5),
-          TextFormField(
-            controller: _phoneController,
-            keyboardType: TextInputType.phone,
-            maxLength: 10,
-            decoration: InputDecoration(
-              hintText: '8012345678',
-              hintStyle: const TextStyle(
-                color: Color(0xFF98A2B3),
-                fontFamily: "Outfit",
-              ),
-              counterText: '',
-              filled: true,
-              fillColor: Colors.white,
-              prefixIcon: Padding(
-                padding: const EdgeInsets.only(
-                    left: 12, right: 4, top: 14, bottom: 14),
-                child: Text(
-                  '+234',
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: "Outfit",
-                  ),
-                ),
-              ),
-              prefixIconConstraints:
-                  const BoxConstraints(minWidth: 0, minHeight: 0),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(
-                  color: Color(0xFF98A2B3),
-                  width: 1.0,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+    return _buildInputField(
+      "Phone Number",
+      _phoneController,
+      "e.g., +2348012345678",
+      TextInputType.phone,
     );
   }
 
   Widget _buildPasswordField(String label, TextEditingController controller,
       bool obscureText, VoidCallback onSuffixTap,
       {String? helperText}) {
-    final suffixIcon =
-        obscureText ? 'assets/icons/eyes.png' : 'assets/icons/open.png';
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("$label ",
-              style: const TextStyle(
-                  fontFamily: "Outfit",
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black)),
-          const SizedBox(height: 5),
-          TextFormFieldWithCustomStyles(
-            controller: controller,
-            hintText: 'Enter your password',
-            fillColor: Colors.white,
-            labelColor: const Color(0xFF98A2B3),
-            textColor: const Color(0xFF98A2B3),
-            obscureText: obscureText,
-            suffixImagePath: suffixIcon,
-            onSuffixTap: onSuffixTap,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("$label *",
+            style: const TextStyle(fontFamily: "Outfit", color: Colors.black)),
+        const SizedBox(height: 5),
+        TextFormFieldWithCustomStyles(
+          controller: controller,
+          label: label,
+          hintText: 'Enter your $label',
+          fillColor: Colors.white,
+          labelColor: const Color(0xFF98A2B3),
+          textColor: const Color(0xFF98A2B3),
+          obscureText: obscureText,
+          suffixImagePath: 'assets/icons/eyes.png',
+          onSuffixTap: onSuffixTap,
+        ),
+        if (helperText != null) ...[
+          const SizedBox(height: 4),
+          Text(
+            helperText,
+            style: const TextStyle(
+                fontSize: 10, color: Color(0xFF98A2B3), fontFamily: "Outfit"),
           ),
-          if (helperText != null) ...[
-            const SizedBox(height: 4),
-            Text(
-              helperText,
-              style: const TextStyle(
-                  fontSize: 10, color: Color(0xFF98A2B3), fontFamily: "Outfit"),
-            ),
-          ],
         ],
-      ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 }

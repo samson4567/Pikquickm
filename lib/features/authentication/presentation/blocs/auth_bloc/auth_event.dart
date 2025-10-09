@@ -44,9 +44,8 @@ final class LoginEvent extends AuthEvent {
 
 final class ResendOtpEvent extends AuthEvent {
   final String email;
-  final String otp;
 
-  const ResendOtpEvent({required this.email, required this.otp});
+  const ResendOtpEvent({required this.email});
 
   @override
   List<Object> get props => [email];

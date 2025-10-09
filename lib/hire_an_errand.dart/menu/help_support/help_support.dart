@@ -71,14 +71,14 @@ class HelpSupportPage extends StatelessWidget {
             // Email (No trailing arrow)
             _buildSupportTile(
               iconPath: 'assets/icons/mail.png',
-              label: 'email@email.com',
+              label: 'Email',
               showArrow: false,
               onTap: () {},
             ),
 
             // Phone Description
             const Padding(
-              padding: EdgeInsets.only(bottom: 5),
+              padding: EdgeInsets.only(top: 10, bottom: 5),
               child: Text(
                 'Reach out to us via phone details',
                 style: TextStyle(
@@ -90,20 +90,9 @@ class HelpSupportPage extends StatelessWidget {
 
             _buildSupportTile(
               iconPath: 'assets/icons/2.png',
-              label: '+234800000000',
+              label: 'Phone Number',
               showArrow: false,
               onTap: () {},
-            ),
-
-            const Padding(
-              padding: EdgeInsets.only(bottom: 5),
-              child: Text(
-                '  call our customer support for immediate',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontFamily: 'Outfit',
-                ),
-              ),
             ),
 
             // Share Feedback
@@ -160,6 +149,3 @@ class HelpSupportPage extends StatelessWidget {
     );
   }
 }
-
-
-//74297681-96fd-431f-8ef9-424339edb573

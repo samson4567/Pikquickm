@@ -72,6 +72,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     result.fold(
       (error) => emit(LoginErrorState(errorMessage: error.message)),
       (data) {
+        
         print("dlasjkdbhjdbakjsbdaskjdak>>acted");
         userModelG = UserModel.createFromLogin(data['user']);
         authenticationRepository

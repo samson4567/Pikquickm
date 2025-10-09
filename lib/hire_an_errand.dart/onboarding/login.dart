@@ -38,8 +38,8 @@ class _LoginPageState extends State<LoginPage> {
     if (kDebugMode) {
       emailController.text =
           //
-          "keder.runner1@gmaiil.com";
-      // 'sam.client1@gmail.com';
+          // "keder.runner1@gmaiil.com";
+          'sam.client1@gmail.com';
       passwordController.text = 'Password@123';
     }
   }
@@ -74,13 +74,13 @@ class _LoginPageState extends State<LoginPage> {
 
           final taskId = av.taskId?.taskId ?? '';
           if (state.user.role == 'client') {
-            // context.go(
-            //   MyAppRouteConstant.dashboard,
-            //   extra: {
-            //     'taskId': '39a9e988-1a3c-414e-9f1c-84c8ada685c3',
-            //     'bidId': '8fb5eba5-6764-4493-bf5f-046998010bf1'
-            //   },
-            // );
+            context.go(
+              MyAppRouteConstant.dashboard,
+              extra: {
+                'taskId': '39a9e988-1a3c-414e-9f1c-84c8ada685c3',
+                'bidId': '8fb5eba5-6764-4493-bf5f-046998010bf1'
+              },
+            );
             return;
           }
 
@@ -135,6 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                   // Email Field
                   TextFormFieldWithCustomStyles(
                     controller: emailController,
+                    label: "Email",
                     hintText: "Enter your email",
                     fillColor: Colors.white,
                     labelColor: const Color(0xFF98A2B3),
@@ -164,6 +165,7 @@ class _LoginPageState extends State<LoginPage> {
                   // Password Field
                   TextFormFieldWithCustomStyles(
                     controller: passwordController,
+                    label: "Password",
                     hintText: "Enter your password",
                     fillColor: Colors.white,
                     labelColor: const Color(0xFF98A2B3),

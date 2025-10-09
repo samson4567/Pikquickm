@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class TextFormFieldWithCustomStyles extends StatelessWidget {
   final TextEditingController controller;
-  final String? label; // ✅ Nullable label
+  final String label;
   final String hintText;
   final bool obscureText;
   final FormFieldValidator<String>? validator;
@@ -22,13 +22,13 @@ class TextFormFieldWithCustomStyles extends StatelessWidget {
   final InputDecoration? inputDecoration;
   final double? width;
   final double? height;
-  final int? maxLines;
+  final int? maxLines; // Moved outside constructor
   final TextStyle? style;
 
   const TextFormFieldWithCustomStyles({
     super.key,
     required this.controller,
-    this.label, // ✅ made nullable
+    required this.label,
     required this.hintText,
     this.obscureText = false,
     this.validator,
@@ -49,7 +49,7 @@ class TextFormFieldWithCustomStyles extends StatelessWidget {
     this.width,
     this.height,
     this.maxLines,
-    this.style,
+    this.style, // Initialized correctly
   });
 
   @override
@@ -60,13 +60,12 @@ class TextFormFieldWithCustomStyles extends StatelessWidget {
       decoration: boxDecoration,
       child: TextFormField(
         controller: controller,
-        maxLines: maxLines ?? 1,
+        maxLines: maxLines ?? 1, // Default to 1 line if null
         obscureText: obscureText,
         keyboardType: keyboardType,
         decoration: inputDecoration ??
             InputDecoration(
-              // ✅ Only show label if it's not null or empty
-              labelText: (label != null && label!.isNotEmpty) ? label : null,
+              labelText: label,
               hintText: hintText,
               labelStyle: TextStyle(color: labelColor),
               hintStyle: hintStyle ?? TextStyle(color: hintColor),
@@ -106,7 +105,7 @@ class TextFormFieldWithCustomStyles extends StatelessWidget {
               ),
             ),
         validator: validator,
-        style: style ?? TextStyle(color: textColor),
+        style: TextStyle(color: textColor),
       ),
     );
   }

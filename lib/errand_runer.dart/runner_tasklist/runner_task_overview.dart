@@ -674,30 +674,6 @@ class _TaskOverviewState extends State<TaskOverview>
             Center(child: _buildReviewInput()),
             const SizedBox(height: 20),
             Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                ),
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Submitted for Approval!")));
-                },
-                child: const Text(
-                  'Submit for Approval',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: 'Outfit',
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 15),
-            Center(
               child: FancyContainer(
                 onTap: () {
                   context.go(
@@ -723,7 +699,30 @@ class _TaskOverviewState extends State<TaskOverview>
                 ),
               ),
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 20),
+            Center(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                ),
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Submitted for Approval!")));
+                },
+                child: const Text(
+                  'Submit for Approval',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Outfit',
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
           ],
         ],
       ),

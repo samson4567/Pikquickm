@@ -10,7 +10,6 @@ class EditPhone extends StatelessWidget {
     final TextEditingController phoneController = TextEditingController();
 
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 90, horizontal: 20),
         child: Column(
