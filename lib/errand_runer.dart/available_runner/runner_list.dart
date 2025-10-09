@@ -338,8 +338,8 @@ class _ErrandRunnerScreenState extends State<ErrandRunnerScreen> {
                                                       ],
                                                     ),
                                                     const SizedBox(height: 4),
-                                                    const Text(
-                                                      "Experienced errand runner with a focus on reliability and speed.",
+                                                    Text(
+                                                      runner.bio ?? '',
                                                       style: TextStyle(
                                                           fontSize: 13,
                                                           color:

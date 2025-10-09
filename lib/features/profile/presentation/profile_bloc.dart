@@ -21,6 +21,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ToggleSubscribeAutoDeductionEvent>(_onToggleSubscribeAutoDeduction);
     on<UnsubscribeAutoDeductionEvent>(_onUnsubscribeAutoDeduction);
     on<UploadProfilePictureEvent>(_onUploadProfilePicture);
+    on<FetchGetReviewEvent>(_onGetReviewEvent);
   }
 
 // UploadProfilePicture
@@ -197,6 +198,20 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (failure) =>
           emit(UploadProfilePictureErrorState(errorMessage: failure.message)),
       (entity) => emit(UploadProfilePictureSuccessState(message: entity)),
+    );
+  }
+
+  Future<void> _onGetReviewEvent(
+    FetchGetReviewEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
+    emit(GetReviewLoadingState());
+
+    final result = await profileRepository.getReview(taskId: event.taskId);
+
+    result.fold(
+      (failure) => emit(GetReviewErrorState(errorMessage: failure.message)),
+      (review) => emit(GetReviewSuccessState(review: review)),
     );
   }
 

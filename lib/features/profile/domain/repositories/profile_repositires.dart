@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:pikquick/core/error/failure.dart';
 import 'package:pikquick/features/profile/data/model/auto_sub_daily.dart';
 import 'package:pikquick/features/profile/data/model/create_model.dart';
+import 'package:pikquick/features/profile/data/model/get_review_model.dart';
 import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
 import 'package:pikquick/features/profile/data/model/invite_sent_model.dart';
 import 'package:pikquick/features/profile/data/model/profile_model.dart';
@@ -11,6 +12,7 @@ import 'package:pikquick/features/profile/data/model/runnerdetails_model.dart';
 import 'package:pikquick/features/profile/data/model/unto_auto_daily.dart';
 import 'package:pikquick/features/profile/domain/entities/auto_deduct_entities.dart';
 import 'package:pikquick/features/profile/domain/entities/create_profile_entity.dart';
+import 'package:pikquick/features/profile/domain/entities/get_reviews%20_entites.dart';
 import 'package:pikquick/features/profile/domain/entities/getrunner_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/invite_sent_entity.dart'
     show InviteSentToRunnerEntity;
@@ -67,5 +69,9 @@ abstract class ProfileRepository {
   });
   Future<Either<Failure, String>> uploadProfilePicture({
     required File file,
+  });
+
+  Future<Either<Failure, GetReviewEntity>> getReview({
+    required GetReviewModel taskId,
   });
 }

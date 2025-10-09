@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pikquick/app_variable.dart' as av;
 import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/component/fancy_container.dart';
@@ -8,6 +9,7 @@ import 'package:pikquick/features/transaction/data/model/client_review.dart';
 import 'package:pikquick/features/transaction/presentation/transaction_bloc.dart';
 import 'package:pikquick/features/transaction/presentation/transaction_event.dart';
 import 'package:pikquick/features/transaction/presentation/transaction_state.dart';
+import 'package:pikquick/router/router_config.dart';
 
 class Reviews extends StatefulWidget {
   final GetTaskOverviewEntity review;
@@ -87,7 +89,7 @@ class _ReviewsState extends State<Reviews> {
                 const SizedBox(height: 20),
                 FancyContainer(
                   color: const Color(0XFF98A2B3),
-                  onTap: () => Navigator.pop(context),
+                  onTap: () => context.go(MyAppRouteConstant.dashboard),
                   borderRadius: BorderRadius.circular(10),
                   height: 50,
                   width: double.infinity,
@@ -182,7 +184,7 @@ class _ReviewsState extends State<Reviews> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.arrow_back_ios_new, size: 22),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => context.go(MyAppRouteConstant.dashboard),
                     ),
                     const SizedBox(height: 20),
                     const Text(

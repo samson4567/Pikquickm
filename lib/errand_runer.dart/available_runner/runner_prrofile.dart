@@ -191,8 +191,7 @@ class _RunnerProfileState extends State<RunnerProfile> {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      "Experienced errand runner with a focus on \nreliability and speed.",
-                      // runnerData?.bio ?? '',
+                      runnerData?.bio ?? '',
                       style: const TextStyle(
                           fontSize: 14,
                           color: Color(0XFF434953),
@@ -204,14 +203,16 @@ class _RunnerProfileState extends State<RunnerProfile> {
                       children: [
                         const Icon(Icons.star, color: Colors.orange, size: 18),
                         Text(
-                          " ${runnerData?.averageRating?.toStringAsFixed(1) ?? '0.0'} ",
+                          runnerData?.averageRating != null
+                              ? runnerData!.averageRating!.toStringAsFixed(1)
+                              : 'N/A',
                           style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0XFF98A2B3)),
+                              fontSize: 12,
+                              color: Color(0XFF98A2B3),
+                              fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          "| ${runnerData?.totalTasksCompleted ?? 0} errands completed",
+                          "| ${runnerData?.totalTasksCompleted ?? ''} errands completed",
                           style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
@@ -439,13 +440,6 @@ class _RunnerProfileState extends State<RunnerProfile> {
                 )
                 .toList(),
           )
-          // ...List.generate(staticListOfDocuments.length, )
-
-          // _VerificationItem("Government ID"),
-          // _VerificationItem("Vehicle Registration"),
-          // _VerificationItem("International Passport"),
-
-          // _VerificationItem("Background Check"),
         ],
       ),
     );

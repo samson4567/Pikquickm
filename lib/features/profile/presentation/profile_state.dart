@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:pikquick/features/profile/domain/entities/auto_deduct_entities.dart';
 import 'package:pikquick/features/profile/domain/entities/create_profile_entity.dart';
+import 'package:pikquick/features/profile/domain/entities/get_reviews%20_entites.dart';
 import 'package:pikquick/features/profile/domain/entities/getrunner_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/invite_sent_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/profile_entity.dart';
@@ -302,6 +303,29 @@ final class UploadProfilePictureErrorState extends ProfileState {
   final String errorMessage;
 
   const UploadProfilePictureErrorState({required this.errorMessage});
+
+  @override
+  List<Object> get props => [errorMessage];
+}
+//get reviews
+
+class GetReviewInitial extends ProfileState {}
+
+class GetReviewLoadingState extends ProfileState {}
+
+class GetReviewSuccessState extends ProfileState {
+  final GetReviewEntity review;
+
+  const GetReviewSuccessState({required this.review});
+
+  @override
+  List<Object> get props => [review];
+}
+
+class GetReviewErrorState extends ProfileState {
+  final String errorMessage;
+
+  const GetReviewErrorState({required this.errorMessage});
 
   @override
   List<Object> get props => [errorMessage];

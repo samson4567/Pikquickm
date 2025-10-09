@@ -7,12 +7,14 @@ import 'package:pikquick/features/profile/data/datasource/profile_local_datasour
 import 'package:pikquick/features/profile/data/datasource/profile_remote_datasource.dart';
 import 'package:pikquick/features/profile/data/model/auto_sub_daily.dart';
 import 'package:pikquick/features/profile/data/model/create_model.dart';
+import 'package:pikquick/features/profile/data/model/get_review_model.dart';
 import 'package:pikquick/features/profile/data/model/invite_sent_model.dart';
 import 'package:pikquick/features/profile/data/model/profile_model.dart';
 import 'package:pikquick/features/profile/data/model/runnerdetails_model.dart';
 import 'package:pikquick/features/profile/data/model/unto_auto_daily.dart';
 import 'package:pikquick/features/profile/domain/entities/auto_deduct_entities.dart';
 import 'package:pikquick/features/profile/domain/entities/create_profile_entity.dart';
+import 'package:pikquick/features/profile/domain/entities/get_reviews%20_entites.dart';
 import 'package:pikquick/features/profile/domain/entities/getrunner_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/invite_sent_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/profile_entity.dart';
@@ -202,6 +204,17 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return right(result);
     } catch (e) {
       return left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, GetReviewEntity>> getReview(
+      {required GetReviewModel taskId}) async {
+    try {
+      final result = await profileRemoteDatasource.getReview(taskId: taskId);
+      return Right(result);
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
     }
   }
 }

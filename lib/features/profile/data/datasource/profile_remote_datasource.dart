@@ -6,6 +6,7 @@ import 'package:pikquick/core/constants/endpoint_constant.dart';
 import 'package:pikquick/core/db/app_preference_service.dart';
 import 'package:pikquick/features/profile/data/model/auto_sub_daily.dart';
 import 'package:pikquick/features/profile/data/model/create_model.dart';
+import 'package:pikquick/features/profile/data/model/get_review_model.dart';
 import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
 import 'package:pikquick/features/profile/data/model/invite_sent_model.dart'
     show InviteSentToRunnerModel;
@@ -53,6 +54,9 @@ abstract class ProfileRemoteDatasource {
   });
   Future<String> uploadProfilePicture({
     required File file,
+  });
+  Future<GetReviewModel> getReview({
+    required GetReviewModel taskId,
   });
 }
 
@@ -259,5 +263,14 @@ class ProfileRemoteDatasourceImpl implements ProfileRemoteDatasource {
       data: model.toJson(),
     );
     return UnsubscribeAutoDeductionModel.fromJson(response.data);
+  }
+
+  @override
+  Future<GetReviewModel> getReview({required GetReviewModel taskId}) async {
+    final response = await networkClient.get(
+      endpoint: '${EndpointConstant.getReview}$taskId',
+      isAuthHeaderRequired: true,
+    );
+    return GetReviewModel.fromJson(response.data);
   }
 }

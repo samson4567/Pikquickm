@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:equatable/equatable.dart';
 import 'package:pikquick/features/profile/data/model/auto_sub_daily.dart';
 import 'package:pikquick/features/profile/data/model/create_model.dart';
+import 'package:pikquick/features/profile/data/model/get_review_model.dart';
 import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
 import 'package:pikquick/features/profile/data/model/invite_sent_model.dart';
 import 'package:pikquick/features/profile/data/model/profile_model.dart';
@@ -160,6 +161,15 @@ class UploadProfilePictureEvent extends ProfileEvent {
   List<Object> get props => [file];
 }
 
+//get reviews
+class FetchGetReviewEvent extends ProfileEvent {
+  final GetReviewModel taskId;
+
+  const FetchGetReviewEvent({required this.taskId});
+
+  @override
+  List<Object> get props => [taskId];
+}
 
 
 // UploadProfilePicture
