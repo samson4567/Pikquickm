@@ -244,8 +244,7 @@ class _AvailableTaskState extends State<AvailableTask>
                                       ),
                                     ),
                                     Text(
-                                      userAddress?.pickupAddressLine1 ??
-                                          'Lekki Phase 1',
+                                      task.pickupAddressLine1 ?? '',
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,
@@ -265,8 +264,7 @@ class _AvailableTaskState extends State<AvailableTask>
                                       ),
                                     ),
                                     Text(
-                                      userAddress?.dropoffAddressLine1 ??
-                                          'Ikeja',
+                                      task.dropoffAddressLine1 ?? '',
                                       style: const TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w600,

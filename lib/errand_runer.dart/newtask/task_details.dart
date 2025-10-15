@@ -327,18 +327,18 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 8),
-                  Text('Pickup: ${'' 'Lekki Phase 1'}',
+                  Text(task.pickupAddressLine1 ?? '',
                       style:
-                          const TextStyle(fontSize: 14, color: Colors.black87)),
+                          const TextStyle(fontSize: 14, color: Colors.black)),
                   const SizedBox(height: 6),
-                  Text('Drop-off: ${'' ?? 'Ikeja'}',
+                  Text(task.dropoffAddressLine1 ?? '',
                       style:
-                          const TextStyle(fontSize: 14, color: Colors.black87)),
+                          const TextStyle(fontSize: 14, color: Colors.black)),
 
                   const SizedBox(height: 24),
 
                   // Description
-                  const Text('Description',
+                  Text(task.description ?? '',
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 8),
