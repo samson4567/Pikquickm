@@ -5,6 +5,7 @@ import 'package:pikquick/core/api/pickquick_network_client.dart';
 import 'package:pikquick/core/constants/endpoint_constant.dart';
 import 'package:pikquick/core/db/app_preference_service.dart';
 import 'package:pikquick/features/profile/data/model/auto_sub_daily.dart';
+import 'package:pikquick/features/profile/data/model/client_profile_model.dart';
 import 'package:pikquick/features/profile/data/model/create_model.dart';
 import 'package:pikquick/features/profile/data/model/get_review_model.dart';
 import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
@@ -57,6 +58,9 @@ abstract class ProfileRemoteDatasource {
   });
   Future<GetReviewModel> getReview({
     required GetReviewModel taskId,
+  });
+  Future<ClientEditProfileModel> clientprofileEdit({
+    required ClientEditProfileModel clientModel,
   });
 }
 
@@ -273,4 +277,18 @@ class ProfileRemoteDatasourceImpl implements ProfileRemoteDatasource {
     );
     return GetReviewModel.fromJson(response.data);
   }
+
+  @override
+  Future<ClientEditProfileModel> clientprofileEdit(
+      {required ClientEditProfileModel clientModel}) async {
+    final response = await networkClient.put(
+      endpoint: EndpointConstant.clientEditProfile,
+      isAuthHeaderRequired: true,
+      data: clientModel.toJson(),
+    );
+    return ClientEditProfileModel.fromJson(response.data);
+  }
 }
+
+
+//profileEdit

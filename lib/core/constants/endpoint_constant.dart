@@ -50,6 +50,7 @@ class EndpointConstant {
   static const String unsubscribetoggle = '/runner-subscription/toggle';
   static const String walletSummary = '/runner/earnings/summary';
   static const String getReview = '/reviews/runners/task';
+  static const String clientEditProfile = '/user/profile';
 
   // static const String fetchCompletedTrade = '/trade/history';
   // static const String convert = '/wallet/convert';

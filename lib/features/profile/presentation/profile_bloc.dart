@@ -22,6 +22,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<UnsubscribeAutoDeductionEvent>(_onUnsubscribeAutoDeduction);
     on<UploadProfilePictureEvent>(_onUploadProfilePicture);
     on<FetchGetReviewEvent>(_onGetReviewEvent);
+    on<SubmitClientProfileEvent>(_onSubmitProfile);
   }
 
 // UploadProfilePicture
@@ -215,5 +216,19 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     );
   }
 
-  // _onUploadProfilePicture
+  Future<void> _onSubmitProfile(
+    SubmitClientProfileEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
+    emit(ClientEditProfileLoading());
+
+    final result =
+        await profileRepository.EditProfileClient(clientId: event.profile);
+
+    result.fold(
+      (failure) =>
+          emit(ClientEditProfileErrorState(errorMessage: failure.message)),
+      (message) => emit(ClientEditProfileSuccess(message: message)),
+    );
+  }
 }

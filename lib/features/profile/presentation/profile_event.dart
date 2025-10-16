@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 import 'package:pikquick/features/profile/data/model/auto_sub_daily.dart';
+import 'package:pikquick/features/profile/data/model/client_profile_model.dart';
 import 'package:pikquick/features/profile/data/model/create_model.dart';
 import 'package:pikquick/features/profile/data/model/get_review_model.dart';
 import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
@@ -169,6 +170,15 @@ class FetchGetReviewEvent extends ProfileEvent {
 
   @override
   List<Object> get props => [taskId];
+}
+
+class SubmitClientProfileEvent extends ProfileEvent {
+  final ClientEditProfileModel profile;
+
+  const SubmitClientProfileEvent(this.profile);
+
+  @override
+  List<Object> get props => [profile];
 }
 
 
