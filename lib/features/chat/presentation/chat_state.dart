@@ -1,6 +1,7 @@
 // chat_state.dart
 import 'package:equatable/equatable.dart';
 import 'package:pikquick/features/chat/data/model/message_model.dart';
+import 'package:pikquick/features/chat/domain/entities/chat_support_entities.dart';
 
 abstract class ChatState extends Equatable {
   const ChatState();
@@ -36,3 +37,5 @@ class ChatLoaded extends ChatState {
   @override
   List<Object> get props => [messages, isConnected];
 }
+
+//chatSupport
