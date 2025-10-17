@@ -5,7 +5,9 @@ import 'package:pikquick/core/api/pickquick_network_client.dart';
 import 'package:pikquick/core/constants/endpoint_constant.dart';
 import 'package:pikquick/core/db/app_preference_service.dart';
 import 'package:pikquick/features/profile/data/model/auto_sub_daily.dart';
+import 'package:pikquick/features/profile/data/model/client_email.dart';
 import 'package:pikquick/features/profile/data/model/client_profile_model.dart';
+import 'package:pikquick/features/profile/data/model/client_profile_name.dart';
 import 'package:pikquick/features/profile/data/model/create_model.dart';
 import 'package:pikquick/features/profile/data/model/get_review_model.dart';
 import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
@@ -61,6 +63,12 @@ abstract class ProfileRemoteDatasource {
   });
   Future<ClientEditProfileModel> clientprofileEdit({
     required ClientEditProfileModel clientModel,
+  });
+  Future<ClientEditProfilenameModel> clientprofilenameEdit({
+    required ClientEditProfilenameModel clientModel,
+  });
+  Future<ClientEditProfileEmailModel> clientprofilenameEditemail({
+    required ClientEditProfileEmailModel clientModel,
   });
 }
 
@@ -270,15 +278,6 @@ class ProfileRemoteDatasourceImpl implements ProfileRemoteDatasource {
   }
 
   @override
-  Future<GetReviewModel> getReview({required GetReviewModel taskId}) async {
-    final response = await networkClient.get(
-      endpoint: '${EndpointConstant.getReview}$taskId',
-      isAuthHeaderRequired: true,
-    );
-    return GetReviewModel.fromJson(response.data);
-  }
-
-  @override
   Future<ClientEditProfileModel> clientprofileEdit(
       {required ClientEditProfileModel clientModel}) async {
     final response = await networkClient.put(
@@ -288,7 +287,37 @@ class ProfileRemoteDatasourceImpl implements ProfileRemoteDatasource {
     );
     return ClientEditProfileModel.fromJson(response.data);
   }
-}
 
+  @override
+  Future<ClientEditProfilenameModel> clientprofilenameEdit(
+      {required ClientEditProfilenameModel clientModel}) async {
+    final response = await networkClient.put(
+      endpoint: EndpointConstant.clientEditProfile,
+      isAuthHeaderRequired: true,
+      data: clientModel.toJson(),
+    );
+    return ClientEditProfilenameModel.fromJson(response.data);
+  }
+
+  @override
+  Future<ClientEditProfileEmailModel> clientprofilenameEditemail(
+      {required ClientEditProfileEmailModel clientModel}) async {
+    final response = await networkClient.put(
+      endpoint: EndpointConstant.clientEditProfile,
+      isAuthHeaderRequired: true,
+      data: clientModel.toJson(),
+    );
+    return ClientEditProfileEmailModel.fromJson(response.data);
+  }
+
+  @override
+  Future<GetReviewModel> getReview({required GetReviewModel taskId}) async {
+    final response = await networkClient.get(
+      endpoint: '${EndpointConstant.getReview}$taskId',
+      isAuthHeaderRequired: true,
+    );
+    return GetReviewModel.fromJson(response.data);
+  }
+}
 
 //profileEdit

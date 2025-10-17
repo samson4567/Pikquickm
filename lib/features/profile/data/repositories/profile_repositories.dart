@@ -6,7 +6,9 @@ import 'package:pikquick/core/mapper/failure_mapper.dart';
 import 'package:pikquick/features/profile/data/datasource/profile_local_datasources.dart';
 import 'package:pikquick/features/profile/data/datasource/profile_remote_datasource.dart';
 import 'package:pikquick/features/profile/data/model/auto_sub_daily.dart';
+import 'package:pikquick/features/profile/data/model/client_email.dart';
 import 'package:pikquick/features/profile/data/model/client_profile_model.dart';
+import 'package:pikquick/features/profile/data/model/client_profile_name.dart';
 import 'package:pikquick/features/profile/data/model/create_model.dart';
 import 'package:pikquick/features/profile/data/model/get_review_model.dart';
 import 'package:pikquick/features/profile/data/model/invite_sent_model.dart';
@@ -14,7 +16,9 @@ import 'package:pikquick/features/profile/data/model/profile_model.dart';
 import 'package:pikquick/features/profile/data/model/runnerdetails_model.dart';
 import 'package:pikquick/features/profile/data/model/unto_auto_daily.dart';
 import 'package:pikquick/features/profile/domain/entities/auto_deduct_entities.dart';
+import 'package:pikquick/features/profile/domain/entities/client_email_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/client_profile_entity.dart';
+import 'package:pikquick/features/profile/domain/entities/client_profile_name_enity.dart';
 import 'package:pikquick/features/profile/domain/entities/create_profile_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/get_reviews%20_entites.dart';
 import 'package:pikquick/features/profile/domain/entities/getrunner_entity.dart';
@@ -198,6 +202,42 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
+  Future<Either<Failure, ClientEditProfileEntity>> EditProfileClient(
+      {required ClientEditProfileModel clientId}) async {
+    try {
+      final result = await profileRemoteDatasource.clientprofileEdit(
+          clientModel: clientId);
+      return Right(result);
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ClientEditnameProfileEntity>> EditProfileClientname(
+      {required ClientEditProfilenameModel clientId}) async {
+    try {
+      final result = await profileRemoteDatasource.clientprofilenameEdit(
+          clientModel: clientId);
+      return Right(result);
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ClientEditEmailProfileEntity>> EditProfileClientemail(
+      {required ClientEditProfileEmailModel clientId}) async {
+    try {
+      final result = await profileRemoteDatasource.clientprofilenameEditemail(
+          clientModel: clientId);
+      return Right(result);
+    } catch (e) {
+      return Left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
   Future<Either<Failure, String>> uploadProfilePicture(
       {required File file}) async {
     try {
@@ -214,18 +254,6 @@ class ProfileRepositoryImpl implements ProfileRepository {
       {required GetReviewModel taskId}) async {
     try {
       final result = await profileRemoteDatasource.getReview(taskId: taskId);
-      return Right(result);
-    } catch (e) {
-      return Left(mapExceptionToFailure(e));
-    }
-  }
-
-  @override
-  Future<Either<Failure, ClientEditProfileEntity>> EditProfileClient(
-      {required ClientEditProfileModel clientId}) async {
-    try {
-      final result = await profileRemoteDatasource.clientprofileEdit(
-          clientModel: clientId);
       return Right(result);
     } catch (e) {
       return Left(mapExceptionToFailure(e));

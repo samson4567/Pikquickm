@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:pikquick/core/error/failure.dart';
 import 'package:pikquick/features/profile/data/model/auto_sub_daily.dart';
+import 'package:pikquick/features/profile/data/model/client_email.dart';
 import 'package:pikquick/features/profile/data/model/client_profile_model.dart';
+import 'package:pikquick/features/profile/data/model/client_profile_name.dart';
 import 'package:pikquick/features/profile/data/model/create_model.dart';
 import 'package:pikquick/features/profile/data/model/get_review_model.dart';
 import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
@@ -12,7 +14,9 @@ import 'package:pikquick/features/profile/data/model/profile_model.dart';
 import 'package:pikquick/features/profile/data/model/runnerdetails_model.dart';
 import 'package:pikquick/features/profile/data/model/unto_auto_daily.dart';
 import 'package:pikquick/features/profile/domain/entities/auto_deduct_entities.dart';
+import 'package:pikquick/features/profile/domain/entities/client_email_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/client_profile_entity.dart';
+import 'package:pikquick/features/profile/domain/entities/client_profile_name_enity.dart';
 import 'package:pikquick/features/profile/domain/entities/create_profile_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/get_reviews%20_entites.dart';
 import 'package:pikquick/features/profile/domain/entities/getrunner_entity.dart';
@@ -69,14 +73,20 @@ abstract class ProfileRepository {
       unsubscribeAutoDeduction({
     required UnsubscribeAutoDeductionModel model,
   });
+  Future<Either<Failure, ClientEditProfileEntity>> EditProfileClient({
+    required ClientEditProfileModel clientId,
+  });
+  Future<Either<Failure, ClientEditnameProfileEntity>> EditProfileClientname({
+    required ClientEditProfilenameModel clientId,
+  });
+  Future<Either<Failure, ClientEditEmailProfileEntity>> EditProfileClientemail({
+    required ClientEditProfileEmailModel clientId,
+  });
   Future<Either<Failure, String>> uploadProfilePicture({
     required File file,
   });
 
   Future<Either<Failure, GetReviewEntity>> getReview({
     required GetReviewModel taskId,
-  });
-  Future<Either<Failure, ClientEditProfileEntity>> EditProfileClient({
-    required ClientEditProfileModel clientId,
   });
 }

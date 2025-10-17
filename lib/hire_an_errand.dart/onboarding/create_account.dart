@@ -139,7 +139,8 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    onTap: () => context.pop(),
+                    onTap: () =>
+                        context.go(MyAppRouteConstant.accountSelection),
                     child: Icon(Icons.arrow_back_ios_new,
                         size: w * 0.07, color: Colors.black),
                   ),

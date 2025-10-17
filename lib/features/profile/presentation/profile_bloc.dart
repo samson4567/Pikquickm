@@ -23,6 +23,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<UploadProfilePictureEvent>(_onUploadProfilePicture);
     on<FetchGetReviewEvent>(_onGetReviewEvent);
     on<SubmitClientProfileEvent>(_onSubmitProfile);
+    on<SubmitClientProfilenameEvent>(_onSubmitProfilename);
+    on<SubmitClientProfileemailEvent>(_onSubmitProfileemail);
   }
 
 // UploadProfilePicture
@@ -187,6 +189,54 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     );
   }
 
+  Future<void> _onSubmitProfile(
+    SubmitClientProfileEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
+    emit(ClientEditProfileLoading());
+
+    final result =
+        await profileRepository.EditProfileClient(clientId: event.clientId);
+
+    result.fold(
+      (failure) =>
+          emit(ClientEditProfileErrorState(errorMessage: failure.message)),
+      (message) => emit(ClientEditProfileSuccess(message: message)),
+    );
+  }
+
+  Future<void> _onSubmitProfilename(
+    SubmitClientProfilenameEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
+    emit(ClientEditProfileLoadingname());
+
+    final result =
+        await profileRepository.EditProfileClientname(clientId: event.clientId);
+
+    result.fold(
+      (failure) =>
+          emit(ClientEditProfileErrorStatename(errorMessage: failure.message)),
+      (message) => emit(ClientEditProfileSuccessname(message: message)),
+    );
+  }
+
+  Future<void> _onSubmitProfileemail(
+    SubmitClientProfileemailEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
+    emit(ClientEditProfileLoadingemail());
+
+    final result = await profileRepository.EditProfileClientemail(
+        clientId: event.clientId);
+
+    result.fold(
+      (failure) =>
+          emit(ClientEditProfileErrorStateemail(errorMessage: failure.message)),
+      (message) => emit(ClientEditProfileSuccessemail(message: message)),
+    );
+  }
+
   Future<void> _onUploadProfilePicture(
     UploadProfilePictureEvent event,
     Emitter<ProfileState> emit,
@@ -213,22 +263,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     result.fold(
       (failure) => emit(GetReviewErrorState(errorMessage: failure.message)),
       (review) => emit(GetReviewSuccessState(review: review)),
-    );
-  }
-
-  Future<void> _onSubmitProfile(
-    SubmitClientProfileEvent event,
-    Emitter<ProfileState> emit,
-  ) async {
-    emit(ClientEditProfileLoading());
-
-    final result =
-        await profileRepository.EditProfileClient(clientId: event.profile);
-
-    result.fold(
-      (failure) =>
-          emit(ClientEditProfileErrorState(errorMessage: failure.message)),
-      (message) => emit(ClientEditProfileSuccess(message: message)),
     );
   }
 }

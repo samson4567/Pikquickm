@@ -321,10 +321,10 @@ class _AccountInfoState extends State<AccountInfo> {
                 title: 'Name',
                 value: app_var.userModelG?.fullName ?? 'Not set',
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const EditNamePage()),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (_) => const EditNamePage()),
+                  // );
                 },
               ),
 
@@ -334,10 +334,10 @@ class _AccountInfoState extends State<AccountInfo> {
                 title: 'Phone Number',
                 value: app_var.userModelG?.phone ?? 'Not set',
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const EditPhone()),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (_) => const EditPhone()),
+                  // );
                 },
               ),
 
@@ -347,10 +347,10 @@ class _AccountInfoState extends State<AccountInfo> {
                 title: 'Email',
                 value: app_var.userModelG?.email ?? 'Not set',
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const Editmail()),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (_) => const EditMailPage()),
+                  // );
                 },
               ),
             ],
