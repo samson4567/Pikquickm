@@ -1,6 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:pikquick/features/profile/domain/entities/auto_deduct_entities.dart';
+import 'package:pikquick/features/profile/domain/entities/client_email_entity.dart';
+import 'package:pikquick/features/profile/domain/entities/client_profile_entity.dart';
+import 'package:pikquick/features/profile/domain/entities/client_profile_name_enity.dart';
 import 'package:pikquick/features/profile/domain/entities/create_profile_entity.dart';
+import 'package:pikquick/features/profile/domain/entities/get_reviews%20_entites.dart';
 import 'package:pikquick/features/profile/domain/entities/getrunner_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/invite_sent_entity.dart';
 import 'package:pikquick/features/profile/domain/entities/profile_entity.dart';
@@ -281,6 +285,75 @@ class UnsubscribeAutoDeductionError extends ProfileState {
   List<Object> get props => [errorMessage];
 }
 
+//clientProfileEdit
+class ClientEditProfileInitial extends ProfileState {}
+
+class ClientEditProfileLoading extends ProfileState {}
+
+class ClientEditProfileSuccess extends ProfileState {
+  final ClientEditProfileEntity message;
+
+  const ClientEditProfileSuccess({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+class ClientEditProfileErrorState extends ProfileState {
+  final String errorMessage;
+
+  const ClientEditProfileErrorState({required this.errorMessage});
+
+  @override
+  List<Object> get props => [errorMessage];
+}
+
+//clientProfname
+class ClientEditProfileInitialname extends ProfileState {}
+
+class ClientEditProfileLoadingname extends ProfileState {}
+
+class ClientEditProfileSuccessname extends ProfileState {
+  final ClientEditnameProfileEntity message;
+
+  const ClientEditProfileSuccessname({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+class ClientEditProfileErrorStatename extends ProfileState {
+  final String errorMessage;
+
+  const ClientEditProfileErrorStatename({required this.errorMessage});
+
+  @override
+  List<Object> get props => [errorMessage];
+}
+
+//clientProfemai
+class ClientEditProfileInitialemail extends ProfileState {}
+
+class ClientEditProfileLoadingemail extends ProfileState {}
+
+class ClientEditProfileSuccessemail extends ProfileState {
+  final ClientEditEmailProfileEntity message;
+
+  const ClientEditProfileSuccessemail({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+class ClientEditProfileErrorStateemail extends ProfileState {
+  final String errorMessage;
+
+  const ClientEditProfileErrorStateemail({required this.errorMessage});
+
+  @override
+  List<Object> get props => [errorMessage];
+}
+
 // UploadProfilePicture
 
 final class UploadProfilePictureInitial extends ProfileState {
@@ -302,6 +375,29 @@ final class UploadProfilePictureErrorState extends ProfileState {
   final String errorMessage;
 
   const UploadProfilePictureErrorState({required this.errorMessage});
+
+  @override
+  List<Object> get props => [errorMessage];
+}
+//get reviews
+
+class GetReviewInitial extends ProfileState {}
+
+class GetReviewLoadingState extends ProfileState {}
+
+class GetReviewSuccessState extends ProfileState {
+  final GetReviewEntity review;
+
+  const GetReviewSuccessState({required this.review});
+
+  @override
+  List<Object> get props => [review];
+}
+
+class GetReviewErrorState extends ProfileState {
+  final String errorMessage;
+
+  const GetReviewErrorState({required this.errorMessage});
 
   @override
   List<Object> get props => [errorMessage];

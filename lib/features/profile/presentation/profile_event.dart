@@ -2,13 +2,18 @@ import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 import 'package:pikquick/features/profile/data/model/auto_sub_daily.dart';
+import 'package:pikquick/features/profile/data/model/client_email.dart';
+import 'package:pikquick/features/profile/data/model/client_profile_model.dart';
+import 'package:pikquick/features/profile/data/model/client_profile_name.dart';
 import 'package:pikquick/features/profile/data/model/create_model.dart';
+import 'package:pikquick/features/profile/data/model/get_review_model.dart';
 import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
 import 'package:pikquick/features/profile/data/model/invite_sent_model.dart';
 import 'package:pikquick/features/profile/data/model/profile_model.dart';
 import 'package:pikquick/features/profile/data/model/runnerdetails_model.dart'
     show RunnersAllDetailsModel;
 import 'package:pikquick/features/profile/data/model/unto_auto_daily.dart';
+import 'package:pikquick/features/profile/domain/entities/client_profile_entity.dart';
 import 'package:pikquick/features/task/data/model/my_document_model.dart';
 
 abstract class ProfileEvent extends Equatable {
@@ -151,6 +156,36 @@ class UnsubscribeAutoDeductionEvent extends ProfileEvent {
   List<Object> get props => [model];
 }
 
+// clientProfileEdit
+class SubmitClientProfileEvent extends ProfileEvent {
+  final ClientEditProfileModel clientId;
+
+  const SubmitClientProfileEvent(this.clientId);
+
+  @override
+  List<Object> get props => [clientId];
+}
+
+// clientProfileEditname
+class SubmitClientProfilenameEvent extends ProfileEvent {
+  final ClientEditProfilenameModel clientId;
+
+  const SubmitClientProfilenameEvent(this.clientId);
+
+  @override
+  List<Object> get props => [clientId];
+}
+
+// clientProfileEditemail
+class SubmitClientProfileemailEvent extends ProfileEvent {
+  final ClientEditProfileEmailModel clientId;
+
+  const SubmitClientProfileemailEvent(this.clientId);
+
+  @override
+  List<Object> get props => [clientId];
+}
+
 class UploadProfilePictureEvent extends ProfileEvent {
   final File file;
 
@@ -159,6 +194,18 @@ class UploadProfilePictureEvent extends ProfileEvent {
   @override
   List<Object> get props => [file];
 }
+
+//get reviews
+class FetchGetReviewEvent extends ProfileEvent {
+  final GetReviewModel taskId;
+
+  const FetchGetReviewEvent({required this.taskId});
+
+  @override
+  List<Object> get props => [taskId];
+}
+
+
 
 
 

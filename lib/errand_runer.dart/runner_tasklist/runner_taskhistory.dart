@@ -100,7 +100,7 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAFAFA), // Changed to FAFAFA color
+        color: const Color(0xFFF5F5F5),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Material(
@@ -314,6 +314,7 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: BlocConsumer<TaskBloc, TaskState>(
         listener: (context, state) {
           if (state is ActivetaskSuccessState) {
@@ -412,3 +413,4 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
     );
   }
 }
+//   backgroundColor: const Color(0xFFF5F5F5),

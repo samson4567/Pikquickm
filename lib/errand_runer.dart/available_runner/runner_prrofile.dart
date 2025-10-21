@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -80,9 +82,9 @@ class _RunnerProfileState extends State<RunnerProfile> {
                 ),
                 const Spacer(),
                 Align(
-                    alignment: Alignment.bottomRight,
+                    alignment: Alignment.bottomCenter,
                     child: SizedBox(
-                      width: 150, // 👈 set custom width
+                      width: 300, // 👈 set custom width
                       child: TextButton(
                         style: TextButton.styleFrom(
                           backgroundColor: Colors.blue,
@@ -95,7 +97,7 @@ class _RunnerProfileState extends State<RunnerProfile> {
                         onPressed: () =>
                             context.goNamed(MyAppRouteConstant.dashboard),
                         child: const Text(
-                          "Dashbord",
+                          ' Go to Dashboard',
                           style: TextStyle(
                             color: Colors.white,
                             fontFamily: "Outfit",
@@ -163,6 +165,7 @@ class _RunnerProfileState extends State<RunnerProfile> {
                           fontWeight: FontWeight.w500,
                           fontFamily: 'Outfit'),
                     ),
+
                     const SizedBox(height: 20),
                     CircleAvatar(
                       radius: 50,
@@ -178,7 +181,7 @@ class _RunnerProfileState extends State<RunnerProfile> {
                           runnerData?.userName ?? "Runner",
                           style: const TextStyle(
                               fontSize: 18,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w700,
                               fontFamily: 'Outfit'),
                         ),
                         const SizedBox(width: 5),
@@ -191,7 +194,8 @@ class _RunnerProfileState extends State<RunnerProfile> {
                       runnerData?.bio ?? '',
                       style: const TextStyle(
                           fontSize: 14,
-                          fontWeight: FontWeight.w300,
+                          color: Color(0XFF434953),
+                          fontWeight: FontWeight.w500,
                           fontFamily: 'Outfit'),
                     ),
                     const SizedBox(height: 8),
@@ -199,18 +203,35 @@ class _RunnerProfileState extends State<RunnerProfile> {
                       children: [
                         const Icon(Icons.star, color: Colors.orange, size: 18),
                         Text(
-                          " ${runnerData?.averageRating?.toStringAsFixed(1) ?? '0.0'} ",
-                          style: const TextStyle(fontWeight: FontWeight.w500),
+                          runnerData?.averageRating != null
+                              ? runnerData!.averageRating!.toStringAsFixed(1)
+                              : 'N/A',
+                          style: const TextStyle(
+                              fontSize: 12,
+                              color: Color(0XFF98A2B3),
+                              fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          "| ${runnerData?.totalTasksCompleted ?? 0} errands completed",
-                          style: const TextStyle(fontSize: 12),
+                          "| ${runnerData?.totalTasksCompleted ?? ''} errands completed",
+                          style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0XFF98A2B3)),
                         ),
                         const SizedBox(width: 10),
-                        const Icon(Icons.directions_car, size: 10),
+                        const Icon(
+                          Icons.directions_bike,
+                          size: 14,
+                          color: Color(0XFF98A2B3),
+                        ),
                         const SizedBox(width: 5),
-                        Text(runnerData?.transportMode ?? '',
-                            style: const TextStyle(fontSize: 10)),
+                        Text(
+                          runnerData?.transportMode ?? '',
+                          style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0XFF98A2B3)),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -240,11 +261,10 @@ class _RunnerProfileState extends State<RunnerProfile> {
                           child: Text(
                             'Send Invite',
                             style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Outfit',
-                              color: Colors.blue,
-                            ),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'Outfit',
+                                color: Color(0XFF4A85E4)),
                           ),
                         ),
                       ),
@@ -254,16 +274,16 @@ class _RunnerProfileState extends State<RunnerProfile> {
                     Container(
                       height: 44,
                       decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(8),
+                        color: Color(0XFFFAFAFA),
+                        borderRadius: BorderRadius.circular(4),
                       ),
                       child: TabBar(
                         indicator: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(4),
                         ),
                         labelColor: Colors.black,
-                        unselectedLabelColor: Colors.grey[600],
+                        unselectedLabelColor: Colors.black,
                         tabs: const [
                           Tab(text: 'About'),
                           Tab(text: 'Verification'),
@@ -311,34 +331,44 @@ class _RunnerProfileState extends State<RunnerProfile> {
                             child: Stack(
                               alignment: Alignment.center,
                               children: [
+                                // Background half circle
                                 Container(
-                                  width: 70,
-                                  height: 70,
+                                  width: 75,
+                                  height: 70, // Half the height for half circle
                                   decoration: BoxDecoration(
-                                    color: Colors.orange[700],
-                                    shape: BoxShape.circle,
+                                    color: Colors.orange,
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(35),
+                                      topRight: Radius.circular(35),
+                                    ),
                                   ),
                                 ),
+                                // Progress half circle
                                 SizedBox(
-                                  width: 60,
-                                  height: 60,
-                                  child: CircularProgressIndicator(
-                                    value: double.tryParse(
-                                            runnerData?.trustScore ?? '0')! /
-                                        100,
-                                    strokeWidth: 6,
-                                    backgroundColor: const Color(0xFF4A85E4),
-                                    valueColor:
-                                        const AlwaysStoppedAnimation<Color>(
-                                            Colors.white),
+                                  width: 90,
+                                  height: 30, // Half the height for half circle
+                                  child: CustomPaint(
+                                    painter: HalfCircleProgressPainter(
+                                      progress: double.tryParse(
+                                              runnerData?.trustScore ?? '0')! /
+                                          100,
+                                      backgroundColor: const Color(0xFF4A85E4),
+                                      progressColor: Colors.white,
+                                      strokeWidth: 6,
+                                    ),
                                   ),
                                 ),
-                                Text(
-                                  "${runnerData?.trustScore}%",
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                // Percentage text positioned in the middle of the half circle
+                                Positioned(
+                                  top:
+                                      30, // Adjusted to be in the middle of the half circle
+                                  child: Text(
+                                    "${runnerData?.trustScore}%",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -410,13 +440,6 @@ class _RunnerProfileState extends State<RunnerProfile> {
                 )
                 .toList(),
           )
-          // ...List.generate(staticListOfDocuments.length, )
-
-          // _VerificationItem("Government ID"),
-          // _VerificationItem("Vehicle Registration"),
-          // _VerificationItem("International Passport"),
-
-          // _VerificationItem("Background Check"),
         ],
       ),
     );
@@ -473,5 +496,53 @@ class _ReviewItem extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class HalfCircleProgressPainter extends CustomPainter {
+  final double progress;
+  final Color backgroundColor;
+  final Color progressColor;
+  final double strokeWidth;
+
+  HalfCircleProgressPainter({
+    required this.progress,
+    required this.backgroundColor,
+    required this.progressColor,
+    required this.strokeWidth,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = backgroundColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round;
+
+    final progressPaint = Paint()
+      ..color = progressColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round;
+
+    final center = Offset(size.width / 2, size.height);
+    final radius = size.width / 2 - strokeWidth / 2;
+
+    // Draw background half circle (180 degrees)
+    final backgroundRect = Rect.fromCircle(center: center, radius: radius);
+    canvas.drawArc(backgroundRect, pi, pi, false, paint);
+
+    // Draw progress half circle
+    final progressRect = Rect.fromCircle(center: center, radius: radius);
+    canvas.drawArc(progressRect, pi, pi * progress, false, progressPaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant HalfCircleProgressPainter oldDelegate) {
+    return progress != oldDelegate.progress ||
+        backgroundColor != oldDelegate.backgroundColor ||
+        progressColor != oldDelegate.progressColor ||
+        strokeWidth != oldDelegate.strokeWidth;
   }
 }

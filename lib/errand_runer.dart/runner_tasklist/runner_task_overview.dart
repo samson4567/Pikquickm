@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -664,8 +665,8 @@ class _TaskOverviewState extends State<TaskOverview>
             const SizedBox(height: 10),
             Center(
               child: FancyContainer(
-                onTap: () {
-                  context.go(MyAppRouteConstant.google);
+                onTap: () async {
+                  final result = await FilePicker.platform.pickFiles();
                 },
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: Colors.grey),

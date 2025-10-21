@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pikquick/app_variable.dart' as av;
 import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/component/fancy_container.dart';
+import 'package:pikquick/errand_runer.dart/available_runner/runner_prrofile.dart';
 import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
 import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
 import 'package:pikquick/features/profile/presentation/profile_event.dart';
@@ -91,8 +92,9 @@ class _RunnerProfileHiredState extends State<RunnerProfileHired> {
                 // 👇 Blue button-like container
                 GestureDetector(
                   onTap: () {
-                    // Navigator.pop(context); // close dialog
-                    // Navigate to dashboard or trigger action here
+                    context.pushReplacement(
+                        MyAppRouteConstant.dashboard); // close dialog
+
                     context.pop();
                   },
                   child: Container(
@@ -104,7 +106,7 @@ class _RunnerProfileHiredState extends State<RunnerProfileHired> {
                     ),
                     alignment: Alignment.center,
                     child: const Text(
-                      'Dashboard',
+                      ' Go to Dashboard',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -205,7 +207,7 @@ class _RunnerProfileHiredState extends State<RunnerProfileHired> {
                               runnerData?.userName ?? "Runner",
                               style: const TextStyle(
                                   fontSize: 18,
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w700,
                                   fontFamily: 'Outfit'),
                             ),
                             const SizedBox(width: 5),
@@ -215,10 +217,12 @@ class _RunnerProfileHiredState extends State<RunnerProfileHired> {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          runnerData?.bio ?? '',
+                          "Experienced errand runner with a focus on \nreliability and speed.",
+                          // runnerData?.bio ?? '',
                           style: const TextStyle(
                               fontSize: 14,
-                              fontWeight: FontWeight.w300,
+                              color: Color(0XFF434953),
+                              fontWeight: FontWeight.w500,
                               fontFamily: 'Outfit'),
                         ),
                         const SizedBox(height: 8),
@@ -228,18 +232,32 @@ class _RunnerProfileHiredState extends State<RunnerProfileHired> {
                                 color: Colors.orange, size: 18),
                             Text(
                               " ${runnerData?.averageRating?.toStringAsFixed(1) ?? '0.0'} ",
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w500),
+                              style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0XFF98A2B3)),
                             ),
                             Text(
                               "| ${runnerData?.totalTasksCompleted ?? 0} errands completed",
-                              style: const TextStyle(fontSize: 12),
+                              style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0XFF98A2B3)),
                             ),
                             const SizedBox(width: 10),
-                            const Icon(Icons.directions_car, size: 10),
+                            const Icon(
+                              Icons.directions_bike,
+                              size: 14,
+                              color: Color(0XFF98A2B3),
+                            ),
                             const SizedBox(width: 5),
-                            Text(runnerData?.transportMode ?? '',
-                                style: const TextStyle(fontSize: 10)),
+                            Text(
+                              runnerData?.transportMode ?? '',
+                              style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0XFF98A2B3)),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 16),
@@ -322,13 +340,12 @@ class _RunnerProfileHiredState extends State<RunnerProfileHired> {
                                   width: double.infinity,
                                   child: const Center(
                                     child: Text(
-                                      'Hire runner ',
+                                      'Hire ',
                                       style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Outfit',
-                                        color: Colors.blue,
-                                      ),
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Outfit',
+                                          color: Color(0XFF4A85E4)),
                                     ),
                                   ),
                                 ),
@@ -396,36 +413,48 @@ class _RunnerProfileHiredState extends State<RunnerProfileHired> {
                                 child: Stack(
                                   alignment: Alignment.center,
                                   children: [
+                                    // Background half circle
                                     Container(
-                                      width: 70,
-                                      height: 70,
+                                      width: 75,
+                                      height:
+                                          70, // Half the height for half circle
                                       decoration: BoxDecoration(
-                                        color: Colors.orange[700],
-                                        shape: BoxShape.circle,
+                                        color: Colors.orange,
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(35),
+                                          topRight: Radius.circular(35),
+                                        ),
                                       ),
                                     ),
+                                    // Progress half circle
                                     SizedBox(
-                                      width: 60,
-                                      height: 60,
-                                      child: CircularProgressIndicator(
-                                        value: double.tryParse(
-                                                runnerData?.trustScore ??
-                                                    '0')! /
-                                            100,
-                                        strokeWidth: 6,
-                                        backgroundColor:
-                                            const Color(0xFF4A85E4),
-                                        valueColor:
-                                            const AlwaysStoppedAnimation<Color>(
-                                                Colors.white),
+                                      width: 90,
+                                      height:
+                                          30, // Half the height for half circle
+                                      child: CustomPaint(
+                                        painter: HalfCircleProgressPainter(
+                                          progress: double.tryParse(
+                                                  runnerData?.trustScore ??
+                                                      '0')! /
+                                              100,
+                                          backgroundColor:
+                                              const Color(0xFF4A85E4),
+                                          progressColor: Colors.white,
+                                          strokeWidth: 6,
+                                        ),
                                       ),
                                     ),
-                                    Text(
-                                      "${runnerData?.trustScore}%",
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                                    // Percentage text positioned in the middle of the half circle
+                                    Positioned(
+                                      top:
+                                          30, // Adjusted to be in the middle of the half circle
+                                      child: Text(
+                                        "${runnerData?.trustScore}%",
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ],
