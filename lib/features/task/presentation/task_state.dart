@@ -13,6 +13,7 @@ import 'package:pikquick/features/task/domain/entitties/reject_bid_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/runner_task_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/specialize_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/start_entity.dart';
+import 'package:pikquick/features/task/domain/entitties/task_message_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/taskcreation_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/wallet_entities.dart';
 
@@ -521,3 +522,41 @@ class WalletSummaryErrorState extends TaskState {
   const WalletSummaryErrorState(this.errorMessage);
   List<Object> get props => [errorMessage];
 }
+
+final class SendtaskAssignmentMessageEventLoadingState extends TaskState {}
+
+final class SendtaskAssignmentMessageEventSuccessState extends TaskState {
+  final TaskMessageEntity taskMessageEntity;
+  const SendtaskAssignmentMessageEventSuccessState({
+    required this.taskMessageEntity,
+  });
+  @override
+  List<Object> get props => [taskMessageEntity];
+}
+
+final class SendtaskAssignmentMessageEventErrorState extends TaskState {
+  const SendtaskAssignmentMessageEventErrorState({required this.errorMessage});
+  final String errorMessage;
+  @override
+  List<Object> get props => [errorMessage];
+}
+
+final class GettaskAssignmentMessagesEventLoadingState extends TaskState {}
+
+final class GettaskAssignmentMessagesEventSuccessState extends TaskState {
+  final List<TaskMessageEntity> taskMessageEntity;
+  const GettaskAssignmentMessagesEventSuccessState({
+    required this.taskMessageEntity,
+  });
+  @override
+  List<Object> get props => [taskMessageEntity];
+}
+
+final class GettaskAssignmentMessagesEventErrorState extends TaskState {
+  const GettaskAssignmentMessagesEventErrorState({required this.errorMessage});
+  final String errorMessage;
+  @override
+  List<Object> get props => [errorMessage];
+}
+
+// GettaskAssignmentMessages

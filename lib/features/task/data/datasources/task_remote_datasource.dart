@@ -16,8 +16,10 @@ import 'package:pikquick/features/task/data/model/rejecttask_model.dart';
 import 'package:pikquick/features/task/data/model/runner_task_model.dart';
 import 'package:pikquick/features/task/data/model/specialize_model.dart';
 import 'package:pikquick/features/task/data/model/start_task_model.dart';
+import 'package:pikquick/features/task/data/model/task_message_model.dart';
 import 'package:pikquick/features/task/data/model/taskcreation_model.dart';
 import 'package:pikquick/features/task/data/model/wallet_summary_model.dart';
+import 'package:pikquick/features/task/domain/entitties/task_message_entity.dart';
 import 'package:pikquick/features/transaction/data/model/user_address_model.dart';
 
 abstract class TaskRemoteDatasource {
@@ -27,8 +29,8 @@ abstract class TaskRemoteDatasource {
   Future<List<GetTaskForClientModel>> getTask({required String? mode});
   Future<List<GetTaskForRunnerModel>> getTaskrunner(
       {required GetTaskForRunnerModel getTaskRunner});
-  Future<List<ActiveTaskPendingModel>> getActiveTask(
-      {required ActiveTaskPendingModel getTaskRunner});
+  Future<List<ActiveTaskPendingModel>> getActiveTask();
+
   Future<GetTaskOverviewModel> taskoverview({required String taskId});
   Future<RunnerTaskOverviewgModel> taskoverviewRunner({required String taskId});
   Future<String> inviteRunnerToTask({
@@ -67,6 +69,14 @@ abstract class TaskRemoteDatasource {
   });
   Future<WalletSummaryModel> getWalletSummary(
       {required WalletSummaryModel model});
+  Future<TaskMessageEntity> sendtaskAssignmentMessage({
+    required String taskAssignmentID,
+    required String content,
+    required String messageType,
+  });
+  Future<List<TaskMessageEntity>> gettaskAssignmentMessages({
+    required String taskAssignmentID,
+  });
 }
 
 //newDetailsTask
@@ -234,8 +244,7 @@ class TaskRemoteDatasourceIpl implements TaskRemoteDatasource {
   }
 
   @override
-  Future<List<ActiveTaskPendingModel>> getActiveTask(
-      {required ActiveTaskPendingModel getTaskRunner}) async {
+  Future<List<ActiveTaskPendingModel>> getActiveTask() async {
     final response = await networkClient.get(
       endpoint: EndpointConstant.gettaskActive,
       isAuthHeaderRequired: true,
@@ -326,5 +335,46 @@ class TaskRemoteDatasourceIpl implements TaskRemoteDatasource {
       isAuthHeaderRequired: true,
     );
     return WalletSummaryModel.fromJson(response.data);
+  }
+
+  @override
+  Future<List<TaskMessageEntity>> gettaskAssignmentMessages({
+    required String taskAssignmentID,
+  }) async {
+    final response = await networkClient.get(
+      endpoint:
+          "${EndpointConstant.gettaskAssignmentMessagesBetter}/${taskAssignmentID}/messages",
+      // EndpointConstant.gettaskAssignmentMessages,
+      isAuthHeaderRequired: true,
+      // params: {"taskAssignmentID": taskAssignmentID}
+    );
+    final result = (response.data as List?)
+            ?.map(
+              (e) => TaskMessageModel.fromJson(e),
+            )
+            .toList() ??
+        [];
+    return result;
+  }
+
+  @override
+  Future<TaskMessageEntity> sendtaskAssignmentMessage(
+      {required String taskAssignmentID,
+      required String content,
+      required String messageType}) async {
+    final response = await networkClient.post(
+        endpoint:
+            "${EndpointConstant.gettaskAssignmentMessagesBetter}/${taskAssignmentID}/messages",
+        // EndpointConstant.gettaskAssignmentMessages,
+        isAuthHeaderRequired: true,
+        data: {
+          "content": content,
+          "messageType": messageType,
+        },
+        params: {
+          "taskAssignmentID": taskAssignmentID
+        });
+
+    return TaskMessageModel.fromJson(response.data);
   }
 }

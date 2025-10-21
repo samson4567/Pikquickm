@@ -29,6 +29,7 @@ import 'package:pikquick/features/task/domain/entitties/reject_bid_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/runner_task_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/specialize_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/start_entity.dart';
+import 'package:pikquick/features/task/domain/entitties/task_message_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/taskcreation_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/wallet_entities.dart';
 import 'package:pikquick/features/transaction/domain/entities/user_address_enties.dart';
@@ -44,8 +45,7 @@ abstract class TaskRepository {
 
   Future<Either<Failure, List<GetTaskForRunnerEntity>>> getTaskforRunner(
       {required GetTaskForRunnerModel getTaskRunner});
-  Future<Either<Failure, List<ActiveTaskPendingEntity>>> getactiveTask(
-      {required ActiveTaskPendingModel getTaskRunner});
+  Future<Either<Failure, List<ActiveTaskPendingEntity>>> getactiveTask();
   Future<Either<Failure, GetTaskOverviewEntity>> tasoverview({
     required String taskId,
   });
@@ -93,4 +93,13 @@ abstract class TaskRepository {
   });
   Future<Either<Failure, WalletSummaryEntity>> getWalletSummary(
       {required WalletSummaryModel model});
+
+  Future<Either<Failure, TaskMessageEntity>> sendtaskAssignmentMessage({
+    required String taskAssignmentID,
+    required String content,
+    required String messageType,
+  });
+  Future<Either<Failure, List<TaskMessageEntity>>> gettaskAssignmentMessages({
+    required String taskAssignmentID,
+  });
 }

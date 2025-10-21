@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:pikquick/core/error/failure.dart';
 import 'package:pikquick/core/mapper/failure_mapper.dart';
+import 'package:pikquick/features/authentication/data/models/usermodel.dart';
 import 'package:pikquick/features/profile/data/datasource/profile_local_datasources.dart';
 import 'package:pikquick/features/profile/data/datasource/profile_remote_datasource.dart';
 import 'package:pikquick/features/profile/data/model/auto_sub_daily.dart';
@@ -202,6 +203,34 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return right(result);
     } catch (e) {
       return left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserModel>> getUserProfle(
+      {required String? userID, required bool isByRunner}) async {
+    try {
+      final result = await profileRemoteDatasource.getUserProfle(
+        userID: userID,
+        isByRunner: isByRunner,
+      );
+      return right(result);
+    } catch (e) {
+      return left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<UserModel?> getUserProflePlain(
+      {required String? userID, required bool isByRunner}) async {
+    try {
+      final result = await profileRemoteDatasource.getUserProflePlain(
+        userID: userID,
+        isByRunner: isByRunner,
+      );
+      return result;
+    } catch (e) {
+      return null;
     }
   }
 }

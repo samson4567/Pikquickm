@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:pikquick/core/error/failure.dart';
+import 'package:pikquick/features/authentication/data/models/usermodel.dart';
 import 'package:pikquick/features/profile/data/model/auto_sub_daily.dart';
 import 'package:pikquick/features/profile/data/model/create_model.dart';
 import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
@@ -67,5 +68,13 @@ abstract class ProfileRepository {
   });
   Future<Either<Failure, String>> uploadProfilePicture({
     required File file,
+  });
+  Future<Either<Failure, UserModel>> getUserProfle({
+    required String? userID,
+    required bool isByRunner,
+  });
+  Future<UserModel?> getUserProflePlain({
+    required String? userID,
+    required bool isByRunner,
   });
 }

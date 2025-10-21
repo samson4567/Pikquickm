@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:pikquick/app_constants.dart';
 import 'package:pikquick/core/constants/app_constants.dart';
 import 'package:pikquick/errand_runer.dart/chat_screen.dart';
+import 'package:pikquick/errand_runer.dart/chat_screen_two.dart';
 import 'package:pikquick/errand_runer.dart/newtask/available_runner.dart.dart';
 import 'package:pikquick/errand_runer.dart/errand_dashboard/errand_dashboard.dart';
 import 'package:pikquick/errand_runer.dart/errand_menu/errand_more.dart';
@@ -18,10 +19,8 @@ import 'package:pikquick/errand_runer.dart/wallet/request_payout.dart';
 import 'package:pikquick/errand_runer.dart/reviews.dart';
 import 'package:pikquick/errand_runer.dart/serviced_categories.dart';
 import 'package:pikquick/errand_runer.dart/newtask/task_details.dart';
-import 'package:pikquick/features/task/domain/entitties/active_task_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/get_task_overview_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/runner_task_entity.dart';
-import 'package:pikquick/features/task/presentation/task_event.dart';
 import 'package:pikquick/hire_an_errand.dart/clinet_taskhistory/client_task_hostoy.dart';
 import 'package:pikquick/errand_runer.dart/runner_tasklist/runner_task_overview.dart';
 import 'package:pikquick/errand_runer.dart/wallet/verify_payment.dart';
@@ -59,7 +58,6 @@ import 'package:pikquick/errand_runer.dart/runner_tasklist/runner_taskhistory.da
 import 'package:pikquick/hire_an_errand.dart/clinet_taskhistory/reviews.dart';
 import 'package:pikquick/hire_an_errand.dart/clinet_taskhistory/client_task_overview_detais.dart';
 import 'package:pikquick/prmp_map_widgets/google_place_map_screen.dart';
-import 'package:pikquick/mapbox_anew/map_box_full_map_widget.dart';
 import 'package:pikquick/mapbox_anew/pre_map_page_for_testing.dart';
 import 'package:pikquick/router/router_config.dart';
 import 'package:pikquick/screen_test/Id_verification_document_type_screen.dart';
@@ -67,12 +65,12 @@ import 'package:pikquick/screen_test/account_info_page.dart';
 import 'package:pikquick/screen_test/adddress_verification_page.dart';
 import 'package:pikquick/screen_test/document_verification_page.dart';
 import 'package:pikquick/screen_test/selfie_verification_page.dart';
-import 'package:pikquick/screen_test/test_site%20copy.dart';
 import 'package:pikquick/screen_test/test_site.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation:
+        // MyAppRouteConstant.chatScreenTwo,
         // MyAppRouteConstant.testSite,
         MyAppRouteConstant.splashScreen,
     // MyAppRouteConstant.login,
@@ -112,6 +110,15 @@ class AppRouter {
               taskId: data['taskId'],
               userId: data['userId'],
               wsUrl: data['wsUrl'] ?? wsUrlG);
+        },
+      ),
+      GoRoute(
+        name: MyAppRouteConstant.chatScreenTwo,
+        path: MyAppRouteConstant.chatScreenTwo,
+        builder: (context, state) {
+          return ChatScreenTwo(
+            taskAssignmentID: state.extra as String,
+          );
         },
       ),
 

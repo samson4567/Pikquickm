@@ -59,10 +59,9 @@ class GetTaskforRunnerEvent extends TaskEvent {
 }
 
 class ActivetaskEvent extends TaskEvent {
-  final ActiveTaskPendingModel getTaskRunner;
-  const ActivetaskEvent({required this.getTaskRunner});
+  const ActivetaskEvent();
   @override
-  List<Object> get props => [getTaskRunner];
+  List<Object> get props => [];
 }
 
 class GetTaskOverviewEvent extends TaskEvent {
@@ -207,3 +206,27 @@ class WalletSummaryEvent extends TaskEvent {
   final WalletSummaryModel model;
   const WalletSummaryEvent({required this.model});
 }
+
+class SendtaskAssignmentMessageEvent extends TaskEvent {
+  final String taskAssignmentID;
+  final String content;
+  final String messageType;
+
+  const SendtaskAssignmentMessageEvent({
+    required this.taskAssignmentID,
+    required this.content,
+    required this.messageType,
+  });
+}
+
+class GettaskAssignmentMessagesEvent extends TaskEvent {
+  final String taskAssignmentID;
+  
+
+  const GettaskAssignmentMessagesEvent({
+    required this.taskAssignmentID,
+    
+  });
+}
+
+// GettaskAssignmentMessages

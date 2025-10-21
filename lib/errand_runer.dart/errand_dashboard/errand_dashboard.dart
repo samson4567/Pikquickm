@@ -62,19 +62,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     context.read<ProfileBloc>().add(GetVerifiedDocumentsEvent());
 
     context.read<TaskBloc>().add(
-          ActivetaskEvent(
-              getTaskRunner: ActiveTaskPendingModel(
-                  id: "runnerId123", // supply values required by backend
-                  taskId: "someTaskId",
-                  bidId: "bidId123",
-                  runnerId: "runnerId123",
-                  status: "pending",
-                  taskDescription: "",
-                  taskBudget: "",
-                  runnerFullName: "",
-                  clientName: "",
-                  pickupAddress: "",
-                  dropOffAddress: "")),
+          ActivetaskEvent(),
         );
     // SchedulerBinding.instance.addPostFrameCallback(
     //   (timeStamp) {
@@ -218,13 +206,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                 fontWeight: FontWeight.w700)),
                                       ),
                                       Text(
-                                        "${userModelG?.fullName ?? ''}!",
+                                        userModelG?.fullName ?? "",
                                         style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 15,
-                                          fontFamily: 'Outfit',
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                            color: Colors.white,
+                                            fontSize: 15,
+                                            fontFamily: 'Outfit',
+                                            fontWeight: FontWeight.w600),
                                       ),
                                     ],
                                   ),
@@ -291,109 +278,106 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
 
                       Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                        padding: const EdgeInsets.all(16),
+                        width: 400,
+                        height: 160,
                         decoration: BoxDecoration(
                           color: const Color(0xFFFAFAFA),
                           borderRadius: BorderRadius.circular(16),
                         ),
+                        padding: const EdgeInsets.all(16),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // --- Header Row ---
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Expanded(
-                                  child: Text(
-                                    'Request payout to your bank',
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.black),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 9),
+                              child: Row(
+                                children: [
+                                  const Expanded(
+                                    child: Text(
+                                      'Request payout to your bank',
+                                      style: TextStyle(
+                                          fontSize: 14, color: Colors.black),
+                                    ),
                                   ),
-                                ),
+                                  GestureDetector(
+                                    onTap: () => context
+                                        .go(MyAppRouteConstant.requestpayout),
+                                    child: Container(
+                                      height: 50,
+                                      width: 140,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(7),
+                                      ),
+                                      child: Center(
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: const [
+                                            Text(
+                                              'Withdraw ',
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily: 'Outfit'),
+                                            ),
+                                            Icon(Icons.arrow_upward,
+                                                size: 20, color: Colors.black),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
                                 GestureDetector(
                                   onTap: () => context
-                                      .go(MyAppRouteConstant.requestpayout),
+                                      .push(MyAppRouteConstant.availabeTask),
                                   child: Container(
                                     height: 50,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16),
+                                    width: 140,
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
+                                      color: const Color(0xFFECFBFF),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: const Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          'Withdraw ',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Outfit',
-                                          ),
-                                        ),
-                                        Icon(Icons.arrow_upward,
-                                            size: 20, color: Colors.black),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                            const SizedBox(height: 16),
-
-                            // --- Button Row ---
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () => context
-                                        .push(MyAppRouteConstant.availabeTask),
-                                    child: Container(
-                                      height: 54,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFECFBFF),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: const Center(
-                                        child: Text(
-                                          'Browse New Tasks',
-                                          style: TextStyle(
+                                    child: const Center(
+                                      child: Text(
+                                        'Browse New Tasks',
+                                        style: TextStyle(
                                             fontSize: 13,
                                             fontFamily: 'Outfit',
                                             color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () => context.push(
-                                        MyAppRouteConstant.taskHistoryrunner),
-                                    child: Container(
-                                      height: 54,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFFFECCA),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: const Center(
-                                        child: Text(
-                                          'Manage Active Tasks',
-                                          style: TextStyle(
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                GestureDetector(
+                                  onTap: () => context.push(
+                                      MyAppRouteConstant.taskHistoryrunner),
+                                  child: Container(
+                                    height: 54,
+                                    width: 159,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFFFECCA),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: const Center(
+                                      child: Text(
+                                        'Manage Active Tasks',
+                                        style: TextStyle(
                                             fontSize: 13,
                                             fontFamily: 'Outfit',
                                             color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   ),
@@ -414,7 +398,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               'Active Task',
                               style: const TextStyle(
                                 fontSize: 15,
-                                fontFamily: 'OutFit',
                               ),
                             ),
                             TextButton(
@@ -423,10 +406,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       MyAppRouteConstant.taskHistoryrunner);
                                 },
                                 child: Text(
-                                  'Explore all ',
+                                  'View all ',
                                   style: const TextStyle(
                                       fontSize: 15,
-                                      fontFamily: 'OutFit',
                                       fontWeight: FontWeight.bold),
                                 ))
                           ],
@@ -686,202 +668,138 @@ Widget Activetask() {
   );
 }
 
-Widget _buildTaskCard({
-  required String taskId,
-  required String title,
-  required String time,
-  required String price,
-  required String clientName,
-  required String pickupAddress,
-  required String dropOffAddress,
-}) {
-  // Example progress value (0.0 - 1.0)
-  double progressValue = 0.6;
-
-  return Container(
-    width: 340,
-    padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(
-      color: const Color(0xFFF2FAFF),
-      borderRadius: BorderRadius.circular(20),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // --- Title ---
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            fontFamily: 'Outfit',
-            color: Colors.black87,
-            height: 1.3,
+Widget _buildTaskCard(
+    {required String taskId,
+    required String title,
+    required String time,
+    required String price,
+    required String clientName,
+    required String pickupAddress,
+    required String dropOffAddress}) {
+  return GestureDetector(
+    onTapDown: (_) {}, // can add press animation later
+    child: AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      width: 350,
+      margin: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF2FAFF),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
-        ),
-        const SizedBox(height: 6),
-
-        // --- Time ---
-        Text(
-          time,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            fontFamily: 'Outfit',
-            color: Color(0xFF6B7280),
+          const SizedBox(height: 8),
+          Expanded(
+            child: Text(
+              time,
+              style: const TextStyle(fontSize: 14, fontFamily: 'Outfit'),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-        ),
-
-        const SizedBox(height: 12),
-
-        // --- Divider line ---
-        Divider(
-          color: Colors.grey.shade300,
-          thickness: 1,
-          height: 5,
-        ),
-
-        const SizedBox(height: 4),
-
-        // --- Location header ---
-        const Text(
-          "Location",
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-            fontFamily: 'Outfit',
-            color: Color(0xFF1F2937),
+          Row(
+            children: [
+              const SizedBox(width: 4),
+              Text(
+                price,
+                style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Outfit'),
+              ),
+            ],
           ),
-        ),
-        const SizedBox(height: 8),
-
-        // --- Pickup Row ---
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Pickup",
-              style: TextStyle(
+          const SizedBox(width: 6),
+          Text(
+            clientName,
+            style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                fontFamily: 'Outfit',
-                color: Color(0xFF6B7280),
-              ),
+                fontFamily: 'Outfit'),
+          ),
+          const SizedBox(height: 5),
+          Row(children: [
+            Text(
+              'Pickup :',
+              style: const TextStyle(fontSize: 14, fontFamily: 'Outfit'),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                pickupAddress,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'Outfit',
-                  color: Color(0xFF111827),
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 6),
-
-        // --- Drop-off Row ---
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Drop-off",
-              style: TextStyle(
+            const SizedBox(height: 10),
+            Text(
+              pickupAddress,
+              style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                fontFamily: 'Outfit',
-                color: Color(0xFF6B7280),
               ),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                dropOffAddress,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'Outfit',
-                  color: Color(0xFF111827),
+          ]),
+          const SizedBox(height: 10),
+          Row(children: [
+            Text(
+              'Drop-off :',
+              style: const TextStyle(
+                fontFamily: 'Outfit',
+                fontSize: 14,
+              ),
+            ),
+            Text(
+              dropOffAddress,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ]),
+          const SizedBox(height: 10),
+          Text(
+            "Task ID: $taskId",
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const Spacer(),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              onPressed: () {
+                final taskId = runner.taskId ?? '';
+                // context.pushNamed(
+                //   MyAppRouteConstant.taskHOverview,
+                //   extra: {'taskId': taskId},
+                // );
+              },
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Colors.lightBlue,
+                side: BorderSide(color: Colors.lightBlue.shade200, width: 1.5),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                overflow: TextOverflow.ellipsis,
+                padding: const EdgeInsets.symmetric(vertical: 12),
               ),
-            ),
-          ],
-        ),
-
-        const SizedBox(height: 14),
-
-        // --- Task ID ---
-        const Text(
-          "Task ID",
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            fontFamily: 'Outfit',
-            color: Color(0xFF1F2937),
-          ),
-        ),
-        const SizedBox(height: 6),
-
-        Text(
-          taskId,
-          style: const TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
-            fontFamily: 'Outfit',
-            color: Color(0xFF111827),
-          ),
-        ),
-
-        const SizedBox(height: 12),
-
-        // --- Progress Bar (thin and rounded like screenshot) ---
-        ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: LinearProgressIndicator(
-            value: progressValue,
-            minHeight: 8,
-            backgroundColor: Colors.grey.shade300,
-            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF3366FF)),
-          ),
-        ),
-
-        const SizedBox(height: 16),
-
-        // --- View Details Button ---
-        SizedBox(
-          width: double.infinity,
-          height: 48,
-          child: OutlinedButton(
-            onPressed: () {
-              final taskIdValue = taskId;
-              // context.pushNamed(MyAppRouteConstant.taskHOverview, extra: {'taskId': taskIdValue});
-            },
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: Color(0xFF3366FF), width: 1.5),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              foregroundColor: const Color(0xFF3366FF),
-            ),
-            child: const Text(
-              "View Details",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                fontFamily: 'Outfit',
-                color: Color(0xFF3366FF),
+              child: const Text(
+                "View Details",
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.lightBlue,
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 }
@@ -1094,23 +1012,9 @@ class VerificationAlert extends StatelessWidget {
 
 
 
- // Text(
-          //   clientName,
-          //   style: const TextStyle(
-          //       fontSize: 14,
-          //       fontWeight: FontWeight.w500,
-          //       fontFamily: 'Outfit'),
-          // ),
 
 
 
- // Text(
-              //   price,
-              //   style: const TextStyle(
-              //       fontSize: 18,
-              //       fontWeight: FontWeight.bold,
-              //       fontFamily: 'Outfit'),
-              // ),
 
 // SingleChildScrollView Activetask() {
 //   return SingleChildScrollView(

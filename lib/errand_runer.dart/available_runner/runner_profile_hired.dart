@@ -148,9 +148,9 @@ class _RunnerProfileHiredState extends State<RunnerProfileHired> {
               setState(() {
                 isHired = true;
               });
+
               _saveHireStatus();
               _showHireDialog();
-              // GetRunnerProfileModel;
             }
             if (state is AssignTaskeSErrorState) {
               ScaffoldMessenger.of(context).showSnackBar(

@@ -7,15 +7,13 @@ import 'package:pikquick/component/fancy_container.dart';
 import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
 import 'package:pikquick/features/profile/presentation/profile_event.dart';
 import 'package:pikquick/features/profile/presentation/profile_state.dart';
+import 'package:pikquick/features/task/domain/entitties/active_task_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/get_task_overview_entity.dart';
 import 'package:pikquick/features/task/presentation/task_bloc.dart';
 import 'package:pikquick/features/task/presentation/task_event.dart';
 import 'package:pikquick/features/task/presentation/task_state.dart';
 import 'package:pikquick/global_objects.dart';
-import 'package:pikquick/hire_an_errand.dart/clinet_taskhistory/client_task_hostoy.dart';
-import 'package:pikquick/hire_an_errand.dart/dashboard/message_chat.dart';
 import 'package:pikquick/router/router_config.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ClientTaskOverviewProgress extends StatefulWidget {
   final String taskId;
@@ -45,6 +43,7 @@ class _ClientTaskOverviewProgressState
     context.read<TaskBloc>().add(GetTaskOverviewEvent(taskId: widget.taskId));
   }
 
+  bool canCommunicate = false;
   String? phone;
   void _showPhoneNumberDialog() {
     showDialog(
@@ -85,12 +84,15 @@ class _ClientTaskOverviewProgressState
 
                     makePhoneCall(phone!);
                   },
-                  child: const Text("Call",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Outfit')),
+                  child: const Text(
+                    "Call",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Outfit',
+                    ),
+                  ),
                 )),
                 const SizedBox(width: 20),
                 Expanded(
@@ -123,8 +125,8 @@ class _ClientTaskOverviewProgressState
   void _navigateToMessagePage(GetTaskOverviewEntity task) {
     // Navigator.push(
     //     context, MaterialPageRoute(builder: (_) => const MessagePage()));
-    context.push(MyAppRouteConstant.chatScreen,
-        extra: {"taskId": task.id, "userId": task.runnerId});
+    context.push(MyAppRouteConstant.chatScreenTwo,
+        extra: taskAssignmentEntity?.id ?? "");
   }
 
   /// 🔹 Handle bottom button tap logic
@@ -159,342 +161,395 @@ class _ClientTaskOverviewProgressState
   }
 
   GetTaskOverviewEntity? task;
+  ActiveTaskPendingEntity? taskAssignmentEntity;
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<TaskBloc, TaskState>(
-      listener: (context, state) {
-        if (state is GetTaskOverviiewErrorState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage)),
-          );
-        }
-      },
-      builder: (context, state) {
-        if (state is GetTaskOverviiewLoadingState) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (state is GetTaskOverviiewSuccessState) {
-          task = state.taskOverView;
-          context
-              .read<ProfileBloc>()
-              .add(GetrunnerProfileEvent(userID: task!.runnerId!));
-          ;
-          final completedSteps = _getCompletedSteps(task!.status);
-          Color themeColor = (task!.status?.toLowerCase() == "completed")
-              ? Colors.green
-              : (task!.status?.toLowerCase() == "inprogress")
-                  ? Colors.orange
-                  : (task!.status?.toLowerCase() == "pending")
-                      ? Colors.blue
-                      : (task!.status?.toLowerCase() == "cancel")
-                          ? Colors.red
-                          : (task!.status?.toLowerCase() == "bidding")
-                              ? Colors.purple
-                              : Colors.grey;
-          return Scaffold(
-            body: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      IconButton(
-                          icon: const Icon(Icons.arrow_back_ios_new, size: 22),
-                          onPressed: () {
-                            context.pop();
-                          }),
-                      const SizedBox(width: 10),
-                    ],
-                  ),
-                  const Text('Task Details',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: 'Outfit',
-                          fontWeight: FontWeight.w500)),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      RunnerImageWidget2(task: task!),
-                      // CircleAvatar(
-                      //     radius: 30,
-                      //     backgroundImage: (userModelG?.imageUrl != null)
-                      //         ? NetworkImage(userModelG!.imageUrl!)
-                      //         : AssetImage('assets/images/circle.png')),
-                      const SizedBox(width: 10),
-                      Text(task!.runnerName ?? '',
-                          style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w300,
-                              fontFamily: 'Outfit')),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  const Row(
-                    children: [
-                      Text("ETA: Jan 15, 2025 - 30:16 PM | ",
-                          style: TextStyle(
-                              fontSize: 10, fontWeight: FontWeight.w200)),
-                      Text("by car",
-                          style: TextStyle(
-                              fontSize: 10, fontWeight: FontWeight.w200)),
-                      SizedBox(width: 10),
-                      Icon(Icons.car_crash_outlined,
-                          color: Colors.black, size: 16),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      BlocConsumer<ProfileBloc, ProfileState>(
-                          listener: (context, state) {
-                        if (state is GetrunnerProfileErrorState) {
-                          setState(() {});
-                        }
-                        if (state is GetrunnerProfileSuccessState) {
-                          if (task!.runnerId == state.runnerID) {
-                            phone = state.getProfile.userPhone;
-                            setState(() {});
-                          }
-                        }
-                      }, builder: (context, state) {
-                        return GestureDetector(
-                          onTap: () {
-                            if (phone != null)
-                              _showPhoneNumberDialog();
-                            else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  generalSnackBar("No Phone number Provided"));
+    return Scaffold(
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<TaskBloc, TaskState>(
+            listener: (context, state) {
+              if (state is ActivetaskErrorState) {
+                print("djsbsjhdjsdjsd>>error>>${state.errorMessage}");
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.errorMessage)),
+                );
+              }
+
+              ActiveTaskPendingEntity;
+              if (state is ActivetaskSuccessState) {
+                taskAssignmentEntity = state.runnertask.where(
+                  (element) {
+                    return element.taskId == widget.taskId;
+                  },
+                ).firstOrNull;
+                print("djsbsjhdjsdjsd>>success");
+                if (taskAssignmentEntity != null) {
+                  canCommunicate = true;
+                } else {
+                  canCommunicate = false;
+                }
+                setState(() {});
+              }
+              print("djsbsjhdjsdjsd>>error>>generally${state.runtimeType}");
+            },
+          )
+        ],
+        child: BlocConsumer<TaskBloc, TaskState>(
+          listenWhen: (previous, current) =>
+              current is GetTaskOverviiewErrorState ||
+              current is GetTaskOverviiewSuccessState ||
+              current is GetTaskOverviiewLoadingState,
+          listener: (context, state) {
+            if (state is GetTaskOverviiewErrorState) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.errorMessage)),
+              );
+            }
+          },
+          buildWhen: (previous, current) =>
+              current is GetTaskOverviiewErrorState ||
+              current is GetTaskOverviiewSuccessState ||
+              current is GetTaskOverviiewLoadingState,
+          builder: (context, state) {
+            if (state is GetTaskOverviiewLoadingState) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is GetTaskOverviiewSuccessState) {
+              task = state.taskOverView;
+              // context
+              //     .read<ProfileBloc>()
+              //     .add(GetrunnerProfileEvent(userID: task!.runnerId!));
+              // ;
+              final completedSteps = _getCompletedSteps(task!.status);
+              Color themeColor = (task!.status?.toLowerCase() == "completed")
+                  ? Colors.green
+                  : (task!.status?.toLowerCase() == "inprogress")
+                      ? Colors.orange
+                      : (task!.status?.toLowerCase() == "pending")
+                          ? Colors.blue
+                          : (task!.status?.toLowerCase() == "cancel")
+                              ? Colors.red
+                              : (task!.status?.toLowerCase() == "bidding")
+                                  ? Colors.purple
+                                  : Colors.grey;
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        IconButton(
+                            icon:
+                                const Icon(Icons.arrow_back_ios_new, size: 22),
+                            onPressed: () {
+                              context.pop();
+                            }),
+                        const SizedBox(width: 10),
+                      ],
+                    ),
+                    const Text('Task Details',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: 'Outfit',
+                            fontWeight: FontWeight.w500)),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        RunnerImageWidget2(task: task!),
+                        // CircleAvatar(
+                        //     radius: 30,
+                        //     backgroundImage: (userModelG?.imageUrl != null)
+                        //         ? NetworkImage(userModelG!.imageUrl!)
+                        //         : AssetImage('assets/images/circle.png')),
+                        const SizedBox(width: 10),
+                        Text(task!.runnerName ?? '',
+                            style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w300,
+                                fontFamily: 'Outfit')),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    const Row(
+                      children: [
+                        Text("ETA: Jan 15, 2025 - 30:16 PM | ",
+                            style: TextStyle(
+                                fontSize: 10, fontWeight: FontWeight.w200)),
+                        Text("by car",
+                            style: TextStyle(
+                                fontSize: 10, fontWeight: FontWeight.w200)),
+                        SizedBox(width: 10),
+                        Icon(Icons.car_crash_outlined,
+                            color: Colors.black, size: 16),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    if (canCommunicate)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          BlocConsumer<ProfileBloc, ProfileState>(
+                              listener: (context, state) {
+                            if (state is GetrunnerProfileErrorState) {
+                              setState(() {});
                             }
-                          },
+                            if (state is GetrunnerProfileSuccessState) {
+                              if (task!.runnerId == state.runnerID) {
+                                phone = state.getProfile.userPhone;
+                                setState(() {});
+                              }
+                            }
+                          }, builder: (context, state) {
+                            return GestureDetector(
+                              onTap: () {
+                                if (phone != null)
+                                  _showPhoneNumberDialog();
+                                else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      generalSnackBar(
+                                          "No Phone number Provided"));
+                                }
+                              },
+                              child: Row(
+                                children: [
+                                  Image.asset('assets/images/call.png'),
+                                  const SizedBox(width: 10),
+                                  const Text("Call",
+                                      style: TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Outfit',
+                                          color: Colors.blue)),
+                                ],
+                              ),
+                            );
+                          }),
+                          const Text("|",
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontFamily: 'Outfit',
+                                  color: Colors.grey)),
+                          GestureDetector(
+                            // onTap: ,
+                            child: Row(
+                              children: [
+                                Image.asset('assets/images/message.png'),
+                                const SizedBox(width: 10),
+                                GestureDetector(
+                                  onTap: () {
+                                    _navigateToMessagePage(task!);
+                                  },
+                                  child: const Text("Message",
+                                      style: TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blue)),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    const SizedBox(height: 10),
+                    const Divider(),
+                    DashBorderedContainer(
+                      backgroundColor: themeColor.withAlpha(20),
+                      borderColor: themeColor,
+                      child: FancyContainer2(
+                        nulledAlign: true,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Text(
+                            task!.status ?? "Unknown",
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: themeColor
+                                //  Colors.white,
+                                ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // Text(
+                    //   task.status ?? '',
+                    //   style: TextStyle(
+                    //       fontSize: 13,
+                    //       fontWeight: FontWeight.w400,
+                    //       color: themeColor,
+                    //       //  Colors.green,
+                    //       fontFamily: 'Outfit'),
+                    // ),
+                    const SizedBox(height: 10),
+                    Text(task!.description ?? '',
+                        style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Outfit')),
+                    const SizedBox(height: 10),
+                    Text("₦${task!.budget ?? '0'}",
+                        style: const TextStyle(
+                            color: Colors.blue,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Outfit')),
+                    const SizedBox(height: 4),
+                    Text("${task!.status ?? ''} | ${task!.updatedAt ?? ''}",
+                        style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 9,
+                            fontWeight: FontWeight.w300,
+                            fontFamily: 'Outfit')),
+                    const SizedBox(height: 20),
+
+                    // Address and Notes
+                    const Text("Task Details",
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'Outfit')),
+                    const SizedBox(height: 10),
+                    const Text("Pick Up Address",
+                        style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Outfit')),
+                    const Text("Shoprite, Lekki Lagos",
+                        style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w300,
+                            fontFamily: 'Outfit')),
+                    const SizedBox(height: 10),
+                    const Text("Drop-off Location",
+                        style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Outfit')),
+                    const Text("12 Banana Island, Ikorodu",
+                        style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w300,
+                            fontFamily: 'Outfit')),
+                    const SizedBox(height: 10),
+                    const Text("Additional Note",
+                        style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Outfit')),
+                    Text(task!.additionalNotes ?? 'N/A',
+                        style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w300,
+                            fontFamily: 'Outfit')),
+                    const SizedBox(height: 10),
+                    const Text("Task ID",
+                        style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'Outfit')),
+                    Text("#${task!.id ?? 'N/A'}",
+                        style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w300,
+                            fontFamily: 'Outfit')),
+
+                    const SizedBox(height: 20),
+                    const Text("Status Updates",
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'Outfit')),
+                    const SizedBox(height: 20),
+
+                    // Status Stepper
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: List.generate(stepTitles.length, (index) {
+                        final isCompleted = index < completedSteps;
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Image.asset('assets/images/call.png'),
-                              const SizedBox(width: 10),
-                              const Text("Call",
-                                  style: TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'Outfit',
-                                      color: Colors.blue)),
+                              Column(
+                                children: [
+                                  Container(
+                                    width: 15,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: isCompleted
+                                          ? Colors.red
+                                          : Colors.grey[300],
+                                    ),
+                                    child: isCompleted
+                                        ? const Icon(Icons.check,
+                                            size: 14, color: Colors.white)
+                                        : const SizedBox.shrink(),
+                                  ),
+                                  if (index < stepTitles.length - 1)
+                                    Container(
+                                        width: 1,
+                                        height: 20,
+                                        color: Colors.blue),
+                                ],
+                              ),
+                              const SizedBox(width: 8),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2),
+                                child: Text(stepTitles[index],
+                                    style: const TextStyle(
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: 'Outfit')),
+                              ),
                             ],
                           ),
                         );
                       }),
-                      const Text("|",
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontFamily: 'Outfit',
-                              color: Colors.grey)),
-                      GestureDetector(
-                        // onTap: ,
-                        child: Row(
-                          children: [
-                            Image.asset('assets/images/message.png'),
-                            const SizedBox(width: 10),
-                            GestureDetector(
-                              onTap: () {
-                                _navigateToMessagePage(task!);
-                              },
-                              child: const Text("Message",
-                                  style: TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blue)),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  const Divider(),
-                  DashBorderedContainer(
-                    backgroundColor: themeColor.withAlpha(20),
-                    borderColor: themeColor,
-                    child: FancyContainer2(
-                      nulledAlign: true,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
+                    ),
+                    const SizedBox(height: 30),
+
+                    // Bottom Button
+                    FancyContainer(
+                      onTap: () => _handleBottomAction(task!),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.blue),
+                      height: 50,
+                      width: double.infinity,
+                      child: Center(
                         child: Text(
-                          task!.status ?? "Unknown",
-                          style: TextStyle(
-                              fontSize: 12,
+                          _getBottomText(task!.status),
+                          style: const TextStyle(
+                              fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: themeColor
-                              //  Colors.white,
-                              ),
+                              fontFamily: 'Outfit',
+                              color: Colors.blue),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),
-                  ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              );
 
-                  // Text(
-                  //   task.status ?? '',
-                  //   style: TextStyle(
-                  //       fontSize: 13,
-                  //       fontWeight: FontWeight.w400,
-                  //       color: themeColor,
-                  //       //  Colors.green,
-                  //       fontFamily: 'Outfit'),
-                  // ),
-                  const SizedBox(height: 10),
-                  Text(task!.description ?? '',
-                      style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: 'Outfit')),
-                  const SizedBox(height: 10),
-                  Text("₦${task!.budget ?? '0'}",
-                      style: const TextStyle(
-                          color: Colors.blue,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: 'Outfit')),
-                  const SizedBox(height: 4),
-                  Text("${task!.status ?? ''} | ${task!.updatedAt ?? ''}",
-                      style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 9,
-                          fontWeight: FontWeight.w300,
-                          fontFamily: 'Outfit')),
-                  const SizedBox(height: 20),
-
-                  // Address and Notes
-                  const Text("Task Details",
-                      style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'Outfit')),
-                  const SizedBox(height: 10),
-                  const Text("Pick Up Address",
-                      style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: 'Outfit')),
-                  const Text("Shoprite, Lekki Lagos",
-                      style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w300,
-                          fontFamily: 'Outfit')),
-                  const SizedBox(height: 10),
-                  const Text("Drop-off Location",
-                      style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: 'Outfit')),
-                  const Text("12 Banana Island, Ikorodu",
-                      style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w300,
-                          fontFamily: 'Outfit')),
-                  const SizedBox(height: 10),
-                  const Text("Additional Note",
-                      style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: 'Outfit')),
-                  Text(task!.additionalNotes ?? 'N/A',
-                      style: const TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w300,
-                          fontFamily: 'Outfit')),
-                  const SizedBox(height: 10),
-                  const Text("Task ID",
-                      style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'Outfit')),
-                  Text("#${task!.id ?? 'N/A'}",
-                      style: const TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w300,
-                          fontFamily: 'Outfit')),
-
-                  const SizedBox(height: 20),
-                  const Text("Status Updates",
-                      style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'Outfit')),
-                  const SizedBox(height: 20),
-
-                  // Status Stepper
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: List.generate(stepTitles.length, (index) {
-                      final isCompleted = index < completedSteps;
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              children: [
-                                Container(
-                                  width: 15,
-                                  height: 20,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: isCompleted
-                                        ? Colors.red
-                                        : Colors.grey[300],
-                                  ),
-                                  child: isCompleted
-                                      ? const Icon(Icons.check,
-                                          size: 14, color: Colors.white)
-                                      : const SizedBox.shrink(),
-                                ),
-                                if (index < stepTitles.length - 1)
-                                  Container(
-                                      width: 1, height: 20, color: Colors.blue),
-                              ],
-                            ),
-                            const SizedBox(width: 8),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 2),
-                              child: Text(stepTitles[index],
-                                  style: const TextStyle(
-                                      fontSize: 9,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: 'Outfit')),
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
-                  ),
-                  const SizedBox(height: 30),
-
-                  // Bottom Button
-                  FancyContainer(
-                    onTap: () => _handleBottomAction(task!),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.blue),
-                    height: 50,
-                    width: double.infinity,
-                    child: Center(
-                      child: Text(
-                        _getBottomText(task!.status),
-                        style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: 'Outfit',
-                            color: Colors.blue),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                ],
-              ),
-            ),
-          );
-        } else {
-          return const Center(child: Text("No task data available"));
-        }
-      },
+              // Scaffold(
+              //   body: );
+            } else {
+              if (state is GetTaskOverviiewErrorState) {
+                return Center(
+                    child: Text("an error has occured ${state.errorMessage}"));
+              }
+              return Center(
+                  child: Text("No task data available>>${state.runtimeType}"));
+            }
+          },
+        ),
+      ),
     );
   }
 }
@@ -518,6 +573,7 @@ class _RunnerImageWidget2State extends State<RunnerImageWidget2> {
     context
         .read<ProfileBloc>()
         .add(GetrunnerProfileEvent(userID: widget.task.runnerId!));
+    context.read<TaskBloc>().add(ActivetaskEvent());
   }
 
   bool getrunnerProfileEventHasError = false;

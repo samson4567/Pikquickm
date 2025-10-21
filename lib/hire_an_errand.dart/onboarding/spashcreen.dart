@@ -44,6 +44,10 @@ class _SplashScreenState extends State<SplashScreen> {
           // context.read<AuthBloc>().authenticationRepository.cacheUserData();
           print("jdasjdbksjdkabjd>>user_${user}");
           if (user!.role == 'client') {
+            userModelG = await context
+                .read<ProfileBloc>()
+                .profileRepository
+                .getUserProflePlain(userID: user.id, isByRunner: false);
             context.go(
               MyAppRouteConstant.dashboard,
               extra: {
@@ -55,6 +59,10 @@ class _SplashScreenState extends State<SplashScreen> {
           }
 
           if (user.role == 'runner') {
+            userModelG = await context
+                .read<ProfileBloc>()
+                .profileRepository
+                .getUserProflePlain(userID: user.id, isByRunner: true);
             context.go(MyAppRouteConstant.dashBoardScreen);
             return;
           }

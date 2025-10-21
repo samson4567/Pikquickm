@@ -76,6 +76,12 @@ class EndpointConstant {
   static const String getVerifiedDocuments = "/runner-documents/my-documents";
   static const String logout = "/auth/logout";
   static const String uploadProfilePicture = "/runner-profile/profile-picture";
+  static const String getClientProfile = "/user/profile";
 
-  ///runner-documents/my-documents
+  static const String gettaskAssignmentMessages =
+      "/chat/task-assignments/:taskAssignmentID/messages";
+  static const String gettaskAssignmentMessagesBetter =
+      "/chat/task-assignments";
+
+  // /chat/task-assignments/:taskID/messages
 }

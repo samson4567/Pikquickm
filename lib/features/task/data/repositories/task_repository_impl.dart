@@ -33,6 +33,7 @@ import 'package:pikquick/features/task/domain/entitties/reject_bid_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/runner_task_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/specialize_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/start_entity.dart';
+import 'package:pikquick/features/task/domain/entitties/task_message_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/wallet_entities.dart';
 import 'package:pikquick/features/task/domain/repository/repository.dart';
 import 'package:pikquick/features/transaction/domain/entities/user_address_enties.dart';
@@ -82,13 +83,9 @@ class TaskRepositoryImpl implements TaskRepository {
   }
 
   @override
-  Future<Either<Failure, List<ActiveTaskPendingEntity>>> getactiveTask({
-    required ActiveTaskPendingModel getTaskRunner,
-  }) async {
+  Future<Either<Failure, List<ActiveTaskPendingEntity>>> getactiveTask() async {
     try {
-      final result = await taskRemoteDatasource.getActiveTask(
-        getTaskRunner: getTaskRunner,
-      );
+      final result = await taskRemoteDatasource.getActiveTask();
       return right(result);
     } catch (e) {
       return left(mapExceptionToFailure(e));
@@ -290,6 +287,34 @@ class TaskRepositoryImpl implements TaskRepository {
       {required WalletSummaryModel model}) async {
     try {
       final result = await taskRemoteDatasource.getWalletSummary(model: model);
+      return right(result);
+    } catch (e) {
+      return left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<TaskMessageEntity>>> gettaskAssignmentMessages(
+      {required String taskAssignmentID}) async {
+    try {
+      final result = await taskRemoteDatasource.gettaskAssignmentMessages(
+          taskAssignmentID: taskAssignmentID);
+      return right(result);
+    } catch (e) {
+      return left(mapExceptionToFailure(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, TaskMessageEntity>> sendtaskAssignmentMessage(
+      {required String taskAssignmentID,
+      required String content,
+      required String messageType}) async {
+    try {
+      final result = await taskRemoteDatasource.sendtaskAssignmentMessage(
+          taskAssignmentID: taskAssignmentID,
+          content: content,
+          messageType: messageType);
       return right(result);
     } catch (e) {
       return left(mapExceptionToFailure(e));

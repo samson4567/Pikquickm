@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:pikquick/core/api/pickquick_network_client.dart';
 import 'package:pikquick/core/constants/endpoint_constant.dart';
 import 'package:pikquick/core/db/app_preference_service.dart';
+import 'package:pikquick/features/authentication/data/models/usermodel.dart';
 import 'package:pikquick/features/profile/data/model/auto_sub_daily.dart';
 import 'package:pikquick/features/profile/data/model/create_model.dart';
 import 'package:pikquick/features/profile/data/model/get_runner_profile_model.dart';
@@ -53,6 +54,15 @@ abstract class ProfileRemoteDatasource {
   });
   Future<String> uploadProfilePicture({
     required File file,
+  });
+
+  Future<UserModel> getUserProfle({
+    required String? userID,
+    required bool isByRunner,
+  });
+  Future<UserModel> getUserProflePlain({
+    required String? userID,
+    required bool isByRunner,
   });
 }
 
@@ -259,5 +269,29 @@ class ProfileRemoteDatasourceImpl implements ProfileRemoteDatasource {
       data: model.toJson(),
     );
     return UnsubscribeAutoDeductionModel.fromJson(response.data);
+  }
+
+  @override
+  Future<UserModel> getUserProfle(
+      {required String? userID, required bool isByRunner}) async {
+    final response = await networkClient.get(
+      endpoint: (isByRunner)
+          ? "${EndpointConstant.getRunnerProfile}/$userID"
+          : EndpointConstant.getClientProfile,
+      isAuthHeaderRequired: true,
+    );
+    return UserModel.fromJson(response.data);
+  }
+
+  @override
+  Future<UserModel> getUserProflePlain(
+      {required String? userID, required bool isByRunner}) async {
+    final response = await networkClient.get(
+      endpoint: (isByRunner)
+          ? "${EndpointConstant.getRunnerProfile}/$userID"
+          : EndpointConstant.getClientProfile,
+      isAuthHeaderRequired: true,
+    );
+    return UserModel.fromJson(response.data);
   }
 }

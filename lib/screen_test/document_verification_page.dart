@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -11,12 +10,9 @@ import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/component/fancy_text.dart';
 import 'package:pikquick/component/free.dart';
 import 'package:pikquick/core/constants/svgs.dart';
-import 'package:pikquick/errand_runer.dart/newtask/available_runner.dart.dart';
-import 'package:pikquick/features/authentication/domain/entities/kyc_request_entity.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_event.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_state.dart';
-import 'package:pikquick/features/wallet/presentation/wallet_bloc.dart';
 
 class DocumentVerificationCamera extends StatefulWidget {
   const DocumentVerificationCamera({super.key});

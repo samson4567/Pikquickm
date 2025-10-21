@@ -86,6 +86,7 @@ class MyAppRouteConstant {
       '/addressDocumentUploadScreen';
   static const String testSite = '/testSite';
   static const String chatScreen = '/chatScreen';
+  static const String chatScreenTwo = '/chatScreenTwo';
 
-  // chatScreen
+  // chatScreenTwo
 }

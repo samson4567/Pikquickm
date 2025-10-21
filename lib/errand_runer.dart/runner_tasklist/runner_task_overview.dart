@@ -55,6 +55,7 @@ class _TaskOverviewState extends State<TaskOverview>
     context
         .read<TaskBloc>()
         .add(RunnerTaskOverviewgEvent(taskId: widget.taskId));
+    context.read<TaskBloc>().add(ActivetaskEvent());
 
     _controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 1));
@@ -125,8 +126,8 @@ class _TaskOverviewState extends State<TaskOverview>
   void _navigateToMessagePage(RunnerTaskOverviewEntity task) {
     // Navigator.push(
     //     context, MaterialPageRoute(builder: (_) => const MessagePage()));
-    context.push(MyAppRouteConstant.chatScreen,
-        extra: {"taskId": task.id, "userId": task.clientId});
+    context.push(MyAppRouteConstant.chatScreenTwo,
+        extra: taskAssignmentEntity?.id ?? "");
   }
 
   void _showLoadingDialog(String message, {bool isStart = true}) {
@@ -210,6 +211,7 @@ class _TaskOverviewState extends State<TaskOverview>
     );
   }
 
+  ActiveTaskPendingEntity? taskAssignmentEntity;
   // show error dialog
   void _showErrorDialog(String title, String message) {
     showDialog(
@@ -238,6 +240,26 @@ class _TaskOverviewState extends State<TaskOverview>
         listeners: [
           BlocListener<TaskBloc, TaskState>(
             listener: (context, state) {
+              // Active task fetcher listener started
+              if (state is ActivetaskErrorState) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.errorMessage)),
+                );
+              }
+              if (state is ActivetaskSuccessState) {
+                taskAssignmentEntity = state.runnertask.where(
+                  (element) {
+                    return element.taskId == widget.taskId;
+                  },
+                ).firstOrNull;
+                if (taskAssignmentEntity != null) {
+                  canCommunicate = true;
+                } else {
+                  canCommunicate = false;
+                }
+                setState(() {});
+              }
+              // Active task fetcher listener ended
               if (state is RunnerTaskOverViewSuccessState) {
                 setState(() {
                   _task = state.taskOverView;
@@ -363,7 +385,7 @@ class _TaskOverviewState extends State<TaskOverview>
             ],
           ),
           const SizedBox(height: 20),
-          messageMethod(),
+          if (canCommunicate) messageMethod(),
           const Divider(height: 30, thickness: 1),
           Text(
             "Location:",
@@ -777,6 +799,8 @@ class _TaskOverviewState extends State<TaskOverview>
       ],
     );
   }
+
+  bool canCommunicate = false;
 
   Widget _buildReviewInput() {
     return AnimatedContainer(

@@ -28,11 +28,14 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<AcceptBidEvent>(_onAcceptBid);
     on<BidRejectEvent>(_onBidReject);
     on<StartTaskEvent>(_onStartTask);
+
     on<MarkAsCompletedEvent>(_onMarkAsCompleted);
     on<WalletSummaryEvent>(_onGetWalletSummary);
+    on<SendtaskAssignmentMessageEvent>(_onSendtaskAssignmentMessage);
+    on<GettaskAssignmentMessagesEvent>(_onGettaskAssignmentMessages);
   }
 
-// taskcreation
+// GettaskAssignmentMessages
   Future<void> _onTaskCreationEvent(
       TaskCreationEvent event, Emitter<TaskState> emit) async {
     emit(TaskCreationLoadingState());
@@ -91,8 +94,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   Future<void> _onActiveTask(
       ActivetaskEvent event, Emitter<TaskState> emit) async {
     emit(ActivetaskLoadingState());
-    final result =
-        await taskRepository.getactiveTask(getTaskRunner: event.getTaskRunner);
+    final result = await taskRepository.getactiveTask();
     result.fold(
       (error) => emit(ActivetaskErrorState(errorMessage: error.message)),
       (data) => emit(ActivetaskSuccessState(runnertask: data)),
@@ -277,4 +279,38 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       (summary) => emit(WalletSummarySuccessState(summary)),
     );
   }
+
+  Future<void> _onSendtaskAssignmentMessage(
+      SendtaskAssignmentMessageEvent event, Emitter<TaskState> emit) async {
+    emit(SendtaskAssignmentMessageEventLoadingState());
+
+    final result = await taskRepository.sendtaskAssignmentMessage(
+        messageType: event.messageType,
+        content: event.content,
+        taskAssignmentID: event.taskAssignmentID);
+
+    result.fold(
+      (failure) => emit(SendtaskAssignmentMessageEventErrorState(
+          errorMessage: failure.message)),
+      (summary) => emit(SendtaskAssignmentMessageEventSuccessState(
+          taskMessageEntity: summary)),
+    );
+  }
+
+  Future<void> _onGettaskAssignmentMessages(
+      GettaskAssignmentMessagesEvent event, Emitter<TaskState> emit) async {
+    emit(GettaskAssignmentMessagesEventLoadingState());
+
+    final result = await taskRepository.gettaskAssignmentMessages(
+        taskAssignmentID: event.taskAssignmentID);
+
+    result.fold(
+      (failure) => emit(GettaskAssignmentMessagesEventErrorState(
+          errorMessage: failure.message)),
+      (summary) => emit(GettaskAssignmentMessagesEventSuccessState(
+          taskMessageEntity: summary)),
+    );
+  }
+
+  // _onGettaskAssignmentMessages
 }
