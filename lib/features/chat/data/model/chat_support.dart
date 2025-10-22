@@ -13,7 +13,10 @@ class ChatSupportModel extends ChatSupportEntity {
     return ChatSupportModel(
       message: json['message'] ?? '',
       sessionId: json['sessionId'] ?? '',
-      response: json['data']?['response'] ?? json['response'] ?? '',
+      // Handles both {data: {response: "..."} } and {response: "..."}
+      response: (json['data'] != null && json['data'] is Map)
+          ? json['data']['response'] ?? ''
+          : json['response'] ?? '',
     );
   }
 

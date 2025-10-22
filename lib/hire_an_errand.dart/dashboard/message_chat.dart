@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pikquick/features/chat/data/model/chat_support.dart';
-
 import 'package:pikquick/features/wallet/presentation/wallet_bloc.dart';
 import 'package:pikquick/features/wallet/presentation/wallet_event.dart';
 import 'package:pikquick/features/wallet/presentation/wallet_state.dart';
@@ -23,11 +22,9 @@ class _MessagePageState extends State<MessagePage> {
         _messages.add({"text": text, "isSender": true});
       });
 
-      // Dispatch BLoC event
       final chat = ChatSupportModel(
         message: text,
-        sessionId:
-            "user-123-session-456", // Replace with your dynamic session ID
+        sessionId: "user-123-session-456",
       );
 
       context.read<WalletBloc>().add(SendChatMessageEvent(chat));
@@ -37,20 +34,27 @@ class _MessagePageState extends State<MessagePage> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
     return Scaffold(
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0.5,
         title: Row(
           children: [
             const CircleAvatar(
-              backgroundImage: AssetImage('assets/james.jpg'),
+              backgroundImage: AssetImage('assets/images/ci.png'),
               radius: 18,
             ),
             const SizedBox(width: 10),
             const Text(
               "Chat Support",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
             ),
           ],
         ),
@@ -58,9 +62,10 @@ class _MessagePageState extends State<MessagePage> {
       body: BlocConsumer<WalletBloc, WalletState>(
         listener: (context, state) {
           if (state is ChatSupportSuccess) {
+            final reply = state.chat.response ?? "No response from server";
             setState(() {
               _messages.add({
-                "text": state.chat ?? "Response received",
+                "text": reply,
                 "isSender": false,
               });
             });
@@ -75,40 +80,57 @@ class _MessagePageState extends State<MessagePage> {
             children: [
               Expanded(
                 child: ListView.builder(
-                  padding: const EdgeInsets.all(12),
+                  reverse: false,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   itemCount: _messages.length,
                   itemBuilder: (context, index) {
                     final message = _messages[index];
+                    final isSender = message["isSender"] as bool;
+
                     return Align(
-                      alignment: message["isSender"]
+                      alignment: isSender
                           ? Alignment.centerRight
                           : Alignment.centerLeft,
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 6),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
-                        decoration: BoxDecoration(
-                          color: message["isSender"]
-                              ? Colors.blue
-                              : Colors.grey[300],
-                          borderRadius: BorderRadius.only(
-                            topLeft: const Radius.circular(16),
-                            topRight: const Radius.circular(16),
-                            bottomLeft: message["isSender"]
-                                ? const Radius.circular(16)
-                                : const Radius.circular(4),
-                            bottomRight: message["isSender"]
-                                ? const Radius.circular(4)
-                                : const Radius.circular(16),
-                          ),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth:
+                              width * 0.75, // ✅ Prevents overly wide bubbles
                         ),
-                        child: Text(
-                          message["text"],
-                          style: TextStyle(
-                            color: message["isSender"]
-                                ? Colors.white
-                                : Colors.black,
-                            fontSize: 16,
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                isSender ? Colors.blue[600] : Colors.grey[300],
+                            borderRadius: BorderRadius.only(
+                              topLeft: const Radius.circular(16),
+                              topRight: const Radius.circular(16),
+                              bottomLeft: isSender
+                                  ? const Radius.circular(16)
+                                  : const Radius.circular(4),
+                              bottomRight: isSender
+                                  ? const Radius.circular(4)
+                                  : const Radius.circular(16),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 2,
+                                offset: const Offset(1, 1),
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            message["text"],
+                            style: TextStyle(
+                              color: isSender ? Colors.white : Colors.black87,
+                              fontSize: 15.5,
+                              height: 1.4,
+                            ),
                           ),
                         ),
                       ),
@@ -121,36 +143,59 @@ class _MessagePageState extends State<MessagePage> {
                   padding: EdgeInsets.all(8.0),
                   child: CircularProgressIndicator(),
                 ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border(
-                    top: BorderSide(color: Colors.grey.shade300),
+              SafeArea(
+                top: false,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border(
+                      top: BorderSide(color: Colors.grey.shade300),
+                    ),
                   ),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _controller,
-                        decoration: const InputDecoration(
-                          hintText: "Type a message...",
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(
-                            vertical: 10,
-                            horizontal: 16,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: TextField(
+                            controller: _controller,
+                            minLines: 1,
+                            maxLines: 4,
+                            textInputAction: TextInputAction.send,
+                            decoration: const InputDecoration(
+                              hintText: "Type a message...",
+                              border: InputBorder.none,
+                              hintStyle:
+                                  TextStyle(color: Colors.grey, fontSize: 15),
+                            ),
+                            onSubmitted: (value) =>
+                                _sendMessage(context, value.trim()),
                           ),
                         ),
                       ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.send, color: Colors.blue),
-                      onPressed: () =>
-                          _sendMessage(context, _controller.text.trim()),
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      InkWell(
+                        onTap: () =>
+                            _sendMessage(context, _controller.text.trim()),
+                        borderRadius: BorderRadius.circular(50),
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: const BoxDecoration(
+                            color: Colors.blue,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.send,
+                              color: Colors.white, size: 22),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -160,3 +205,4 @@ class _MessagePageState extends State<MessagePage> {
     );
   }
 }
+//a51a331b-5868-45a6-b1a9-1f5bc5689c66
