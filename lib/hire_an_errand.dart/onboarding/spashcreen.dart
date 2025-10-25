@@ -6,6 +6,7 @@ import 'package:pikquick/core/db/app_preference_service.dart';
 import 'package:pikquick/core/di/injector.dart';
 import 'package:pikquick/core/error/failure.dart';
 import 'package:pikquick/core/security/secure_key.dart';
+import 'package:pikquick/errand_runer.dart/notification/notificationWorkers/push_notifications.dart';
 import 'package:pikquick/features/authentication/data/models/refrresh_toke_model.dart';
 import 'package:pikquick/features/authentication/data/models/usermodel.dart';
 import 'package:pikquick/features/authentication/data/repositories/authentication_repository_impl.dart';
@@ -36,6 +37,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
         print("jdasjdbksjdkabjd>>isloggedIn>>${isloggedIn}");
         if (isloggedIn) {
+          context.read<AuthBloc>().add(AddOrUpdateFCMTokenEvent(
+                  fcmToken:
+                      thetoken!) // theToken must have been initialized here
+
+              );
+
           UserModel? user = userModelG = await context
               .read<AuthBloc>()
               .authenticationRepository

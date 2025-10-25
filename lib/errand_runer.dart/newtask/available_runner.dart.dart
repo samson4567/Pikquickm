@@ -20,6 +20,7 @@ class _AvailableTaskState extends State<AvailableTask>
   String searchQuery = '';
   String selectedFilter = 'All';
   final TextEditingController _searchController = TextEditingController();
+
   late AnimationController _controller;
 
   @override
@@ -44,299 +45,262 @@ class _AvailableTaskState extends State<AvailableTask>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // 🔹 Custom Header (No AppBar)
-            Padding(
-              padding:
-                  const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Back arrow
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new,
-                        color: Colors.black),
-                    onPressed: () {
-                      if (context.canPop()) {
-                        context.pop();
-                      } else {
-                        context.go(MyAppRouteConstant.dashBoardScreen);
-                      }
-                    },
+      backgroundColor: Colors.white, // Light blue background
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
+            ),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go(MyAppRouteConstant
+                    .dashBoardScreen); // or any default/fallback route
+              }
+            }),
+        centerTitle: true,
+        title: const Text(
+          "Available Tasks",
+          style: TextStyle(
+            fontSize: 20,
+            fontFamily: 'Outfit',
+            fontWeight: FontWeight.w500,
+            color: Colors.black87,
+          ),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(150),
+          child: Column(
+            children: [
+              _buildSearchBar(),
+              const SizedBox(height: 10),
+              // Filter chips
+              SizedBox(
+                height: 50,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  children: [
+                    _buildFilterChip("All"),
+                    _buildFilterChip("Helping hand"),
+                    _buildFilterChip("Pickup Delivery"),
+                    _buildFilterChip("Shopping"),
+                    _buildFilterChip("Queue Standing"),
+                    _buildFilterChip("Errand Running"),
+                    _buildFilterChip("House Cleaning"),
+                    _buildFilterChip("Document Dispatch"),
+                    _buildFilterChip("Gift & Parcel Delivery"),
+                    _buildFilterChip("Transport Errands"),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 6),
+            ],
+          ),
+        ),
+      ),
+      body: BlocConsumer<TaskBloc, TaskState>(
+        listener: (context, state) {
+          if (state is GetNewTaskErrorState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.errorMessage)),
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is GetNewTaskLoadingState) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is GetNewTaskSuccessState) {
+            final tasks = state.getNewTask.where((task) {
+              final query = searchQuery.toLowerCase();
+              final title = task.description?.toLowerCase() ?? '';
+              final type = task.taskType?.toLowerCase() ?? '';
+
+              if (!title.contains(query)) return false;
+              if (selectedFilter == 'All') return true;
+              if (selectedFilter == 'Pickup Delivery') return type == 'pickup';
+              return type == selectedFilter.toLowerCase();
+            }).toList();
+
+            if (tasks.isEmpty) {
+              return const Center(
+                child: Text(
+                  'No matching tasks found.',
+                  style: TextStyle(color: Colors.blueGrey, fontSize: 16),
+                ),
+              );
+            }
+
+            return ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: tasks.length,
+              itemBuilder: (context, index) {
+                final task = tasks[index];
+
+                return FadeTransition(
+                  opacity: CurvedAnimation(
+                    parent: _controller..forward(),
+                    curve: Interval((index / tasks.length), 1.0,
+                        curve: Curves.easeIn),
                   ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    "Available Task",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontFamily: 'Outfit',
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 18),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFAFAFA),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.white, width: 1),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  _buildSearchBar(),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    height: 40,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildFilterChip("All"),
-                        _buildFilterChip("Custom Task"),
-                        _buildFilterChip("Pickup & Delivery"),
-                        _buildFilterChip("Shopping"),
-                        _buildFilterChip("Errand Running"),
+                        Text(
+                          task.taskType ?? 'Task',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          "📅 Created: ${task.createdAt ?? 'N/A'}",
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        const Divider(height: 20, thickness: 0.5),
+                        Text(
+                          task.description ?? 'No Description',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "₦${task.budget ?? '0'}",
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 6),
+                              child: const Text(
+                                "💰 Offer your Bid",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.blue,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+
+                        Text(
+                          task.clientName ?? 'Task',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          "📍 Location Address",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                          ),
+                        ),
+                        // ignore: avoid_print
+
+                        Text(
+                          userAddress?.pickupAddressLine1 ?? '',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black,
+                          ),
+                        ),
+
+                        Text(
+                          userAddress?.dropoffAddressLine1 ?? '',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.blue,
+                          ),
+                        ),
+                        // const Text("Drop-off: Yaba"),
+                        const SizedBox(height: 12),
+                        Center(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              context.go(
+                                MyAppRouteConstant.taskdetailsPage,
+                                extra: {
+                                  "taskId": task.id,
+                                },
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                                side: BorderSide(
+                                    color: Colors.blue,
+                                    width: 1), // Changed to blue border
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 120,
+                                vertical: 22,
+                              ),
+                            ),
+                            child: const Text(
+                              "View Details",
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
+                );
+              },
+            );
+          }
 
-            // 🔹 Task List
-            Expanded(
-              child: BlocConsumer<TaskBloc, TaskState>(
-                listener: (context, state) {
-                  if (state is GetNewTaskErrorState) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(state.errorMessage)),
-                    );
-                  }
-                },
-                builder: (context, state) {
-                  if (state is GetNewTaskLoadingState) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (state is GetNewTaskSuccessState) {
-                    final tasks = state.getNewTask.where((task) {
-                      final query = searchQuery.toLowerCase();
-                      final title = task.description?.toLowerCase() ?? '';
-                      final type = task.taskType?.toLowerCase() ?? '';
-
-                      if (!title.contains(query)) return false;
-                      if (selectedFilter == 'All') return true;
-                      if (selectedFilter == 'Pickup & Delivery') {
-                        return type.contains('pickup');
-                      }
-                      return type == selectedFilter.toLowerCase();
-                    }).toList();
-
-                    if (tasks.isEmpty) {
-                      return const Center(
-                        child: Text(
-                          'No matching tasks found.',
-                          style: TextStyle(
-                              color: Colors.blueGrey,
-                              fontSize: 16,
-                              fontFamily: 'Outfit'),
-                        ),
-                      );
-                    }
-
-                    return ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: tasks.length,
-                      itemBuilder: (context, index) {
-                        final task = tasks[index];
-                        return FadeTransition(
-                          opacity: CurvedAnimation(
-                            parent: _controller..forward(),
-                            curve: Interval((index / tasks.length), 1.0,
-                                curve: Curves.easeIn),
-                          ),
-                          child: Container(
-                            margin: const EdgeInsets.only(bottom: 18),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 18, vertical: 18),
-                            decoration: BoxDecoration(
-                              color: Color(0xFFF8F8F8),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Task Title
-                                Text(
-                                  task.description ??
-                                      'Deliver a parcel from Lekki to Ikeja',
-                                  style: const TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w700,
-                                    fontFamily: 'Outfit',
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                const Text(
-                                  "Needed in 2 hours",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.black54,
-                                    fontFamily: 'Outfit',
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-
-                                // Divider
-                                Divider(
-                                  color: Colors.grey[300],
-                                  height: 10,
-                                  thickness: 1,
-                                ),
-                                const SizedBox(height: 8),
-
-                                // Amount & Offer bid
-                                Row(
-                                  children: [
-                                    Text(
-                                      "₦${task.budget ?? '5,000'}",
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.black,
-                                        fontFamily: 'Outfit',
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    GestureDetector(
-                                      onTap: () {
-                                        // TODO: implement bid modal
-                                      },
-                                      child: const Text(
-                                        "Offer your Bid",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.blue,
-                                          fontFamily: 'Outfit',
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 12),
-
-                                // Location
-                                const Text(
-                                  "Location Address",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.black87,
-                                    fontFamily: 'Outfit',
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  children: [
-                                    const Text(
-                                      "Pickup  ",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black87,
-                                        fontFamily: 'Outfit',
-                                      ),
-                                    ),
-                                    Text(
-                                      task.pickupAddressLine1 ?? '',
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: 'Outfit',
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    const Text(
-                                      "Drop-off  ",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black87,
-                                        fontFamily: 'Outfit',
-                                      ),
-                                    ),
-                                    Text(
-                                      task.dropoffAddressLine1 ?? '',
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: 'Outfit',
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 20),
-
-                                // View Details button
-                                Center(
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    child: OutlinedButton(
-                                      style: OutlinedButton.styleFrom(
-                                        side: const BorderSide(
-                                            color: Colors.blue, width: 1),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 14, horizontal: 16),
-                                      ),
-                                      onPressed: () {
-                                        context.go(
-                                          MyAppRouteConstant.taskdetailsPage,
-                                          extra: {"taskId": task.id},
-                                        );
-                                      },
-                                      child: const Text(
-                                        "View Details",
-                                        style: TextStyle(
-                                          color: Colors.blue,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                          fontFamily: 'Outfit',
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  }
-
-                  return const Center(child: Text("No tasks loaded."));
-                },
-              ),
-            ),
-          ],
-        ),
+          return const Center(child: Text("No tasks loaded."));
+        },
       ),
     );
   }
 
+  /// 🔹 Extracted properly as a method
   Widget _buildSearchBar() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade400, width: 1.2),
+        border: Border.all(color: Colors.grey, width: 1.2),
       ),
       child: Row(
         children: [
-          const Icon(Icons.search, color: Colors.white, size: 22),
+          const Icon(Icons.search, color: Colors.black, size: 22),
           const SizedBox(width: 10),
           Expanded(
             child: TextField(
@@ -344,13 +308,12 @@ class _AvailableTaskState extends State<AvailableTask>
               onChanged: (_) => _triggerSearch(),
               style: const TextStyle(fontSize: 15, fontFamily: 'Outfit'),
               decoration: const InputDecoration(
-                hintText: "Search task type",
-                hintStyle: TextStyle(color: Colors.black45, fontSize: 14),
+                hintText: "Search by description or client...",
+                hintStyle: TextStyle(color: Colors.black54, fontSize: 14),
                 border: InputBorder.none,
               ),
             ),
           ),
-          const Icon(Icons.tune, color: Colors.black54, size: 22),
         ],
       ),
     );
@@ -370,18 +333,19 @@ class _AvailableTaskState extends State<AvailableTask>
           });
         },
         selectedColor: Colors.white,
-        backgroundColor: const Color(0xFFF8F8F8),
+        backgroundColor: const Color(0xFFFAFAFA),
         labelStyle: TextStyle(
-          color: isSelected ? Colors.black : Colors.black54,
-          fontFamily: 'Outfit',
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+          color: isSelected ? Colors.lightBlue : Colors.black54,
+          fontWeight: FontWeight.w600,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          side: BorderSide(
-            width: isSelected ? 1.5 : 0,
-          ),
+          borderRadius: BorderRadius.circular(12),
         ),
+        // Add shadow for selected chip
+        side: BorderSide.none,
+        elevation: isSelected ? 4 : 0,
+        pressElevation: 0,
+        shadowColor: Colors.grey.withOpacity(0.3),
       ),
     );
   }

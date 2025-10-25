@@ -337,4 +337,16 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
       print("debug_print-clearCachedRefreshToken-error_is${e}");
     }
   }
+
+  @override
+  Future<Either<Failure, String>> addOrUpdateFCMToken(String fcmToken) async {
+    // addOrUpdateFCMToken
+    try {
+      final result =
+          await authenticationRemoteDatasource.addOrUpdateFCMToken(fcmToken);
+      return right(result);
+    } catch (e) {
+      return left(mapExceptionToFailure(e));
+    }
+  }
 }

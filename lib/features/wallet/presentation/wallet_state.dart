@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:pikquick/features/chat/domain/entities/chat_support_entities.dart';
 import 'package:pikquick/features/wallet/domain/entities/client_notification.enity.dart';
 import 'package:pikquick/features/wallet/domain/entities/runner_model_entity.dart';
 import 'package:pikquick/features/transaction/domain/entities/transaction_entity.dart';
@@ -87,28 +86,4 @@ final class GetClientNotificationErrorState extends WalletState {
   final String errorMessage;
   @override
   List<Object> get props => [errorMessage];
-}
-
-// chatSupport
-
-class ChatSupportInitial extends WalletState {}
-
-class ChatSupportLoading extends WalletState {}
-
-class ChatSupportSuccess extends WalletState {
-  final ChatSupportEntity chat;
-
-  const ChatSupportSuccess({required this.chat});
-
-  @override
-  List<Object> get props => [chat];
-}
-
-class ChatSupportError extends WalletState {
-  final String message;
-
-  const ChatSupportError({required this.message});
-
-  @override
-  List<Object> get props => [message];
 }

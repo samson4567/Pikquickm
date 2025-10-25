@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pikquick/component/fancy_container.dart';
 import 'package:pikquick/component/textfilled.dart';
-import 'package:pikquick/features/profile/data/model/client_profile_name.dart';
-import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
-import 'package:pikquick/features/profile/presentation/profile_event.dart';
-import 'package:pikquick/features/profile/presentation/profile_state.dart';
 
 class EditNamePage extends StatelessWidget {
   const EditNamePage({super.key});
@@ -15,124 +10,61 @@ class EditNamePage extends StatelessWidget {
     final TextEditingController nameController = TextEditingController();
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: BlocConsumer<ProfileBloc, ProfileState>(
-        listener: (context, state) {
-          if (state is ClientEditProfileSuccessname) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Name updated successfully!')),
-            );
-            Navigator.of(context).pop();
-          } else if (state is ClientEditProfileErrorStatename) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.errorMessage)),
-            );
-          }
-        },
-        builder: (context, state) {
-          final bool isLoading = state is ClientEditProfileLoadingname;
-
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 90, horizontal: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Back Arrow
-                GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: const Icon(Icons.arrow_back_ios_new, size: 24),
-                ),
-
-                const SizedBox(height: 30),
-
-                // Title
-                const Text(
-                  'Edit Name',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Outfit',
-                  ),
-                ),
-
-                const SizedBox(height: 10),
-
-                const Text(
-                  'Update your full name as it appears on your profile.',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontFamily: 'Outfit',
-                    color: Colors.black54,
-                  ),
-                ),
-
-                const SizedBox(height: 30),
-
-                // Custom Text Field
-                _buildTextField(
-                  label: 'Full name',
-                  controller: nameController,
-                  onSuffixTap: () {},
-                ),
-
-                const Spacer(),
-
-                // Update Button
-                Center(
-                  child: FancyContainer(
-                    color: const Color(0xFF4A85E4),
-                    borderRadius: BorderRadius.circular(10),
-                    height: 50,
-                    width: double.infinity,
-                    child: InkWell(
-                      onTap: isLoading
-                          ? null
-                          : () {
-                              final name = nameController.text.trim();
-                              if (name.isEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Please enter your name'),
-                                  ),
-                                );
-                                return;
-                              }
-
-                              // Dispatch event to update name
-                              final model =
-                                  ClientEditProfilenameModel(name: name);
-                              context.read<ProfileBloc>().add(
-                                    SubmitClientProfilenameEvent(model),
-                                  );
-                            },
-                      borderRadius: BorderRadius.circular(10),
-                      child: Center(
-                        child: isLoading
-                            ? const SizedBox(
-                                height: 22,
-                                width: 22,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2.5,
-                                ),
-                              )
-                            : const Text(
-                                'Update',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Outfit',
-                                  color: Colors.white,
-                                ),
-                              ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 90, horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Back Arrow
+            GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              child: const Icon(Icons.arrow_back_ios_new, size: 24),
             ),
-          );
-        },
+
+            const SizedBox(height: 30),
+
+            // Subtext
+            const Text(
+              'Name',
+              style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Outfit',
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Custom Text Field
+            _buildTextField(
+              label: 'Full name',
+              controller: nameController,
+
+              onSuffixTap: () {}, // No action needed for name field
+            ),
+            Spacer(),
+            Center(
+              child: FancyContainer(
+                color: const Color(0xFF4A85E4),
+                borderRadius: BorderRadius.circular(10),
+                height: 50,
+                width: 342,
+                child: const Center(
+                  child: Text(
+                    'Update',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Outfit',
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -149,7 +81,6 @@ class EditNamePage extends StatelessWidget {
           label,
           style: const TextStyle(
             fontFamily: "Outfit",
-            fontSize: 15,
             color: Colors.black,
           ),
         ),
@@ -158,9 +89,9 @@ class EditNamePage extends StatelessWidget {
           controller: controller,
           label: label,
           hintText: 'Enter your $label',
-          fillColor: Colors.transparent,
-          labelColor: Colors.black,
-          textColor: Colors.black,
+          fillColor: Colors.white,
+          labelColor: const Color(0xFF98A2B3),
+          textColor: const Color(0xFF98A2B3),
           onSuffixTap: onSuffixTap,
         ),
         const SizedBox(height: 16),

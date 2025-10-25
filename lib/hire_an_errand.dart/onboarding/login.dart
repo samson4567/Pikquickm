@@ -7,6 +7,8 @@ import 'package:pikquick/component/extraction.dart';
 import 'package:pikquick/component/fancy_container.dart';
 import 'package:pikquick/component/textfilled.dart';
 import 'package:pikquick/core/di/injector.dart';
+import 'package:pikquick/errand_runer.dart/notification/notificationWorkers/local_notification.dart';
+import 'package:pikquick/errand_runer.dart/notification/notificationWorkers/push_notifications.dart';
 import 'package:pikquick/features/authentication/data/models/usermodel.dart';
 import 'package:pikquick/features/authentication/data/repositories/authentication_repository_impl.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_bloc.dart';
@@ -65,6 +67,11 @@ class _LoginPageState extends State<LoginPage> {
         if (state is LoginSuccessState) {
           // ignore: unused_local_variable
           // if()
+          context.read<AuthBloc>().add(AddOrUpdateFCMTokenEvent(
+                  fcmToken: thetoken ??
+                      ""!) // theToken must have been initialized here
+
+              );
           context
               .read<AuthBloc>()
               .authenticationRepository
@@ -107,7 +114,9 @@ class _LoginPageState extends State<LoginPage> {
                   // Welcome Text
                   GestureDetector(
                     onTap: () {
-                      context.go(MyAppRouteConstant.splashScreen);
+                      LocalNotificationService.showInstantNotification(
+                          title: "title", body: "body");
+                      // context.go(MyAppRouteConstant.splashScreen);
                     },
                     child: const Text(
                       "Welcome Back",

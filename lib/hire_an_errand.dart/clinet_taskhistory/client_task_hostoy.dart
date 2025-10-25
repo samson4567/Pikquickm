@@ -218,189 +218,194 @@ class _ClientTaskHistoryState extends State<ClientTaskHistory>
                                 ? Colors.purple
                                 : Colors.grey;
 
-            return InkWell(
-              onTap: navigateToOverview,
-              borderRadius: BorderRadius.circular(16),
-              child: Container(
-                margin: const EdgeInsets.only(bottom: 16),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Color(0xFFFAFAFA),
-                  borderRadius: BorderRadius.circular(16),
+            return
+                // Text("${task.status}");
+                _buildTaskWidget(navigateToOverview, themeColor, task);
+          },
+        ),
+      ),
+    );
+  }
+
+  InkWell _buildTaskWidget(void navigateToOverview(), Color themeColor,
+      GetTaskForCurrenusersEntity task) {
+    return InkWell(
+      onTap: navigateToOverview,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Color(0xFFFAFAFA),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Status badge
+            Align(
+              alignment: Alignment.topLeft,
+              child: DashBorderedContainer(
+                backgroundColor: themeColor.withAlpha(20),
+                borderColor: themeColor,
+                child: FancyContainer2(
+                  // child: Icon(
+                  //   task.status?.toLowerCase() == "completed"
+                  //       ? Icons.check_circle
+                  //       : task.status?.toLowerCase() == "inprogress"
+                  //           ? Icons.timelapse
+                  //           : task.status?.toLowerCase() == "pending"
+                  //               ? Icons.pending_actions
+                  //               : task.status?.toLowerCase() == "cancel"
+                  //                   ? Icons.cancel
+                  //                   : task.status?.toLowerCase() ==
+                  //                           "bidding"
+                  //                       ? Icons.gavel
+                  //                       : Icons.info,
+                  //   size: 16,
+                  //   color: Colors.white,
+                  // ),
+                  nulledAlign: true,
+
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(
+                      task.status ?? "Unknown",
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: themeColor
+                          //  Colors.white,
+                          ),
+                    ),
+                  ),
                 ),
-                padding: const EdgeInsets.all(16),
-                child: Column(
+              ),
+            ),
+
+            const SizedBox(height: 6),
+
+            // Task title
+            Text(
+              task.taskType ?? "No Task Type",
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Outfit',
+              ),
+            ),
+
+            // Description
+            if (task.description != null && task.description!.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      task.description!,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'Outfit',
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+            Text(
+              '₦${task.budget ?? '0'}',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Outfit',
+                color: Colors.blue,
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            // Created date
+            Row(
+              children: [
+                const Icon(Icons.access_time, size: 16, color: Colors.black54),
+                const SizedBox(width: 4),
+                Text(
+                  // 'id: ${task.id}',
+                  'Created: ${task.createdAt?.toLocal().toString().split('.')[0] ?? 'N/A'}',
+
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontFamily: 'Outfit',
+                    color: Colors.black54,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 12),
+
+            // Runner info
+            Row(
+              children: [
+                RunnerImageWidget(task: task),
+                const SizedBox(width: 10),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Status badge
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: DashBorderedContainer(
-                        backgroundColor: themeColor.withAlpha(20),
-                        borderColor: themeColor,
-                        child: FancyContainer2(
-                          // child: Icon(
-                          //   task.status?.toLowerCase() == "completed"
-                          //       ? Icons.check_circle
-                          //       : task.status?.toLowerCase() == "inprogress"
-                          //           ? Icons.timelapse
-                          //           : task.status?.toLowerCase() == "pending"
-                          //               ? Icons.pending_actions
-                          //               : task.status?.toLowerCase() == "cancel"
-                          //                   ? Icons.cancel
-                          //                   : task.status?.toLowerCase() ==
-                          //                           "bidding"
-                          //                       ? Icons.gavel
-                          //                       : Icons.info,
-                          //   size: 16,
-                          //   color: Colors.white,
-                          // ),
-                          nulledAlign: true,
-
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Text(
-                              task.status ?? "Unknown",
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: themeColor
-                                  //  Colors.white,
-                                  ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 6),
-
-                    // Task title
                     Text(
-                      task.taskType ?? "No Task Type",
+                      task.runnerName ?? "Anonymous",
                       style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Outfit',
-                      ),
-                    ),
-
-                    // Description
-                    if (task.description != null &&
-                        task.description!.isNotEmpty) ...[
-                      const SizedBox(height: 6),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              task.description!,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontFamily: 'Outfit',
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                    Text(
-                      '₦${task.budget ?? '0'}',
-                      style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 15,
                         fontWeight: FontWeight.w600,
                         fontFamily: 'Outfit',
-                        color: Colors.blue,
                       ),
                     ),
-
-                    const SizedBox(height: 8),
-
-                    // Created date
                     Row(
                       children: [
-                        const Icon(Icons.access_time,
-                            size: 16, color: Colors.black54),
+                        const Icon(Icons.update,
+                            size: 14, color: Colors.black45),
                         const SizedBox(width: 4),
                         Text(
-                          // 'id: ${task.id}',
-                          'Created: ${task.createdAt?.toLocal().toString().split('.')[0] ?? 'N/A'}',
-
+                          'Updated: ${task.updatedAt?.toLocal().toString().split('.')[0] ?? 'N/A'}',
                           style: const TextStyle(
-                            fontSize: 12,
+                            fontSize: 11,
                             fontFamily: 'Outfit',
                             color: Colors.black54,
                           ),
                         ),
                       ],
                     ),
-
-                    const SizedBox(height: 12),
-
-                    // Runner info
-                    Row(
-                      children: [
-                        RunnerImageWidget(task: task),
-                        const SizedBox(width: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              task.runnerName ?? "Anonymous",
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'Outfit',
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                const Icon(Icons.update,
-                                    size: 14, color: Colors.black45),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'Updated: ${task.updatedAt?.toLocal().toString().split('.')[0] ?? 'N/A'}',
-                                  style: const TextStyle(
-                                    fontSize: 11,
-                                    fontFamily: 'Outfit',
-                                    color: Colors.black54,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 14),
-
-                    // View Task Button
-                    FancyContainer(
-                      onTap: navigateToOverview,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.blue),
-                      height: 45,
-                      width: double.infinity,
-                      child: const Center(
-                        child: Text(
-                          'View Task',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Outfit',
-                            color: Colors.blue,
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
+              ],
+            ),
+
+            const SizedBox(height: 14),
+
+            // View Task Button
+            FancyContainer(
+              onTap: navigateToOverview,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.blue),
+              height: 45,
+              width: double.infinity,
+              child: const Center(
+                child: Text(
+                  'View Task',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Outfit',
+                    color: Colors.blue,
+                  ),
+                ),
               ),
-            );
-          },
+            ),
+          ],
         ),
       ),
     );

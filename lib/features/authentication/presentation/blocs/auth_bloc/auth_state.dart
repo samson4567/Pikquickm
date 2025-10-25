@@ -283,13 +283,7 @@ final class GetRunnerVerificationDetailsErrorState extends AuthState {
   List<Object> get props => [errorMessage];
 }
 
-
-
 // GetRunnerVerificationDetails
-
-
-
-
 
 ///LogOut
 
@@ -308,3 +302,26 @@ final class LogOutErrorState extends AuthState {
   @override
   List<Object> get props => [errorMessage];
 }
+
+///AddOrUpdateFCMToken
+
+final class AddOrUpdateFCMTokenLoadingState extends AuthState {}
+
+final class AddOrUpdateFCMTokenSuccessState extends AuthState {
+  const AddOrUpdateFCMTokenSuccessState({required this.message});
+  final String message;
+  @override
+  List<Object> get props => [message];
+}
+
+final class AddOrUpdateFCMTokenErrorState extends AuthState {
+  const AddOrUpdateFCMTokenErrorState({required this.errorMessage});
+  final String errorMessage;
+  @override
+  List<Object> get props => [errorMessage];
+}
+
+
+
+
+// AddOrUpdateFCMToken

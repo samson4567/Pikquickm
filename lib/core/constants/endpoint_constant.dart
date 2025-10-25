@@ -49,9 +49,6 @@ class EndpointConstant {
   static const String subscribetoggle = '/runner-subscription/toggle';
   static const String unsubscribetoggle = '/runner-subscription/toggle';
   static const String walletSummary = '/runner/earnings/summary';
-  static const String getReview = '/reviews/runners/task';
-  static const String clientEditProfile = '/user/profile';
-  static const String chatsupport = '/chat-support/message';
 
   // static const String fetchCompletedTrade = '/trade/history';
   // static const String convert = '/wallet/convert';
@@ -85,6 +82,8 @@ class EndpointConstant {
       "/chat/task-assignments/:taskAssignmentID/messages";
   static const String gettaskAssignmentMessagesBetter =
       "/chat/task-assignments";
+  static const String addOrUpdateFCMToken = "/notifications/fcm/token";
 
   // /chat/task-assignments/:taskID/messages
+  // addOrUpdateFCMToken
 }

@@ -147,6 +147,13 @@ class LogOutEvent extends AuthEvent {
   List<Object> get props => [];
 }
 
-
-
 // GetRemainLoggedinvalue
+
+// AddOrUpdateFCMToken
+
+class AddOrUpdateFCMTokenEvent extends AuthEvent {
+  final String fcmToken;
+  const AddOrUpdateFCMTokenEvent({required this.fcmToken});
+  @override
+  List<Object> get props => [fcmToken];
+}

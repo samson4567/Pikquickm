@@ -3,8 +3,6 @@ import 'package:pikquick/core/api/pickquick_network_client.dart'
 import 'package:pikquick/core/constants/endpoint_constant.dart';
 import 'package:pikquick/core/db/app_preference_service.dart'
     show AppPreferenceService;
-import 'package:pikquick/features/chat/data/model/chat_support.dart';
-import 'package:pikquick/features/chat/domain/entities/chat_support_entities.dart';
 import 'package:pikquick/features/wallet/data/model/client_notification_model.dart';
 
 import 'package:pikquick/features/wallet/data/model/runner_available_model.dart';
@@ -18,7 +16,6 @@ abstract class WalletRomoteDatasources {
 
   Future<List<ClientNotificationModel>> clientnotiification(
       {required ClientNotificationModel clientNotification});
-  Future<ChatSupportModel> chatSupport({required ChatSupportModel chat});
 }
 
 class WalletRemoteDatasourcesImpl implements WalletRomoteDatasources {
@@ -82,17 +79,5 @@ class WalletRemoteDatasourcesImpl implements WalletRomoteDatasources {
     return dataList
         .map((item) => ClientNotificationModel.fromJson(item))
         .toList();
-  }
-
-  @override
-  Future<ChatSupportModel> chatSupport({required ChatSupportModel chat}) async {
-    final response = await networkClient.post(
-      returnRawData: true,
-      endpoint: EndpointConstant.chatsupport,
-      isAuthHeaderRequired: true,
-      data: chat.toJson(),
-    );
-
-    return ChatSupportModel.fromJson(response.data);
   }
 }

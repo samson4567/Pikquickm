@@ -29,8 +29,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<UploadkycDocumentEvent>(_onUploadkycDocument);
     on<GetRunnerVerificationDetailsEvent>(_onGetRunnerVerificationDetails);
     on<LogOutEvent>(_onLogOutEvent);
+    on<AddOrUpdateFCMTokenEvent>(_onAddOrUpdateFCMTokenEvent);
   }
-  // logOut
+  // AddOrUpdateFCMToken
   Future<void> _onNewUserSignUpEvent(
     NewUserSignUpEvent event,
     Emitter<AuthState> emit,
@@ -72,7 +73,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     result.fold(
       (error) => emit(LoginErrorState(errorMessage: error.message)),
       (data) {
-        
         print("dlasjkdbhjdbakjsbdaskjdak>>acted");
         userModelG = UserModel.createFromLogin(data['user']);
         authenticationRepository
@@ -243,5 +243,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     result.fold((error) => emit(LogOutErrorState(errorMessage: error.message)),
         (message) => emit(LogOutSuccessState(message: message)));
   }
-  // _onLogOutEvent
+
+  Future<void> _onAddOrUpdateFCMTokenEvent(
+      AddOrUpdateFCMTokenEvent event, Emitter<AuthState> emit) async {
+    emit(AddOrUpdateFCMTokenLoadingState());
+    final result =
+        await authenticationRepository.addOrUpdateFCMToken(event.fcmToken);
+    result.fold(
+        (error) =>
+            emit(AddOrUpdateFCMTokenErrorState(errorMessage: error.message)),
+        (message) => emit(AddOrUpdateFCMTokenSuccessState(message: message)));
+  }
+  //
+  // on<LogOutEvent>(_onLogOutEvent); AddOrUpdateFCMTokenLoadingState
 }

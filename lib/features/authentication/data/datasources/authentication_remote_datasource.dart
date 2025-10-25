@@ -42,6 +42,8 @@ abstract class AuthenticationRemoteDatasource {
   Future<RunnerVerificationDetailsEntity> getRunnerVerificationDetails();
   Future<String> logOut(String refreshToken);
 
+  Future<String> addOrUpdateFCMToken(String fcmToken);
+
   //logOut
 }
 
@@ -281,6 +283,17 @@ class AuthenticationRemoteDatasourceImpl
         endpoint: EndpointConstant.logout,
         isAuthHeaderRequired: true,
         data: {"refresh_token": refreshToken});
+    print('Response data********************: ${response.message}');
+    return response.message;
+  }
+
+  @override
+  Future<String> addOrUpdateFCMToken(String fcmToken) async {
+    final response = await networkClient.post(
+      endpoint: EndpointConstant.addOrUpdateFCMToken,
+      isAuthHeaderRequired: true,
+      data: {"fcm_token": fcmToken},
+    );
     print('Response data********************: ${response.message}');
     return response.message;
   }

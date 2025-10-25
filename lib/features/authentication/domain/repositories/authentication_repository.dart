@@ -43,6 +43,7 @@ abstract class AuthenticationRepository {
   Future<bool> getRemainLoggedinvalue();
   Future<void> storeRemainLoggedinvalue(bool rememberMe);
   Future<Either<Failure, String>> logOut();
+
   Future<void> cacheAuthToken(TokenModel tokenModel);
   Future<TokenModel?> getCachedAuthToken();
   Future<void> clearCachedAuthToken();
@@ -54,6 +55,9 @@ abstract class AuthenticationRepository {
   Future<void> cacheRefreshToken(String refreshToken);
   Future<String?> getCachedRefreshToken();
   Future<void> clearCachedRefreshToken();
+
+// Fresh Beans
+  Future<Either<Failure, String>> addOrUpdateFCMToken(String fcmToken);
 }
 
 //VerifyResetOTPEvent

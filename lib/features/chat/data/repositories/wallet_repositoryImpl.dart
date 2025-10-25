@@ -1,8 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:pikquick/core/error/failure.dart';
 import 'package:pikquick/core/mapper/failure_mapper.dart';
-import 'package:pikquick/features/chat/data/model/chat_support.dart';
-import 'package:pikquick/features/chat/domain/entities/chat_support_entities.dart';
 import 'package:pikquick/features/wallet/data/datasource/wallet_local_datasources.dart';
 import 'package:pikquick/features/wallet/data/datasource/wallet_romote_datasources.dart';
 import 'package:pikquick/features/wallet/data/model/client_notification_model.dart';
@@ -60,12 +58,5 @@ class WalletRepositoryImpl implements WalletRepository {
     } catch (e) {
       return left(mapExceptionToFailure(e));
     }
-  }
-
-  @override
-  Future<Either<Failure, ChatSupportEntity>> chatSupport(
-      {required ChatSupportModel chat}) {
-    // TODO: implement chatSupport
-    throw UnimplementedError();
   }
 }

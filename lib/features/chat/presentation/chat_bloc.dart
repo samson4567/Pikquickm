@@ -3,7 +3,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pikquick/features/chat/data/model/message_model.dart';
-import 'package:pikquick/features/chat/domain/repositories/chat_repository.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'chat_event.dart';
 import 'chat_state.dart';
@@ -12,7 +11,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   WebSocketChannel? _channel;
   StreamSubscription? _socketSubscription;
   String? _currentUserId; // To mark messages as 'isMe'
-  ChatRepository? chatRepository;
 
   ChatBloc() : super(ChatInitial()) {
     on<ConnectAndJoinChat>(_onConnectAndJoinChat);

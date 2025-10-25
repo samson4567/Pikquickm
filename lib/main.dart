@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/core/di/injector.dart';
+import 'package:pikquick/errand_runer.dart/notification/notificationWorkers/local_notification.dart';
+import 'package:pikquick/errand_runer.dart/notification/notificationWorkers/push_notifications.dart';
 import 'package:pikquick/features/authentication/presentation/blocs/auth_bloc/auth_bloc.dart';
 import 'package:pikquick/features/chat/presentation/chat_bloc.dart';
 import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
@@ -12,13 +14,19 @@ import 'package:pikquick/features/wallet/presentation/wallet_bloc.dart';
 import 'package:pikquick/prmp_map_widgets/prmp_map_cubit.dart';
 import 'package:pikquick/router/router.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:pikquick/router/router_config.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 bool hasInternet = true;
 //
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // MapboxOptions.setAccessToken(MAPBOX_ACCESS_TOKEN);
+  // Firebase.initializeApp();
   await init();
+  // await notificationFunctions();
 
   runApp(const MyApp());
 }
@@ -79,4 +87,64 @@ class _MyAppState extends State<MyApp> {
       ),
     );
   }
+}
+
+notificationFunctions() async {
+  //// notification Shenanigans
+
+  // try {
+  await LocalNotificationService.init();
+
+  tz.initializeTimeZones();
+  // await Firebase.initializeApp(
+  //     options: DefaultFirebaseOptions.currentPlatform);
+
+  await PushNotificationsService.init();
+
+  //listen for incoming messages in background
+  FirebaseMessaging.onBackgroundMessage(
+      PushNotificationsService.onBackgroundMessage);
+
+  // on background notification tapped
+  FirebaseMessaging.onMessageOpenedApp.listen(
+    (RemoteMessage message) async {
+      if (message.notification != null) {
+        print("Background Notification Tapped");
+        await PushNotificationsService.onBackgroundNotificationTapped(
+          message,
+          rootNavigatorKey,
+        );
+      }
+    },
+  );
+
+  // on foreground notification tapped
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    await PushNotificationsService.onForeroundNotificationTapped(
+      message,
+      rootNavigatorKey,
+    );
+  });
+  // LocalNotificationService.onDidReceiveNotificationResponse(NotificationResponse(notificationResponseType: NotificationResponseType.selectedNotification));
+  // for handling in terminated state
+  final RemoteMessage? message =
+      await FirebaseMessaging.instance.getInitialMessage();
+  print("Launched from terminated state");
+  if (message != null) {
+    print("Launched from terminated state");
+    Future.delayed(
+      const Duration(seconds: 10),
+      () {
+        // context.push
+        rootNavigatorKey.currentState!.pushNamed(
+          (userModelG?.role == "client")
+              ? MyAppRouteConstant.clientNotification
+              : MyAppRouteConstant.errandNotification,
+        );
+      },
+    );
+  }
+  try {} catch (e) {}
+
+  /// notification shens  ended ........
 }

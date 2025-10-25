@@ -11,7 +11,6 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     on<WalletBalanceEvent>(_onWalletBalance);
     on<RunnerAvailabeEvent>(_onRunnerAvailabe);
     on<GetClientNotificationEvent>(_onGetClientNotificationn);
-    on<SendChatMessageEvent>(_onChatSupport);
   }
 
   Future<void> _onWalletBalance(
@@ -64,19 +63,6 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
           emit(GetClientNotificationErrorState(errorMessage: error.message)),
       (data) =>
           emit(GetClientNotificationsSucessState(clientNotification: data)),
-    );
-  }
-
-  Future<void> _onChatSupport(
-    SendChatMessageEvent event,
-    Emitter<WalletState> emit,
-  ) async {
-    emit(ChatSupportLoading());
-
-    final result = await walletRepository.chatSupport(chat: event.chat);
-    result.fold(
-      (error) => emit(ChatSupportError(message: error.message)),
-      (data) => emit(ChatSupportSuccess(chat: data)),
     );
   }
 }

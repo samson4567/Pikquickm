@@ -4,9 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/component/dash_boardered_container.dart';
 import 'package:pikquick/component/fancy_container.dart';
+import 'package:pikquick/component/fancy_text.dart';
 import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
 import 'package:pikquick/features/profile/presentation/profile_event.dart';
 import 'package:pikquick/features/profile/presentation/profile_state.dart';
+import 'package:pikquick/features/task/data/model/assign_task_model.dart';
 import 'package:pikquick/features/task/domain/entitties/active_task_entity.dart';
 import 'package:pikquick/features/task/domain/entitties/get_task_overview_entity.dart';
 import 'package:pikquick/features/task/presentation/task_bloc.dart';
@@ -201,11 +203,24 @@ class _ClientTaskOverviewProgressState
               current is GetTaskOverviiewSuccessState ||
               current is GetTaskOverviiewLoadingState,
           listener: (context, state) {
+            print("djsdjkbsdjksdkjd-state_is>>${state.runtimeType}");
             if (state is GetTaskOverviiewErrorState) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.errorMessage)),
               );
             }
+
+            if (state is GetTaskOverviiewSuccessState) {
+              print("djsdjkbsdjksdkjd");
+              task = state.taskOverView;
+              context
+                  .read<ProfileBloc>()
+                  .add(GetrunnerProfileEvent(userID: task!.runnerId!));
+            }
+            // context
+            //     .read<ProfileBloc>()
+            //     .add(GetrunnerProfileEvent(userID: task!.runnerId!));
+            // ;
           },
           buildWhen: (previous, current) =>
               current is GetTaskOverviiewErrorState ||
@@ -215,11 +230,6 @@ class _ClientTaskOverviewProgressState
             if (state is GetTaskOverviiewLoadingState) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is GetTaskOverviiewSuccessState) {
-              task = state.taskOverView;
-              // context
-              //     .read<ProfileBloc>()
-              //     .add(GetrunnerProfileEvent(userID: task!.runnerId!));
-              // ;
               final completedSteps = _getCompletedSteps(task!.status);
               Color themeColor = (task!.status?.toLowerCase() == "completed")
                   ? Colors.green
@@ -272,60 +282,98 @@ class _ClientTaskOverviewProgressState
                       ],
                     ),
                     const SizedBox(height: 10),
-                    const Row(
-                      children: [
-                        Text("ETA: Jan 15, 2025 - 30:16 PM | ",
-                            style: TextStyle(
-                                fontSize: 10, fontWeight: FontWeight.w200)),
-                        Text("by car",
-                            style: TextStyle(
-                                fontSize: 10, fontWeight: FontWeight.w200)),
-                        SizedBox(width: 10),
-                        Icon(Icons.car_crash_outlined,
-                            color: Colors.black, size: 16),
-                      ],
-                    ),
+                    BlocConsumer<ProfileBloc, ProfileState>(
+                        listener: (context, state) {
+                      print("dsjdsdhvjsdvsjhvd-STATE_is>>${state}");
+                      if (state is GetrunnerProfileErrorState) {
+                        print("dsjdsdhvjsdvsjhvd-ERROR");
+                        setState(() {});
+                      }
+                      if (state is GetrunnerProfileSuccessState) {
+                        print("dsjdsdhvjsdvsjhvd-SUCCESS");
+                        if (task!.runnerId == state.runnerID) {
+                          phone = state.getProfile.userPhone;
+                          setState(() {});
+                        }
+                      }
+                    }, builder: (context, state) {
+                      return const Row(
+                        children: [
+                          Text("ETA: Jan 15, 2025 - 30:16 PM | ",
+                              style: TextStyle(
+                                  fontSize: 10, fontWeight: FontWeight.w200)),
+                          Text("by car",
+                              style: TextStyle(
+                                  fontSize: 10, fontWeight: FontWeight.w200)),
+                          SizedBox(width: 10),
+                          Icon(Icons.car_crash_outlined,
+                              color: Colors.black, size: 16),
+                        ],
+                      );
+                    }),
                     const SizedBox(height: 20),
+
+                    if (task?.status == "bid_accepted")
+                      GestureDetector(
+                        onTap: () {
+                          final hireModel = AssignTaskModel(
+                            runnerId: task!.runnerId!,
+                            taskId: widget.taskId,
+                          );
+                          context
+                              .read<TaskBloc>()
+                              .add(AssignTaskEvent(taskAssign: hireModel));
+                        },
+                        child: FancyContainer(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.blue),
+                          height: 50,
+                          width: double.infinity,
+                          child: const Center(
+                            child: Text(
+                              'Hire runner ',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Outfit',
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    // jbaskjbas
                     if (canCommunicate)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           BlocConsumer<ProfileBloc, ProfileState>(
-                              listener: (context, state) {
-                            if (state is GetrunnerProfileErrorState) {
-                              setState(() {});
-                            }
-                            if (state is GetrunnerProfileSuccessState) {
-                              if (task!.runnerId == state.runnerID) {
-                                phone = state.getProfile.userPhone;
-                                setState(() {});
-                              }
-                            }
-                          }, builder: (context, state) {
-                            return GestureDetector(
-                              onTap: () {
-                                if (phone != null)
-                                  _showPhoneNumberDialog();
-                                else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      generalSnackBar(
-                                          "No Phone number Provided"));
-                                }
-                              },
-                              child: Row(
-                                children: [
-                                  Image.asset('assets/images/call.png'),
-                                  const SizedBox(width: 10),
-                                  const Text("Call",
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: 'Outfit',
-                                          color: Colors.blue)),
-                                ],
-                              ),
-                            );
-                          }),
+                              listener: (context, state) {},
+                              builder: (context, state) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    if (phone != null)
+                                      _showPhoneNumberDialog();
+                                    else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(generalSnackBar(
+                                              "No Phone number Provided"));
+                                    }
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Image.asset('assets/images/call.png'),
+                                      const SizedBox(width: 10),
+                                      const Text("Call",
+                                          style: TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Outfit',
+                                              color: Colors.blue)),
+                                    ],
+                                  ),
+                                );
+                              }),
                           const Text("|",
                               style: TextStyle(
                                   fontSize: 17,
@@ -584,7 +632,9 @@ class _RunnerImageWidget2State extends State<RunnerImageWidget2> {
     //     .read<ProfileBloc>()
     //     .add(GetrunnerProfileEvent(userID: widget.task.runnerId!));
     return BlocConsumer<ProfileBloc, ProfileState>(listener: (context, state) {
+      // print("dsjdsdhvjsdvsjhvd-state_is>>${state.runtimeType}");
       if (state is GetrunnerProfileErrorState) {
+        // print("dsjdsdhvjsdvsjhvd-ERROR");
         getrunnerProfileEventHasError = true;
         // ScaffoldMessenger.of(context).showSnackBar(
         //   SnackBar(content: Text(state.errorMessage)),

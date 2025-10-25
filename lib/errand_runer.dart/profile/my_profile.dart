@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:pikquick/app_variable.dart' as app_var;
 import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/component/fancy_container.dart';
-import 'package:pikquick/errand_runer.dart/available_runner/runner_prrofile.dart';
 import 'package:pikquick/errand_runer.dart/available_runner/verification_item_widget.dart';
 import 'package:pikquick/features/profile/domain/entities/getrunner_entity.dart';
 import 'package:pikquick/features/profile/presentation/profile_bloc.dart';
@@ -344,50 +343,42 @@ class _MyProfileState extends State<MyProfile> {
                   ),
 
                   // Circular Progress Indicator
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Stack(alignment: Alignment.center, children: [
-                      // Background half circle
-                      Container(
-                        width: 75,
-                        height: 70, // Half the height for half circle
-                        decoration: BoxDecoration(
-                          color: Colors.orange,
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(35),
-                            topRight: Radius.circular(35),
+                  SizedBox(
+                    width: 80,
+                    height: 80,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          width: 70,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            color: Colors.orange[700],
+                            shape: BoxShape.circle,
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 90,
-                        height: 30,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            CustomPaint(
-                              painter: HalfCircleProgressPainter(
-                                progress: double.tryParse(
-                                        trustScore.toString() ?? '0')! /
-                                    100,
-                                backgroundColor: const Color(0xFF4A85E4),
-                                progressColor: Colors.white,
-                                strokeWidth: 6,
-                              ),
-                            ),
-                            Text(
-                              '${trustScore.toStringAsFixed(0)}%',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Outfit',
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
+                        SizedBox(
+                          width: 60,
+                          height: 60,
+                          child: CircularProgressIndicator(
+                            value: trustScorePercent,
+                            strokeWidth: 6,
+                            backgroundColor: const Color(0xFF4A85E4),
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                                Colors.white),
+                          ),
                         ),
-                      ),
-                    ]),
+                        Text(
+                          '${trustScore.toStringAsFixed(0)}%',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Outfit',
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -639,7 +630,3 @@ class _MyProfileState extends State<MyProfile> {
 }
 
 const _sectionContentStyle = TextStyle(fontSize: 14, fontFamily: 'Outfit');
-
-
-
-//MyProfile

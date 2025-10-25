@@ -1,7 +1,6 @@
 // chat_event.dart
 import 'package:equatable/equatable.dart';
 import 'package:pikquick/features/chat/data/model/message_model.dart';
-import 'package:pikquick/features/chat/domain/entities/chat_support_entities.dart';
 
 abstract class ChatEvent extends Equatable {
   const ChatEvent();
