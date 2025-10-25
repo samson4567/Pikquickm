@@ -16,65 +16,132 @@ class ChatScreenTwo extends StatefulWidget {
 }
 
 class _ChatScreenTwoState extends State<ChatScreenTwo> {
-  // A list to hold the messages
-  final List<String> _messages = [];
-  // Controller for the text input field
   final TextEditingController _textController = TextEditingController();
+  List<TaskMessageEntity> displyedMessage = [];
+  TaskMessageEntity? loadingMessage;
 
-  // Function to handle sending a message
   void _handleSubmitted(String text) {
+    if (text.trim().isEmpty) return;
+
     loadingMessage = TaskMessageEntity(
-        id: Uuid().v4(),
-        message: text,
-        senderId:
-            //  "sbdbsd"
-            userModelG?.id);
+      id: const Uuid().v4(),
+      message: text,
+      senderId: userModelG?.id,
+    );
+
     setState(() {});
     context.read<TaskBloc>().add(SendtaskAssignmentMessageEvent(
         taskAssignmentID: widget.taskAssignmentID,
         content: text,
         messageType: "text"));
-    // Clear the text field
     _textController.clear();
-    // Add the new message to the list and rebuild the UI
-    setState(() {
-      _messages.insert(0,
-          text); // Insert at the beginning to show newest at bottom (reverse: true)
-    });
   }
 
   @override
-  initState() {
+  void initState() {
+    super.initState();
     context.read<TaskBloc>().add(GettaskAssignmentMessagesEvent(
           taskAssignmentID: widget.taskAssignmentID,
         ));
-    super.initState();
   }
 
-  List<TaskMessageEntity> displyedMessage = [];
-
   Widget _buildTextComposer() {
+    return SafeArea(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black12, offset: Offset(0, -1), blurRadius: 3)
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 2),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF5F6FA),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: TextField(
+                  controller: _textController,
+                  decoration: const InputDecoration(
+                      hintText: "Type a message...", border: InputBorder.none),
+                  onSubmitted: _handleSubmitted,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            InkWell(
+              onTap: () => _handleSubmitted(_textController.text),
+              borderRadius: BorderRadius.circular(24),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(0xFF8E9CF3), // bluish-purple send button
+                ),
+                child: const Icon(Icons.send, color: Colors.white, size: 22),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMessage(TaskMessageEntity message) {
+    bool isMine = message.senderId == userModelG?.id;
+
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Row(
-        children: <Widget>[
-          // Text input field
-          Flexible(
-            child: TextField(
-              controller: _textController,
-              onSubmitted: _handleSubmitted,
-              decoration: const InputDecoration.collapsed(
-                hintText: 'Send a message',
+      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 14),
+      child: Column(
+        crossAxisAlignment:
+            isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            constraints: const BoxConstraints(maxWidth: 280),
+            decoration: BoxDecoration(
+              color: isMine
+                  ? const Color(0xFFDCE3FF)
+                  : Colors.white, // Blue-tint for user, white for other
+              borderRadius: BorderRadius.only(
+                topLeft: const Radius.circular(18),
+                topRight: const Radius.circular(18),
+                bottomLeft: Radius.circular(isMine ? 18 : 4),
+                bottomRight: Radius.circular(isMine ? 4 : 18),
+              ),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    offset: const Offset(0, 1),
+                    blurRadius: 3)
+              ],
+            ),
+            child: Text(
+              message.message ?? '',
+              style: TextStyle(
+                color: Colors.black87,
+                fontSize: 15,
+                height: 1.4,
               ),
             ),
           ),
-          // Send button
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: IconButton(
-              icon: const Icon(Icons.send),
-              onPressed: () => _handleSubmitted(_textController.text),
-              color: Theme.of(context).primaryColor,
+          const SizedBox(height: 4),
+          Padding(
+            padding:
+                EdgeInsets.only(left: isMine ? 0 : 8, right: isMine ? 8 : 0),
+            child: Text(
+              '',
+              style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey.shade500,
+                  fontWeight: FontWeight.w400),
             ),
           ),
         ],
@@ -82,197 +149,68 @@ class _ChatScreenTwoState extends State<ChatScreenTwo> {
     );
   }
 
-  // Widget to display an individual message
-  Widget _buildMessage(TaskMessageEntity message) {
-    bool isMine = message.senderId == userModelG?.id;
-    // A simple container to represent a chat bubble
-    return isMine
-        ? Container(
-            margin:
-                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment
-                  .end, // Align all messages to the right for simplicity
-              children: <Widget>[
-                Flexible(
-                  child: Container(
-                    padding: const EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .primaryColor
-                          .withOpacity(0.8), // A nice background color
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: (loadingMessage?.id == message.id)
-                          ? CrossAxisAlignment.end
-                          : CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          message.message ?? '',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        if (loadingMessage?.id == message.id)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: SizedBox(
-                              height: 10,
-                              width: 10,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-                // Space for a simple avatar (optional)
-                // const SizedBox(width: 8.0),
-                // const CircleAvatar(child: Text('Me')),
-              ],
-            ),
-          )
-        : Container(
-            margin:
-                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment
-                  .start, // Align all messages to the right for simplicity
-              children: <Widget>[
-                // const CircleAvatar(child: Text('Me')),
-                // const SizedBox(width: 8.0),
-                Flexible(
-                  child: Container(
-                    padding: const EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                        color: Colors.white, // A nice background color
-                        borderRadius: BorderRadius.circular(15.0),
-                        border: Border.all(
-                            color: Theme.of(context)
-                                .primaryColor
-                                .withOpacity(0.8))),
-                    child: Column(
-                      crossAxisAlignment: (loadingMessage?.id == message.id)
-                          ? CrossAxisAlignment.start
-                          : CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          message.message ?? '',
-                          style: TextStyle(
-                            color:
-                                Theme.of(context).primaryColor.withOpacity(0.8),
-                          ),
-                        ),
-                        if (loadingMessage?.id == message.id)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(),
-                            ),
-                          )
-                      ],
-                    ),
-                    // Text(
-                    //   message.message??'',
-                    //   style: const TextStyle(color: Colors.white),
-                    // ),
-                  ),
-                ),
-                // Space for a simple avatar (optional)
-              ],
-            ),
-          );
-  }
-
-  TaskMessageEntity? loadingMessage;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF0F2FB),
       appBar: AppBar(
-        title: const Text('Chat'),
-        elevation: Theme.of(context).platform == TargetPlatform.iOS
-            ? 0.0
-            : 4.0, // A subtle shadow effect
+        backgroundColor: const Color(0xFF8E9CF3),
+        elevation: 0,
+        title: const Text('Chat',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+        centerTitle: true,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: BlocConsumer<TaskBloc, TaskState>(listener: (context, state) {
-        print("jsjkddhgsdjhsdjh-generally>>${state.runtimeType}");
-        if (state is GettaskAssignmentMessagesEventErrorState) {
-          print("jsjkddhgsdjhsdjh-generally>>${state.errorMessage}");
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage)),
-          );
-
-          // if(displyedMessage.isEmpty)
-          // {
-          //   ScaffoldMessenger.of(context).showSnackBar(
-          //   SnackBar(content: Text(state.errorMessage)),
-          // );}
-        }
-        if (state is GettaskAssignmentMessagesEventSuccessState) {
-          displyedMessage = state.taskMessageEntity;
-          displyedMessage.sort((a, b) => DateTime.parse(b.createdAt!)
-              .compareTo(DateTime.parse(a.createdAt!)));
-
-          // if(displyedMessage.isEmpty)
-          // {
-          //   ScaffoldMessenger.of(context).showSnackBar(
-          //   SnackBar(content: Text(state.errorMessage)),
-          // );}
-          Future.delayed(
-            Duration(
-              seconds: 10,
-            ),
-            () {
+      body: BlocConsumer<TaskBloc, TaskState>(
+        listener: (context, state) {
+          if (state is GettaskAssignmentMessagesEventErrorState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.errorMessage)),
+            );
+          }
+          if (state is GettaskAssignmentMessagesEventSuccessState) {
+            displyedMessage = state.taskMessageEntity;
+            displyedMessage.sort((a, b) => DateTime.parse(a.createdAt!)
+                .compareTo(DateTime.parse(b.createdAt!)));
+            Future.delayed(const Duration(seconds: 10), () {
               try {
                 context.read<TaskBloc>().add(GettaskAssignmentMessagesEvent(
                       taskAssignmentID: widget.taskAssignmentID,
                     ));
-              } catch (e) {}
-            },
-          );
-        }
-        if (state is SendtaskAssignmentMessageEventSuccessState) {
-          print("jsjkddhgsdjhsdjh-sdjbsjhdsad-sucess");
-          loadingMessage = null;
-          displyedMessage.add(state.taskMessageEntity);
-          displyedMessage.sort((a, b) => DateTime.parse(b.createdAt!)
-              .compareTo(DateTime.parse(a.createdAt!)));
-        }
-        if (state is SendtaskAssignmentMessageEventErrorState) {
-          print("jsjkddhgsdjhsdjh-sdjbsjhdsad-error-${state.errorMessage}");
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Message Sending Failed")),
-          );
-        }
-      }, builder: (context, state) {
-        return Column(
-          children: <Widget>[
-            // Message list area
-            Flexible(
-              child: ListView.builder(
-                padding: const EdgeInsets.all(8.0),
-                // Reverse the list so the newest message is at the bottom
-                reverse: true,
-                itemBuilder: (_, int index) =>
-                    _buildMessage(displyedMessage[index]),
-                itemCount: displyedMessage.length,
+              } catch (_) {}
+            });
+          }
+          if (state is SendtaskAssignmentMessageEventSuccessState) {
+            loadingMessage = null;
+            displyedMessage.add(state.taskMessageEntity);
+            displyedMessage.sort((a, b) => DateTime.parse(a.createdAt!)
+                .compareTo(DateTime.parse(b.createdAt!)));
+          }
+          if (state is SendtaskAssignmentMessageEventErrorState) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Message Sending Failed")),
+            );
+            loadingMessage = null;
+          }
+        },
+        builder: (context, state) {
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.only(top: 10, bottom: 20),
+                  itemCount: displyedMessage.length,
+                  itemBuilder: (_, index) {
+                    return _buildMessage(displyedMessage[index]);
+                  },
+                ),
               ),
-            ),
-            if (loadingMessage != null) _buildMessage(loadingMessage!),
-            // Divider between list and input
-            const Divider(height: 1.0),
-            // Input area
-            Container(
-              decoration: BoxDecoration(color: Theme.of(context).cardColor),
-              child: _buildTextComposer(),
-            ),
-          ],
-        );
-      }),
+              if (loadingMessage != null) _buildMessage(loadingMessage!),
+              _buildTextComposer(),
+            ],
+          );
+        },
+      ),
     );
   }
 }
