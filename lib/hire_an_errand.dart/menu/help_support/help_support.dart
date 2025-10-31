@@ -51,8 +51,8 @@ class HelpSupportPage extends StatelessWidget {
               label: 'Chat Support',
               showArrow: true,
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const MessagePage()));
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (_) => const MessagePage()));
               },
             ),
 

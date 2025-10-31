@@ -34,26 +34,69 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
         return DefaultTabController(
           length: 4,
           child: Scaffold(
-            appBar: AppBar(
-              automaticallyImplyLeading: true, // Enables back arrow
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios),
-                onPressed: () {
-                  context.pop();
-                },
-              ),
-              title: const Text('Notification'),
-              bottom: const TabBar(
-                isScrollable: true,
-                tabs: [
-                  Tab(text: 'All'),
-                  Tab(text: 'Task Update'),
-                  Tab(text: 'Bid & Offers'),
-                  Tab(text: 'Payment'),
-                ],
-              ),
+            body: Column(
+              children: [
+                // Back button and title in column form
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.arrow_back_ios,
+                          color: Colors.black,
+                        ),
+                        onPressed: () {
+                          context.pop();
+                        },
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        iconSize: 20,
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Notification',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // TabBar wrapped in container with specified size and color
+                Container(
+                  width: 344,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFAFAFA), // rgba(250, 250, 250, 1)
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: TabBar(
+                    isScrollable: true,
+                    indicator: BoxDecoration(
+                      color: Colors.white, // Selection color white
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    labelColor: Colors.black,
+                    unselectedLabelColor: Colors.grey,
+                    tabs: const [
+                      Tab(text: 'All'),
+                      Tab(text: 'Tasks Updates'),
+                      Tab(text: 'Bids & Offers'),
+                      Tab(text: 'Payments'),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: _buildBody(context, state),
+                ),
+              ],
             ),
-            body: _buildBody(context, state),
           ),
         );
       },
@@ -66,20 +109,20 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
     } else if (state is GetClientNotificationsSucessState) {
       List<ClientNotificationEntity> allNotifications =
           state.clientNotification;
-      allNotifications = [];
+      // allNotifications = [];
 
       final taskUpdateNotifications = allNotifications.where((n) {
         final title = n.title?.trim().toLowerCase() ?? '';
-        return n.type == 'Task Update' || title == 'task rejected';
+        return n.type == 'Tasks Updates' || title == 'task rejected';
       }).toList();
 
       final bidOffersNotifications = allNotifications.where((n) {
         final title = n.title?.trim().toLowerCase() ?? '';
-        return n.type == 'Bid & Offers' || title == 'budget accepted';
+        return n.type == 'Bids & Offers' || title == 'budget accepted';
       }).toList();
 
       final paymentNotifications =
-          allNotifications.where((n) => n.type == 'Payment').toList();
+          allNotifications.where((n) => n.type == 'Payments').toList();
 
       return TabBarView(
         children: [
@@ -154,16 +197,6 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
                     ],
                   ),
                 ),
-                // Positioned(
-                //   top: 10,
-                //   left: 10,
-                //   child: Image.asset(
-                //     'assets/icons/com.png',
-                //     width: 24,
-                //     height: 24,
-                //     fit: BoxFit.cover,
-                //   ),
-                // ),
                 Positioned(
                     top: 10,
                     left: 10,
@@ -173,9 +206,7 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
                       height: 20,
                       width: 20,
                       radius: 20,
-
                       hasBorder: true,
-                      // child: Text("`data`"),
                     )),
                 Positioned(
                   top: 10,
@@ -186,7 +217,6 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
                         fontWeight: FontWeight.w500, fontSize: 12),
                     textAlign: TextAlign.center,
                   ),
-                  // Text("just now")
                 ),
                 if (isBid)
                   Positioned(
@@ -253,8 +283,6 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
-                          // color:
-                          //     isTaskRejected ? Colors.grey : Colors.blueAccent,
                           borderRadius: BorderRadius.circular(6),
                         ),
                         constraints: const BoxConstraints(
@@ -267,9 +295,6 @@ class _CleintNotificatiionState extends State<CleintNotificatiion> {
                             color: Colors.blue,
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            // decoration: isNewTaskAssign
-                            //     ? TextDecoration.lineThrough
-                            //     : TextDecoration.none,
                           ),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,

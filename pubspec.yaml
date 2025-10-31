@@ -75,6 +75,8 @@ dependencies:
   google_fonts: ^6.3.2
   web_socket_channel: ^3.0.3
   file_picker: ^10.3.3
+  flutter_local_notifications: ^19.5.0
+  firebase_messaging: ^16.0.3
 
 dev_dependencies:
   flutter_test:
