@@ -48,44 +48,46 @@ class _ChatScreenTwoState extends State<ChatScreenTwo> {
   Widget _buildTextComposer() {
     return SafeArea(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: const BoxDecoration(
           color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black12, offset: Offset(0, -1), blurRadius: 3)
-          ],
+          border: Border(
+            top: BorderSide(color: Color(0xFFE5E7EB), width: 0.8),
+          ),
         ),
         child: Row(
           children: [
             Expanded(
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 18, vertical: 2),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF5F6FA),
-                  borderRadius: BorderRadius.circular(24),
+              child: TextField(
+                controller: _textController,
+                style: const TextStyle(
+                    fontFamily: 'Outfit', fontSize: 15, color: Colors.black87),
+                decoration: const InputDecoration(
+                  hintText: "Start typing...",
+                  hintStyle: TextStyle(
+                    fontFamily: 'Outfit',
+                    fontSize: 15,
+                    color: Colors.black54,
+                  ),
+                  border: InputBorder.none,
                 ),
-                child: TextField(
-                  controller: _textController,
-                  decoration: const InputDecoration(
-                      hintText: "Type a message...", border: InputBorder.none),
-                  onSubmitted: _handleSubmitted,
-                ),
+                onSubmitted: _handleSubmitted,
               ),
             ),
-            const SizedBox(width: 8),
             InkWell(
               onTap: () => _handleSubmitted(_textController.text),
               borderRadius: BorderRadius.circular(24),
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color(0xFF8E9CF3), // bluish-purple send button
-                ),
-                child: const Icon(Icons.send, color: Colors.white, size: 22),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                child: Icon(Icons.send, color: Color(0xFFB8BCCD), size: 24),
               ),
+            ),
+            const SizedBox(width: 4),
+            InkWell(
+              onTap: () {},
+              borderRadius: BorderRadius.circular(24),
+              child: const Icon(Icons.mic_none_rounded,
+                  color: Color(0xFFB8BCCD), size: 24),
             ),
           ],
         ),
@@ -98,50 +100,87 @@ class _ChatScreenTwoState extends State<ChatScreenTwo> {
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 14),
-      child: Column(
-        crossAxisAlignment:
-            isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment:
+            isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
-          Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-            constraints: const BoxConstraints(maxWidth: 280),
-            decoration: BoxDecoration(
-              color: isMine
-                  ? const Color(0xFFDCE3FF)
-                  : Colors.white, // Blue-tint for user, white for other
-              borderRadius: BorderRadius.only(
-                topLeft: const Radius.circular(18),
-                topRight: const Radius.circular(18),
-                bottomLeft: Radius.circular(isMine ? 18 : 4),
-                bottomRight: Radius.circular(isMine ? 4 : 18),
+          if (!isMine)
+            Padding(
+              padding: const EdgeInsets.only(right: 6, top: 4),
+              child: CircleAvatar(
+                radius: 14,
+                backgroundColor: const Color(0xFFDADDE8),
+                child: const Icon(Icons.person,
+                    size: 16, color: Color(0xFF444655)),
               ),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    offset: const Offset(0, 1),
-                    blurRadius: 3)
+            ),
+          Flexible(
+            child: Column(
+              crossAxisAlignment:
+                  isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              children: [
+                if (!isMine)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4, bottom: 2),
+                    child: Text(
+                      userModelG?.id ?? '',
+                      style: const TextStyle(
+                        fontFamily: 'Outfit',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 14.0, vertical: 10.0),
+                  constraints: const BoxConstraints(maxWidth: 280),
+                  decoration: BoxDecoration(
+                    color: isMine
+                        ? const Color(0xFF3D73EB)
+                        : const Color(0xFFF5F6FA),
+                    borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(16),
+                      topRight: const Radius.circular(16),
+                      bottomLeft: Radius.circular(isMine ? 16 : 4),
+                      bottomRight: Radius.circular(isMine ? 4 : 16),
+                    ),
+                  ),
+                  child: Text(
+                    message.message ?? '',
+                    style: TextStyle(
+                      color: isMine ? Colors.white : Colors.black87,
+                      fontSize: 15,
+                      fontFamily: 'Outfit',
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment:
+                      isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      "11:35 AM",
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontFamily: 'Outfit',
+                        color: Colors.grey.shade500,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    if (isMine) ...[
+                      const SizedBox(width: 4),
+                      const Icon(Icons.done_all,
+                          size: 16, color: Color(0xFF8DC8A4)),
+                    ]
+                  ],
+                ),
               ],
-            ),
-            child: Text(
-              message.message ?? '',
-              style: TextStyle(
-                color: Colors.black87,
-                fontSize: 15,
-                height: 1.4,
-              ),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Padding(
-            padding:
-                EdgeInsets.only(left: isMine ? 0 : 8, right: isMine ? 8 : 0),
-            child: Text(
-              '',
-              style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey.shade500,
-                  fontWeight: FontWeight.w400),
             ),
           ),
         ],
@@ -152,14 +191,25 @@ class _ChatScreenTwoState extends State<ChatScreenTwo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F2FB),
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF8E9CF3),
         elevation: 0,
-        title: const Text('Chat',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
-        centerTitle: true,
-        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded,
+              color: Colors.black87, size: 18),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          "Chat with Michael O.",
+          style: TextStyle(
+            fontFamily: 'Outfit',
+            fontSize: 18,
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        centerTitle: false,
       ),
       body: BlocConsumer<TaskBloc, TaskState>(
         listener: (context, state) {

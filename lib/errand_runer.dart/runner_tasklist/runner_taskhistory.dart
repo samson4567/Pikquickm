@@ -26,12 +26,10 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(_handleTabChange);
 
-    context.read<TaskBloc>().add(
-          ActivetaskEvent(),
-        );
+    context.read<TaskBloc>().add(ActivetaskEvent());
   }
 
   void _handleTabChange() => _filterTasks();
@@ -40,13 +38,17 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
     final status = _getTabStatus();
     setState(() {
       // filter by status
-      List<ActiveTaskPendingEntity> tasks = (status == "all")
+      List<ActiveTaskPendingEntity> tasks = (status == "in progress")
           ? _allTasks
+              .where((task) =>
+                  task.status?.toLowerCase() == "in progress" ||
+                  task.status?.toLowerCase() == "active")
+              .toList()
           : _allTasks
-              .where((task) => task.status?.toLowerCase() == status)
+              .where((task) => task.status?.toLowerCase() == "completed")
               .toList();
 
-      // filter by search text
+      // filter by search
       if (_searchQuery.isNotEmpty) {
         tasks = tasks
             .where((task) =>
@@ -64,16 +66,7 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
   }
 
   String _getTabStatus() {
-    switch (_tabController.index) {
-      case 1:
-        return "active";
-      case 2:
-        return "completed";
-      case 3:
-        return "cancel";
-      default:
-        return "all";
-    }
+    return _tabController.index == 0 ? "in progress" : "completed";
   }
 
   @override
@@ -82,226 +75,286 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
     super.dispose();
   }
 
-  // ✅ Task Card
+  // ✅ Task Card — matches uploaded design
   Widget _buildTaskCard(ActiveTaskPendingEntity runner) {
-    Color themeColor = ((runner.status?.toLowerCase() == "completed") ||
-                runner.status?.toLowerCase() == "active")
-            ? Colors.green
-            // .withOpacity(0.15)
-            : (runner.status?.toLowerCase() == "in progress")
-                ? Colors.orange
-                // .withOpacity(0.15)
-                : Colors.red
-        // .withOpacity(0.15);
-        ;
-    //
+    bool isCompleted = (runner.status?.toLowerCase() == "completed" ||
+        runner.status == "done");
+
+    Color tagColor =
+        isCompleted ? const Color(0xFF34C759) : const Color(0xFFFF9500);
+
+    String tagText = isCompleted ? "Completed" : "In Progress";
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: const Color(0xFFFAFAFA), // Changed to FAFAFA color
-        borderRadius: BorderRadius.circular(16),
+        color: const Color.fromRGBO(250, 250, 250, 1),
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 3),
+          )
+        ],
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {
-            final taskId = runner.taskId ?? '';
-            context.pushNamed(
-              MyAppRouteConstant.taskHOverview,
-              extra: {'taskId': taskId},
-            );
-          },
-          borderRadius: BorderRadius.circular(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Status badge
+          Align(
+            alignment: Alignment.topLeft,
+            child: DashBorderedContainer(
+              backgroundColor: tagColor.withOpacity(0.1),
+              borderColor: tagColor,
+              cornerRadius: 20,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                child: Text(
+                  tagText,
+                  style: TextStyle(
+                    color: tagColor,
+                    fontSize: 12,
+                    fontFamily: 'Outfit',
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          // Task title
+          Text(
+            runner.taskDescription ?? 'Untitled Task',
+            style: const TextStyle(
+              fontFamily: 'Outfit',
+              fontSize: 17,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 6),
+
+          // Time info
+          if (!isCompleted)
+            Row(
+              children: const [
+                Text(
+                  "Time Left  ",
+                  style: TextStyle(
+                    fontFamily: 'Outfit',
+                    fontSize: 13,
+                    color: Colors.black54,
+                  ),
+                ),
+                Text(
+                  "1h 30m remaining",
+                  style: TextStyle(
+                    fontFamily: 'Outfit',
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            )
+          else
+            Row(
+              children: const [
+                Text(
+                  "Time  ",
+                  style: TextStyle(
+                    fontFamily: 'Outfit',
+                    fontSize: 13,
+                    color: Colors.black54,
+                  ),
+                ),
+                Text(
+                  "3 hours",
+                  style: TextStyle(
+                    fontFamily: 'Outfit',
+                    fontSize: 13,
+                    color: Colors.black87,
+                  ),
+                ),
+                SizedBox(width: 16),
+                Text(
+                  "Date  ",
+                  style: TextStyle(
+                    fontFamily: 'Outfit',
+                    fontSize: 13,
+                    color: Colors.black54,
+                  ),
+                ),
+                Text(
+                  "Mon Feb 2017",
+                  style: TextStyle(
+                    fontFamily: 'Outfit',
+                    fontSize: 13,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+            ),
+          const SizedBox(height: 10),
+
+          // Price
+          Text(
+            "₦${runner.taskBudget ?? '0'}",
+            style: const TextStyle(
+              fontFamily: 'Outfit',
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Location info
+          const Text(
+            "Location Address",
+            style: TextStyle(
+              fontFamily: 'Outfit',
+              fontSize: 13,
+              color: Colors.black54,
+            ),
+          ),
+          const SizedBox(height: 6),
+
+          Row(
             children: [
-              // Status badge
-              Align(
-                alignment: Alignment.topLeft,
-                child: DashBorderedContainer(
-                  backgroundColor: themeColor.withAlpha(20),
-                  borderColor: themeColor,
-                  cornerRadius: 20,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      // color: themeColor.withAlpha(20),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      runner.status ?? 'Unknown',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: themeColor,
-                        // (runner.status?.toLowerCase() == "completed")
-                        //     ? Colors.green[800]
-                        //     : (runner.status?.toLowerCase() == "in progress")
-                        //         ? Colors.orange[800]
-                        //         : Colors.red[700],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-
-              Text(
-                runner.createdAt?.toString() ?? '',
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 5),
-
-              Text(
-                runner.taskDescription ?? '',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+              const Text(
+                "Pickup   ",
+                style: TextStyle(
                   fontFamily: 'Outfit',
+                  fontSize: 14,
+                  color: Colors.black54,
                 ),
               ),
-              Divider(
-                color: Colors.grey,
-                thickness: 0,
-              ),
-              Text(
-                '₦${runner.taskBudget ?? ''}',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Outfit',
-                ),
-              ),
-
-              Text(
-                runner.clientName ?? '',
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: 'Outfit',
-                  color: Colors.black87,
-                ),
-              ),
-
-              const SizedBox(width: 6),
-              Row(
-                children: [
-                  Text('Pickup :'),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text(
-                    runner.pickupAddress ?? '',
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Outfit',
-                      color: Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(width: 6),
-              Row(
-                children: [
-                  Text('Drop-off :'),
-                  SizedBox(
-                    width: 12,
-                  ),
-                  Text(
-                    runner.dropOffAddress ?? '',
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Outfit',
-                      color: Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
-
-              Text(
-                "Task ID:\n${runner.taskId}",
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: 'Outfit',
-                ),
-              ),
-
-              const SizedBox(height: 14),
-
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  onPressed: () {
-                    final taskId = runner.taskId ?? '';
-                    context.pushNamed(
-                      MyAppRouteConstant.taskHOverview,
-                      extra: {'taskId': taskId},
-                    );
-                  },
-                  style: OutlinedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.lightBlue,
-                    side: BorderSide(
-                        color: Colors.lightBlue.shade200, width: 1.5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                  ),
-                  child: const Text(
-                    "View Details",
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.lightBlue,
-                    ),
+              Expanded(
+                child: Text(
+                  runner.pickupAddress ?? 'N/A',
+                  style: const TextStyle(
+                    fontFamily: 'Outfit',
+                    fontSize: 14,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
             ],
           ),
-        ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              const Text(
+                "Drop-off ",
+                style: TextStyle(
+                  fontFamily: 'Outfit',
+                  fontSize: 14,
+                  color: Colors.black54,
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  runner.dropOffAddress ?? 'N/A',
+                  style: const TextStyle(
+                    fontFamily: 'Outfit',
+                    fontSize: 14,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+
+          // Task ID
+          Text(
+            "Task ID",
+            style: TextStyle(
+              fontFamily: 'Outfit',
+              fontSize: 13,
+              color: Colors.grey.shade600,
+            ),
+          ),
+          Text(
+            "#${runner.taskId ?? ''}",
+            style: const TextStyle(
+              fontFamily: 'Outfit',
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // View Details button
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton(
+              onPressed: () {
+                final taskId = runner.taskId ?? '';
+                context.pushNamed(
+                  MyAppRouteConstant.taskHOverview,
+                  extra: {'taskId': taskId},
+                );
+              },
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF3D73EB),
+                side: const BorderSide(color: Color(0xFF3D73EB), width: 1.3),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+              child: const Text(
+                "View Details",
+                style: TextStyle(
+                  fontFamily: 'Outfit',
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  // ✅ Search UI styled like Available Task
+  // ✅ Search bar (modern minimalist style)
   Widget _buildSearchBar() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: const Color(0xFFE4E7EC),
-        ),
+        border: Border.all(color: const Color(0xFFE4E7EC)),
+        color: Colors.white,
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.search,
-          ),
-          const SizedBox(width: 10),
+          const Icon(Icons.search, color: Color(0xFF9CA3AF)),
+          const SizedBox(width: 8),
           Expanded(
             child: TextField(
               onChanged: (value) {
                 _searchQuery = value;
                 _filterTasks();
               },
-              style: const TextStyle(fontSize: 15, fontFamily: 'Outfit'),
+              style: const TextStyle(
+                  fontFamily: 'Outfit', fontSize: 15, color: Colors.black87),
               decoration: const InputDecoration(
-                hintText: "Search by description or client...",
-                hintStyle: TextStyle(color: Colors.black54, fontSize: 14),
+                hintText: "Search task type",
+                hintStyle: TextStyle(
+                  fontFamily: 'Outfit',
+                  fontSize: 15,
+                  color: Color(0xFF9CA3AF),
+                ),
                 border: InputBorder.none,
               ),
             ),
@@ -311,9 +364,45 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
     );
   }
 
+  // ✅ Tabs — “In Progress Tasks” & “Completed Tasks”
+  Widget _buildTabBar() {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8FAFB),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: TabBar(
+        controller: _tabController,
+        indicator: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 3,
+              offset: const Offset(0, 1),
+            )
+          ],
+        ),
+        labelColor: Colors.black,
+        unselectedLabelColor: Colors.black54,
+        labelStyle: const TextStyle(
+          fontFamily: 'Outfit',
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+        ),
+        tabs: const [
+          Tab(text: "In Progress Tasks"),
+          Tab(text: "Completed Tasks"),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: BlocConsumer<TaskBloc, TaskState>(
         listener: (context, state) {
           if (state is ActivetaskSuccessState) {
@@ -324,83 +413,56 @@ class _RunnerTaskHistoryState extends State<RunnerTaskHistory>
         builder: (context, state) {
           return SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Back + Centered Title
+                  // App bar row
                   Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.arrow_back_ios_new, size: 22),
-                        onPressed: () {
-                          context.goNamed(MyAppRouteConstant.dashBoardScreen);
-                        },
+                        icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+                        onPressed: () =>
+                            context.goNamed(MyAppRouteConstant.dashBoardScreen),
                       ),
-                      const Expanded(
-                        child: Center(
-                          child: Text(
-                            "Task History",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontFamily: 'Outfit',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                          ),
+                      const SizedBox(width: 4),
+                      const Text(
+                        "Task History",
+                        style: TextStyle(
+                          fontFamily: 'Outfit',
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
                         ),
                       ),
-                      const SizedBox(width: 48),
                     ],
                   ),
-
                   const SizedBox(height: 20),
 
-                  // Search bar
                   _buildSearchBar(),
-
                   const SizedBox(height: 20),
 
-                  // Tabs
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFAFAFA),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: TabBar(
-                      controller: _tabController,
-                      indicator: BoxDecoration(
-                        color:
-                            Colors.white, // White background for selected tab
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      indicatorSize: TabBarIndicatorSize
-                          .tab, // Makes indicator cover entire tab
-                      labelColor:
-                          Colors.lightBlue, // Color for selected tab text
-                      unselectedLabelColor: Colors.black54,
-                      tabs: const [
-                        Tab(text: "All"),
-                        Tab(text: "active"),
-                        Tab(text: "Completed"),
-                        Tab(text: "Cancel"),
-                      ],
-                    ),
-                  ),
-
+                  _buildTabBar(),
                   const SizedBox(height: 20),
 
-                  // Task list
                   Expanded(
                     child: state is ActivetaskLoadingState
                         ? const Center(child: CircularProgressIndicator())
                         : _filteredTasks.isEmpty
-                            ? const Center(child: Text("No tasks found"))
+                            ? const Center(
+                                child: Text(
+                                  "No tasks found",
+                                  style: TextStyle(
+                                    fontFamily: 'Outfit',
+                                    fontSize: 15,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              )
                             : ListView.builder(
                                 itemCount: _filteredTasks.length,
-                                itemBuilder: (context, index) {
-                                  return _buildTaskCard(_filteredTasks[index]);
-                                },
+                                itemBuilder: (context, index) =>
+                                    _buildTaskCard(_filteredTasks[index]),
                               ),
                   ),
                 ],

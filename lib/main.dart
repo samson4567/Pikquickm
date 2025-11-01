@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/core/di/injector.dart';
 import 'package:pikquick/errand_runer.dart/notification/notificationWorkers/local_notification.dart';
@@ -20,14 +21,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 bool hasInternet = true;
-//
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // MapboxOptions.setAccessToken(MAPBOX_ACCESS_TOKEN);
-  // Firebase.initializeApp();
   await init();
-  // await notificationFunctions();
-
   runApp(const MyApp());
 }
 
@@ -39,28 +36,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // final InternetConnectionCheckerPlus internetConnection =
-  //     InternetConnectionCheckerPlus.createInstance();
-  // StreamSubscription<InternetConnectionStatus>? streamSubscription;
-
   @override
   void initState() {
     super.initState();
-
-    // internetConnection.hasConnection.then((value) {
-    //   hasInternet = value;
-    //   debugPrint("Initial Internet Access: $value");
-    // });
-
-    // streamSubscription = internetConnection.onStatusChange.listen((status) {
-    //   hasInternet = status == InternetConnectionStatus.connected;
-    //   debugPrint("Internet status changed: $status");
-    // });
   }
 
   @override
   void dispose() {
-    // streamSubscription?.cancel();
     super.dispose();
   }
 
@@ -74,42 +56,41 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (_) => getItInstance<WalletBloc>()),
         BlocProvider(create: (_) => getItInstance<TransactionBloc>()),
         BlocProvider(create: (_) => getItInstance<ChatBloc>()),
-        BlocProvider(create: (_) => PrmpMapCubit())
+        BlocProvider(create: (_) => PrmpMapCubit()),
       ],
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        title: 'PikQuick',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        routerConfig: AppRouter.router,
+      child: ScreenUtilInit(
+        designSize: const Size(375, 812), // iPhone X default screen size
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) {
+          return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            title: 'PikQuick',
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+              useMaterial3: true,
+            ),
+            routerConfig: AppRouter.router,
+          );
+        },
       ),
     );
   }
 }
 
-notificationFunctions() async {
-  //// notification Shenanigans
-
-  // try {
+Future<void> notificationFunctions() async {
   await LocalNotificationService.init();
-
   tz.initializeTimeZones();
-  // await Firebase.initializeApp(
-  //     options: DefaultFirebaseOptions.currentPlatform);
 
   await PushNotificationsService.init();
 
-  //listen for incoming messages in background
   FirebaseMessaging.onBackgroundMessage(
       PushNotificationsService.onBackgroundMessage);
 
-  // on background notification tapped
   FirebaseMessaging.onMessageOpenedApp.listen(
     (RemoteMessage message) async {
       if (message.notification != null) {
-        print("Background Notification Tapped");
+        debugPrint("Background Notification Tapped");
         await PushNotificationsService.onBackgroundNotificationTapped(
           message,
           rootNavigatorKey,
@@ -118,24 +99,21 @@ notificationFunctions() async {
     },
   );
 
-  // on foreground notification tapped
   FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
     await PushNotificationsService.onForeroundNotificationTapped(
       message,
       rootNavigatorKey,
     );
   });
-  // LocalNotificationService.onDidReceiveNotificationResponse(NotificationResponse(notificationResponseType: NotificationResponseType.selectedNotification));
-  // for handling in terminated state
+
   final RemoteMessage? message =
       await FirebaseMessaging.instance.getInitialMessage();
-  print("Launched from terminated state");
+
   if (message != null) {
-    print("Launched from terminated state");
+    debugPrint("Launched from terminated state");
     Future.delayed(
       const Duration(seconds: 10),
       () {
-        // context.push
         rootNavigatorKey.currentState!.pushNamed(
           (userModelG?.role == "client")
               ? MyAppRouteConstant.clientNotification
@@ -144,7 +122,4 @@ notificationFunctions() async {
       },
     );
   }
-  try {} catch (e) {}
-
-  /// notification shens  ended ........
 }

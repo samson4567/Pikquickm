@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pikquick/app_variable.dart';
 import 'package:pikquick/component/fancy_container.dart';
@@ -27,31 +29,25 @@ class _TaskOverviewState extends State<TaskOverview>
   int _currentStatusIndex = 0;
   late AnimationController _controller;
 
-  // local copy of the task so the UI doesn't depend on transient bloc states
   RunnerTaskOverviewEntity? _task;
 
-  bool _isStarting = false; // true while StartTask API call is in progress
-  bool _isStarted = false; // true once task is started (or API says started)
-  bool _isStartDialogOpen = false; // track loading dialog presence
+  bool _isStarting = false;
+  bool _isStarted = false;
+  bool _isStartDialogOpen = false;
 
   bool _isCompleting = false;
   bool _isCompleted = false;
   bool _isCompleteDialogOpen = false;
 
   final List<Map<String, String>> _taskSteps = [
-    {
-      'status': 'Not Started',
-      'action': 'Start Task',
-    },
-    {'status': 'In Progress', 'action': 'Complete'},
+    {'status': 'Task Assigned', 'action': 'Start Task'},
+    {'status': 'In Progress', 'action': 'Mark Completed'},
     {'status': 'Task Completed', 'action': 'Submit for Approval'},
   ];
 
   @override
   void initState() {
     super.initState();
-
-    // request task overview
     context
         .read<TaskBloc>()
         .add(RunnerTaskOverviewgEvent(taskId: widget.taskId));
@@ -67,56 +63,43 @@ class _TaskOverviewState extends State<TaskOverview>
     super.dispose();
   }
 
-  void _showPhoneNumberDialog() async {
+  void _showPhoneNumberDialog() {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         title: const Text("Client's Phone Number"),
         content: Text("Call ${_task!.clientPhone}"),
         actions: [
-          // TextButton(
-          //     onPressed: () {
-          //       Navigator.pop(context);
-
-          //       makePhoneCall(_task!.clientPhone!);
-          //     },
-          //     child: const Text("Close"))
           TextButton(
             style: TextButton.styleFrom(
               backgroundColor: Colors.blue,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
-              padding: const EdgeInsets.symmetric(vertical: 16),
             ),
-            onPressed: () async {
+            onPressed: () {
               Navigator.pop(context);
-
               makePhoneCall(_task!.clientPhone!);
             },
             child: const Text("Call",
                 style: TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Outfit')),
+                    fontFamily: 'Outfit',
+                    fontWeight: FontWeight.bold)),
           ),
           TextButton(
             style: TextButton.styleFrom(
               backgroundColor: Colors.red,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
-              padding: const EdgeInsets.symmetric(vertical: 16),
             ),
             onPressed: () {
-              // context.pushNamed(MyAppRouteConstant.task);
               Navigator.pop(context);
             },
             child: const Text("Cancel",
                 style: TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Outfit')),
+                    fontFamily: 'Outfit',
+                    fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -124,22 +107,18 @@ class _TaskOverviewState extends State<TaskOverview>
   }
 
   void _navigateToMessagePage(RunnerTaskOverviewEntity task) {
-    // Navigator.push(
-    //     context, MaterialPageRoute(builder: (_) => const MessagePage()));
     context.push(MyAppRouteConstant.chatScreenTwo,
         extra: taskAssignmentEntity?.id ?? "");
   }
 
   void _showLoadingDialog(String message, {bool isStart = true}) {
     if (isStart ? _isStartDialogOpen : _isCompleteDialogOpen) return;
-
     if (isStart) {
       _isStartDialogOpen = true;
     } else {
       _isCompleteDialogOpen = true;
     }
 
-    // show non-dismissible starting dialog immediately when Start tapped
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -164,7 +143,6 @@ class _TaskOverviewState extends State<TaskOverview>
     });
   }
 
-  // show success dialog (simple)
   void _showSuccessModal(String title, String message) {
     showDialog(
       context: context,
@@ -177,32 +155,20 @@ class _TaskOverviewState extends State<TaskOverview>
             children: [
               Image.asset('assets/images/con2.png', height: 60, width: 100),
               const SizedBox(height: 16),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Outfit',
-                ),
-              ),
+              Text(title,
+                  style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Outfit')),
               const SizedBox(height: 8),
-              Text(
-                message,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 14, color: Colors.black54),
-              ),
+              Text(message,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 14, color: Colors.black54)),
               const SizedBox(height: 20),
               TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text(
-                  "OK",
-                  style: TextStyle(
-                    color: Color(0xFF4378CD),
-                    fontFamily: 'Outfit',
-                  ),
-                ),
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text("OK",
+                    style: TextStyle(color: Color(0xFF4378CD))),
               ),
             ],
           ),
@@ -211,8 +177,6 @@ class _TaskOverviewState extends State<TaskOverview>
     );
   }
 
-  ActiveTaskPendingEntity? taskAssignmentEntity;
-  // show error dialog
   void _showErrorDialog(String title, String message) {
     showDialog(
       context: context,
@@ -232,6 +196,9 @@ class _TaskOverviewState extends State<TaskOverview>
     );
   }
 
+  ActiveTaskPendingEntity? taskAssignmentEntity;
+  bool canCommunicate = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -240,26 +207,19 @@ class _TaskOverviewState extends State<TaskOverview>
         listeners: [
           BlocListener<TaskBloc, TaskState>(
             listener: (context, state) {
-              // Active task fetcher listener started
               if (state is ActivetaskErrorState) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.errorMessage)),
-                );
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(state.errorMessage)));
               }
+
               if (state is ActivetaskSuccessState) {
-                taskAssignmentEntity = state.runnertask.where(
-                  (element) {
-                    return element.taskId == widget.taskId;
-                  },
-                ).firstOrNull;
-                if (taskAssignmentEntity != null) {
-                  canCommunicate = true;
-                } else {
-                  canCommunicate = false;
-                }
+                taskAssignmentEntity = state.runnertask
+                    .where((element) => element.taskId == widget.taskId)
+                    .firstOrNull;
+                canCommunicate = taskAssignmentEntity != null;
                 setState(() {});
               }
-              // Active task fetcher listener ended
+
               if (state is RunnerTaskOverViewSuccessState) {
                 setState(() {
                   _task = state.taskOverView;
@@ -281,9 +241,7 @@ class _TaskOverviewState extends State<TaskOverview>
                     .showSnackBar(SnackBar(content: Text(state.errorMessage)));
               }
 
-              // Start task handling
-              if (state is StartTaskLoadingState) {
-              } else if (state is StartTaskSuccessState) {
+              if (state is StartTaskSuccessState) {
                 if (_isStartDialogOpen) Navigator.of(context).pop();
                 setState(() {
                   _isStarting = false;
@@ -292,15 +250,15 @@ class _TaskOverviewState extends State<TaskOverview>
                 });
                 _showSuccessModal(
                     "Task Started", "You have successfully started your task.");
-              } else if (state is StartTaskErrorState) {
+              }
+
+              if (state is StartTaskErrorState) {
                 if (_isStartDialogOpen) Navigator.of(context).pop();
                 setState(() => _isStarting = false);
                 _showErrorDialog("Error", state.message);
               }
 
-              // Complete task handling
-              if (state is MarkAsCompletedLoadingState) {
-              } else if (state is MarkAsCompletedSuccessState) {
+              if (state is MarkAsCompletedSuccessState) {
                 if (_isCompleteDialogOpen) Navigator.of(context).pop();
                 setState(() {
                   _isCompleting = false;
@@ -309,7 +267,9 @@ class _TaskOverviewState extends State<TaskOverview>
                 });
                 _showSuccessModal("Task Completed",
                     "You have successfully completed your task.");
-              } else if (state is MarkAsCompletedErrorState) {
+              }
+
+              if (state is MarkAsCompletedErrorState) {
                 if (_isCompleteDialogOpen) Navigator.of(context).pop();
                 setState(() => _isCompleting = false);
                 _showErrorDialog("Error", state.message);
@@ -319,311 +279,114 @@ class _TaskOverviewState extends State<TaskOverview>
         ],
         child: _task == null
             ? const Center(child: CircularProgressIndicator())
-            : buildTaskOverviewContent(_task!),
+            : _buildTaskContent(_task!),
       ),
     );
   }
 
-  Widget buildTaskOverviewContent(RunnerTaskOverviewEntity task) {
+  Widget _buildTaskContent(RunnerTaskOverviewEntity task) {
     bool isInProgress = _currentStatusIndex == 1;
     bool isCompleted = _currentStatusIndex == 2;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 50),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GestureDetector(
-              onTap: () {
-                context.pop();
-              },
-              child: const Icon(Icons.arrow_back_ios)),
-          const SizedBox(height: 20),
+            onTap: () => context.pop(),
+            child: const Icon(Icons.arrow_back_ios, color: Colors.black87),
+          ),
+          const SizedBox(height: 16),
           const Text('Task Overview',
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                   fontFamily: 'Outfit')),
-          const SizedBox(height: 10),
-          Text(task.taskType ?? 'No Title',
+          const SizedBox(height: 12),
+          Text(task.taskType ?? '',
               style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Outfit')),
-          const SizedBox(height: 5),
-          Text("₦${task.budget}",
+          const SizedBox(height: 6),
+          Text("₦${task.budget ?? '0'}",
               style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Outfit')),
-          const Divider(height: 20, thickness: 1.2),
-          const SizedBox(height: 10),
+          const Divider(height: 28, thickness: 1.2),
+          const SizedBox(height: 8),
           Row(
             children: [
-              CircleAvatar(
-                  radius: 30,
-                  backgroundImage:
-                      //(userModelG?.imageUrl != null)
-                      //     ? NetworkImage(userModelG!.imageUrl!)
-                      AssetImage('assets/images/circle.png')),
+              const CircleAvatar(
+                  radius: 28,
+                  backgroundImage: AssetImage('assets/images/circle.png')),
               const SizedBox(width: 10),
               Text(task.clientName ?? "No Name",
                   style: const TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w500,
                       fontFamily: 'Outfit')),
             ],
           ),
-          const SizedBox(height: 10),
-          const Row(
+          const SizedBox(height: 6),
+          Row(
             children: [
-              Icon(Icons.star, color: Colors.orange, size: 18),
-              Text("4.8(72 reviews) | ",
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300)),
-              Text(" 85 errands requested ",
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300)),
+              SvgPicture.asset(
+                'assets/icons/stars.svg', // <-- SVG file path
+                width: 32.w,
+                height: 20.w,
+                fit: BoxFit.cover,
+              ),
+              Text("4.8 (72 Reviews) | 85 errands requested",
+                  style: TextStyle(fontSize: 15, color: Color(0XFF434953))),
             ],
           ),
           const SizedBox(height: 20),
-          if (canCommunicate) messageMethod(),
-          const Divider(height: 30, thickness: 1),
-          Text(
-            "Location:",
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
+          if (canCommunicate) _contactOptions(),
+          const Divider(height: 30, thickness: 1.2),
+          const Text("Location:",
+              style: TextStyle(
+                  fontFamily: 'Outfit',
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15)),
           const SizedBox(height: 10),
           Row(
             children: [
-              const Text('PickUp  : ', style: TextStyle(fontSize: 14)),
-              Text('N/A', style: const TextStyle(fontSize: 14)),
+              const Text("Pickup: ", style: TextStyle(fontSize: 14)),
+              Text('' ?? 'N/A', style: const TextStyle(fontSize: 14)),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 6),
           Row(
             children: [
-              const Text('DropOff : ', style: TextStyle(fontSize: 14)),
-              Text('' 'N/A', style: const TextStyle(fontSize: 14)),
+              const Text("Drop-off: ", style: TextStyle(fontSize: 14)),
+              Text('' ?? 'N/A', style: const TextStyle(fontSize: 14)),
             ],
           ),
-          const SizedBox(height: 5),
-          Text("TaskID : ${task.id ?? "N/A"}"),
+          const SizedBox(height: 6),
+          Text("Task ID: ${task.id ?? 'N/A'}",
+              style: const TextStyle(fontSize: 13, color: Colors.black54)),
           const SizedBox(height: 20),
-          const Text('Description', style: TextStyle(fontSize: 16)),
-          const SizedBox(height: 5),
-          Text(task.description ?? "No Description",
-              style: const TextStyle(fontSize: 14)),
-          const SizedBox(height: 10),
-          const Text('Special Request', style: TextStyle(fontSize: 16)),
-          const SizedBox(height: 5),
-          Text(task.specialInstructions ?? "None",
-              style: const TextStyle(fontSize: 14)),
-          const SizedBox(height: 20),
-          const Text("Task Status Progression",
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
-          const Text("Update your progression as you proceed",
-              style: TextStyle(fontSize: 12)),
-          const SizedBox(height: 10),
-          Column(
-            children: List.generate(_taskSteps.length, (index) {
-              final isCompletedStep = index < _currentStatusIndex;
-              final isCurrent = index == _currentStatusIndex;
-
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 500),
-                          transitionBuilder: (child, anim) =>
-                              ScaleTransition(scale: anim, child: child),
-                          child: Icon(
-                            isCompletedStep
-                                ? Icons.check_circle
-                                : Icons.radio_button_unchecked,
-                            color: isCompletedStep ? Colors.blue : Colors.grey,
-                            key: ValueKey<bool>(isCompletedStep),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          _taskSteps[index]['status']!,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: isCompletedStep ? Colors.blue : Colors.black,
-                            fontFamily: 'Outfit',
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (isCurrent)
-                      // special handling for the first action (Start Task)
-                      index == 0
-                          ? _isStarted
-                              ? Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade200,
-                                    borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(color: Colors.grey),
-                                  ),
-                                  child: Row(
-                                    children: const [
-                                      Icon(Icons.check, color: Colors.green),
-                                      SizedBox(width: 8),
-                                      Text(
-                                        'Started',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Outfit'),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : TextButton(
-                                  style: TextButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 8),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(6),
-                                      side: const BorderSide(
-                                        color: Colors.blue, // 👈 border color
-                                        width: 1.5, // 👈 border thickness
-                                      ),
-                                    ),
-                                  ),
-                                  onPressed: _isStarting
-                                      ? null
-                                      : () {
-                                          // immediate UX: show starting dialog first
-                                          setState(() {
-                                            _isStarting = true;
-                                          });
-                                          _showLoadingDialog(
-                                              "Starting task...");
-
-                                          final startTaskModel = StartTaskModel(
-                                            taskId: task.id ?? '',
-                                          );
-
-                                          context.read<TaskBloc>().add(
-                                              StartTaskEvent(
-                                                  startTask: startTaskModel));
-                                        },
-                                  child: Text(
-                                    _isStarting ? 'Starting...' : 'Start Task',
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 13,
-                                      fontFamily: 'Outfit',
-                                    ),
-                                  ),
-                                )
-
-                          // special handling for the second action (Complete)
-                          : index == 1
-                              ? _isCompleted
-                                  ? Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 8),
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey.shade200,
-                                        borderRadius: BorderRadius.circular(6),
-                                        border: Border.all(color: Colors.grey),
-                                      ),
-                                      child: Row(
-                                        children: const [
-                                          Icon(Icons.check,
-                                              color: Colors.green),
-                                          SizedBox(width: 8),
-                                          Text(
-                                            'Completed',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : TextButton(
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: Colors.blue,
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 12, vertical: 8),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(6)),
-                                      ),
-                                      onPressed: _isCompleting
-                                          ? null
-                                          : () {
-                                              setState(
-                                                  () => _isCompleting = true);
-                                              _showLoadingDialog(
-                                                  "Completing task...",
-                                                  isStart: false);
-                                              context.read<TaskBloc>().add(
-                                                  MarkAsCompletedEvent(
-                                                      markAsCompleted:
-                                                          MarkAsCompletedModel(
-                                                              taskId: task.id ??
-                                                                  '')));
-                                            },
-                                      child: Text(
-                                        _isCompleting
-                                            ? "Completing..."
-                                            : _taskSteps[index]['action']!,
-                                        style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Outfit'),
-                                      ),
-                                    )
-                              // For other steps (index 2)
-                              : TextButton(
-                                  style: TextButton.styleFrom(
-                                    backgroundColor: Colors.blue,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 8),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(6)),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      if (_currentStatusIndex <
-                                          _taskSteps.length - 1) {
-                                        _currentStatusIndex++;
-                                        _controller.forward(from: 0);
-                                      }
-                                    });
-                                  },
-                                  child: Text(
-                                    _taskSteps[index]['action']!,
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Outfit'),
-                                  ),
-                                ),
-                  ],
-                ),
-              );
-            }),
-          ),
-          const SizedBox(height: 20),
+          const Text('Description',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+          const SizedBox(height: 6),
+          Text(task.description ?? 'No Description',
+              style: const TextStyle(fontSize: 15, color: Color(0XFF434953))),
+          const SizedBox(height: 15),
+          const Text('Special Request',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+          const SizedBox(height: 6),
+          Text(task.specialInstructions ?? 'None',
+              style: const TextStyle(fontSize: 15, color: Color(0XFF434953))),
+          const SizedBox(height: 25),
+          const Text('Task Status Progression',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+          const Text('Update your progress as you proceed\nwith task ',
+              style: TextStyle(fontSize: 15, color: Color(0XFF434953))),
+          const SizedBox(height: 12),
+          _buildStatusSteps(),
           if (isInProgress)
             Center(
               child: FancyContainer(
@@ -633,127 +396,329 @@ class _TaskOverviewState extends State<TaskOverview>
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: Colors.blue),
                 height: 50,
-                width: 342,
+                width: double.infinity,
                 child: const Center(
-                  child: Text(
-                    'View current location',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Outfit',
-                      color: Colors.blue,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ),
-          if (isCompleted) ...[
-            const SizedBox(height: 20),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 22),
-              child: Text(
-                'Upload proof of your completion',
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: 'Outfit'),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Center(
-              child: FancyContainer(
-                onTap: () {
-                  context.go(MyAppRouteConstant.google);
-                },
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.grey),
-                height: 150,
-                width: 342,
-                child: const Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 50),
-                      child: Text(
-                        'Click here to upload image',
-                        style: TextStyle(
-                          fontSize: 15,
+                  child: Text('View current location',
+                      style: TextStyle(
+                          color: Colors.blue,
                           fontFamily: 'Outfit',
-                        ),
-                      ),
-                    ),
-                  ],
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16)),
                 ),
               ),
             ),
-            const SizedBox(height: 15),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Text('Add note', style: TextStyle(fontSize: 15)),
-            ),
-            const SizedBox(height: 10),
-            Center(child: _buildReviewInput()),
-            const SizedBox(height: 20),
-            Center(
-              child: FancyContainer(
-                onTap: () {
-                  context.go(
-                    MyAppRouteConstant.runnerviews,
-                    extra: task, // ✅ pass the instance
-                  );
-                },
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.blue),
-                height: 50,
-                width: 342,
-                child: const Center(
-                  child: Text(
-                    'Add reviews & ratings',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Outfit',
-                      color: Colors.blue,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                ),
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Submitted for Approval!")));
-                },
-                child: const Text(
-                  'Submit for Approval',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: 'Outfit',
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-          ],
+          if (isCompleted) _buildCompletionSection(task),
         ],
       ),
     );
   }
 
-  Row messageMethod() {
+  Widget _buildStatusSteps() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          )
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header row
+          const Padding(
+            padding: EdgeInsets.only(bottom: 12, left: 36, right: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Status',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Outfit',
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  'Action Button',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Outfit',
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Timeline rows
+          Column(
+            children: List.generate(_taskSteps.length, (index) {
+              final isCompletedStep = index < _currentStatusIndex;
+              final isCurrent = index == _currentStatusIndex;
+
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Timeline indicator and line
+                  Column(
+                    children: [
+                      Container(
+                        width: 14,
+                        height: 14,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isCompletedStep
+                              ? const Color(0xFF34C759)
+                              : Colors.white,
+                          border: Border.all(
+                            color: isCompletedStep
+                                ? const Color(0xFF34C759)
+                                : Colors.grey.shade400,
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                      if (index != _taskSteps.length - 1)
+                        Container(
+                          width: 2,
+                          height: 45,
+                          color: Colors.grey.shade300,
+                        ),
+                    ],
+                  ),
+                  const SizedBox(width: 12),
+
+                  // Status text and action button
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: const BoxDecoration(),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            _taskSteps[index]['status']!,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Outfit',
+                              color: isCompletedStep
+                                  ? Colors.black87
+                                  : Colors.black87,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          if (isCurrent)
+                            _buildActionButton(index)
+                          else
+                            const SizedBox(width: 120),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton(int index) {
+    if (index == 0) {
+      return _isStarted
+          ? _statusTag('Started', Colors.green)
+          : _actionButton("Start Task", Colors.white, () {
+              setState(() => _isStarting = true);
+              _showLoadingDialog("Starting task...");
+              final model = StartTaskModel(taskId: _task!.id ?? '');
+              context.read<TaskBloc>().add(StartTaskEvent(startTask: model));
+            });
+    } else if (index == 1) {
+      return _isCompleted
+          ? _statusTag('Completed', Colors.green)
+          : _actionButton("Mark Completed", Colors.white, () {
+              setState(() => _isCompleting = true);
+              _showLoadingDialog("Completing task...", isStart: false);
+              final model = MarkAsCompletedModel(taskId: _task?.id ?? '');
+              context
+                  .read<TaskBloc>()
+                  .add(MarkAsCompletedEvent(markAsCompleted: model));
+            });
+    } else {
+      return _actionButton("Submit for Approval", Colors.green, () {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Submitted for Approval successfully!")));
+      });
+    }
+  }
+
+  Widget _actionButton(String text, Color color, VoidCallback onPressed) {
+    return TextButton(
+      style: TextButton.styleFrom(
+        backgroundColor: Colors.white, // ✅ white background like in screenshot
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: const BorderSide(
+            color: Colors.blue, // ✅ blue borderline
+            width: 1.5,
+          ),
+        ),
+      ),
+      onPressed: onPressed,
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.black, // ✅ blue text
+          fontSize: 14,
+          fontFamily: 'Outfit',
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Widget _statusTag(String text, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: color)),
+      child: Row(children: [
+        Icon(Icons.check, color: color, size: 16),
+        const SizedBox(width: 6),
+        Text(text,
+            style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Outfit')),
+      ]),
+    );
+  }
+
+  Widget _buildCompletionSection(RunnerTaskOverviewEntity task) {
+    return Column(
+      children: [
+        const SizedBox(height: 20),
+        const Text('Upload proof of your completion',
+            textAlign: TextAlign.center,
+            style:
+                TextStyle(fontFamily: 'Outfit', fontWeight: FontWeight.w500)),
+        const SizedBox(height: 12),
+        FancyContainer(
+          onTap: () => context.go(MyAppRouteConstant.google),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey.shade400),
+          height: 150,
+          width: double.infinity,
+          child: const Center(
+            child: Text('Click here to upload image',
+                style: TextStyle(fontFamily: 'Outfit', fontSize: 15)),
+          ),
+        ),
+        const SizedBox(height: 15),
+        const Align(
+            alignment: Alignment.centerLeft,
+            child: Text('Add note',
+                style: TextStyle(fontSize: 15, fontFamily: 'Outfit'))),
+        const SizedBox(height: 8),
+        _buildReviewInput(),
+        const SizedBox(height: 25),
+        FancyContainer(
+          onTap: () {
+            context.go(
+              MyAppRouteConstant.runnerviews,
+              extra: task, // ✅ pass the instance
+            );
+          },
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.blue),
+          height: 50,
+          width: double.infinity,
+          child: const Center(
+            child: Text(
+              'Add reviews & ratings',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Outfit',
+                color: Colors.blue,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        const SizedBox(height: 25),
+        Center(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              elevation: 0,
+            ),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content: Text("Submitted for Approval successfully!")),
+              );
+            },
+            child: const Text(
+              'Submit for Approval',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Outfit',
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 40),
+      ],
+    );
+  }
+
+  Widget _buildReviewInput() {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      width: double.infinity,
+      height: 120,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade400),
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.grey.shade50,
+      ),
+      child: const TextField(
+        maxLines: 4,
+        decoration: InputDecoration(
+          hintText: "Share your thoughts about this task (optional)",
+          hintStyle: TextStyle(
+            color: Colors.grey,
+            fontSize: 13,
+            fontFamily: 'Outfit',
+          ),
+          border: InputBorder.none,
+        ),
+      ),
+    );
+  }
+
+  Row _contactOptions() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         GestureDetector(
           onTap: () {
@@ -761,23 +726,27 @@ class _TaskOverviewState extends State<TaskOverview>
               _showPhoneNumberDialog();
             } else {
               ScaffoldMessenger.of(context)
-                  .showSnackBar(generalSnackBar("No Phone number Provided"));
+                  .showSnackBar(generalSnackBar("No phone number provided"));
             }
           },
           child: Row(
             children: [
-              Image.asset('assets/images/call.png', fit: BoxFit.cover),
-              const SizedBox(width: 10),
-              const Text("Call",
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                      fontFamily: 'Outfit')),
+              Image.asset('assets/images/call.png',
+                  width: 20, height: 20, fit: BoxFit.cover),
+              const SizedBox(width: 8),
+              const Text(
+                "Call",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                  fontFamily: 'Outfit',
+                ),
+              ),
             ],
           ),
         ),
-        const Text("|", style: TextStyle(fontSize: 17, color: Colors.grey)),
+        const Text("|", style: TextStyle(fontSize: 18, color: Colors.grey)),
         GestureDetector(
           onTap: () {
             if (_task == null) return;
@@ -785,48 +754,22 @@ class _TaskOverviewState extends State<TaskOverview>
           },
           child: Row(
             children: [
-              Image.asset('assets/images/message.png', fit: BoxFit.cover),
-              const SizedBox(width: 10),
-              const Text("Message",
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                      fontFamily: 'Outfit')),
+              Image.asset('assets/images/message.png',
+                  width: 20, height: 20, fit: BoxFit.cover),
+              const SizedBox(width: 8),
+              const Text(
+                "Message",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                  fontFamily: 'Outfit',
+                ),
+              ),
             ],
           ),
         ),
       ],
-    );
-  }
-
-  bool canCommunicate = false;
-
-  Widget _buildReviewInput() {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 500),
-      width: 350,
-      height: 140,
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.grey.shade50,
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              offset: const Offset(0, 3),
-              blurRadius: 5)
-        ],
-      ),
-      child: const TextField(
-        maxLines: 5,
-        decoration: InputDecoration(
-          hintText: "Share your thoughts about this task\n(optional)",
-          border: InputBorder.none,
-          hintStyle: TextStyle(color: Colors.grey, fontSize: 12),
-        ),
-      ),
     );
   }
 }

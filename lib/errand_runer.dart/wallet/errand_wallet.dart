@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pikquick/features/profile/data/model/auto_sub_daily.dart';
 import 'package:pikquick/features/profile/data/model/unto_auto_daily.dart';
@@ -37,21 +39,15 @@ class _ErrandWalletState extends State<ErrandWallet> {
   }
 
   Future<void> _loadInitialData() async {
-    // Fetch transactions
     context.read<TransactionBloc>().add(
-          const TransactionHistoryEvent(
-            limit: '10',
-            page: '1',
-          ),
+          const TransactionHistoryEvent(limit: '10', page: '1'),
         );
 
-    // Fetch wallet balance
     final walletModel = WalletBalanceModel(balance: 0.0);
     context
         .read<WalletBloc>()
         .add(WalletBalanceEvent(walletBalance: walletModel));
 
-    // Fetch wallet summary
     final summaryModel = WalletSummaryModel(
       totalEarningsAllTime: null,
       withdrawableBalance: null,
@@ -67,23 +63,20 @@ class _ErrandWalletState extends State<ErrandWallet> {
     context.read<TaskBloc>().add(WalletSummaryEvent(model: summaryModel));
   }
 
-  // 🔵 Custom Dialog
   void _showCustomDialog({required String title, required String message}) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Container(
             width: 342,
             height: 190,
             padding: const EdgeInsets.all(16),
             child: Stack(
               children: [
-                // Close button
                 Positioned(
                   top: 8,
                   right: 8,
@@ -93,56 +86,42 @@ class _ErrandWalletState extends State<ErrandWallet> {
                         size: 20, color: Colors.black54),
                   ),
                 ),
-
-                // Content
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 10),
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: "Outfit",
-                      ),
-                    ),
+                    Text(title,
+                        style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: "Outfit")),
                     const SizedBox(height: 12),
-                    Text(
-                      message,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontFamily: "Outfit",
+                    Text(message,
+                        style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontFamily: "Outfit")),
+                    const Spacer(),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          minimumSize: const Size(120, 40),
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text("Dashboard",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: "Outfit",
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500)),
                       ),
                     ),
-                    const Spacer(),
-
-                    // Action button
-                    Align(
-                        alignment: Alignment.bottomRight,
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            minimumSize: const Size(
-                                120, 40), // 👈 set width=120, height=40
-                          ),
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text(
-                            "Dashbord",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "Outfit",
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        )),
                   ],
                 ),
               ],
@@ -156,256 +135,292 @@ class _ErrandWalletState extends State<ErrandWallet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Row(
-              children: const [
-                SizedBox(width: 20),
-                Text(
-                  'Wallet',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Outfit',
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ⬅️ Back and Header
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios_new, size: 18),
+                    onPressed: () => context.pop(),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 30),
-
-            // Wallet Balance
-            balance(context),
-            const SizedBox(height: 20),
-
-            // Auto Deduction Toggle (Bloc integrated)
-            BlocConsumer<ProfileBloc, ProfileState>(
-              listener: (context, state) {
-                if (state is SubscribeAutoDeductionSuccess) {
-                  setState(() => isAutoDeductionEnabled = true);
-                  _showCustomDialog(
-                    title: "Availability Fee Deducted",
-                    message:
-                        "Your wallet has been deducted your daily availability. "
-                        "This fee will make you available for 24 hours.",
-                  );
-                } else if (state is UnsubscribeAutoDeductionSuccess) {
-                  setState(() => isAutoDeductionEnabled = false);
-                  _showCustomDialog(
-                    title: "Auto-Deduction Disabled",
-                    message: "You have successfully unsubscribed "
-                        "from auto-deduction.",
-                  );
-                } else if (state is SubscribeAutoDeductionError ||
-                    state is UnsubscribeAutoDeductionError) {
-                  final errorMessage = state is SubscribeAutoDeductionError
-                      ? state.errorMessage
-                      : (state as UnsubscribeAutoDeductionError).errorMessage;
-                  _showCustomDialog(
-                    title: "Error",
-                    message: errorMessage,
-                  );
-                }
-              },
-              builder: (context, state) {
-                final isLoading = state is SubscribeAutoDeductionLoading ||
-                    state is UnsubscribeAutoDeductionLoading;
-
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Auto Deduction ",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontFamily: 'Outfit',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          Text(
-                            "Enable daily auto-deduction of 100 availability",
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'Outfit',
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                        ],
-                      ),
+                  const SizedBox(width: 8),
+                  const Text(
+                    "Wallet Balance",
+                    style: TextStyle(
+                      fontFamily: "Outfit",
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
                     ),
-                    isLoading
-                        ? const CircularProgressIndicator()
-                        : Switch(
-                            value: isAutoDeductionEnabled,
-                            onChanged: (value) {
-                              if (value) {
-                                context.read<ProfileBloc>().add(
-                                      ToggleSubscribeAutoDeductionEvent(
-                                        model: SubscribeAutoDeductionModel(
-                                          subscribe: true,
-                                        ),
-                                      ),
-                                    );
-                              } else {
-                                context.read<ProfileBloc>().add(
-                                      UnsubscribeAutoDeductionEvent(
-                                        model: UnsubscribeAutoDeductionModel(
-                                          unsubscribe: false,
-                                        ),
-                                      ),
-                                    );
-                              }
-                            },
-                          ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+
+              // 💳 Wallet Card
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Color(0XFFF2F2F2),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black12.withOpacity(0.05),
+                        blurRadius: 5,
+                        offset: const Offset(0, 2))
                   ],
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-
-            // Earning Summary (Bloc integrated)
-            BlocBuilder<TaskBloc, TaskState>(
-              builder: (context, state) {
-                if (state is WalletSummaryLoadingState) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is WalletSummaryErrorState) {
-                  return Text(
-                    state.errorMessage,
-                    style: const TextStyle(color: Colors.red),
-                  );
-                } else if (state is WalletSummarySuccessState) {
-                  final summary = state.walletSummary;
-                  return Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF2F2F2),
-                      borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("Wallet Balance",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black87,
+                          fontFamily: "Outfit",
+                          fontWeight: FontWeight.w400,
+                        )),
+                    const SizedBox(height: 10),
+                    BlocBuilder<WalletBloc, WalletState>(
+                      builder: (context, state) {
+                        String balanceText = "₦0.00";
+                        if (state is WalletBalanceLoadingState) {
+                          balanceText = "Loading...";
+                        } else if (state is WalletBalanceSuccessState) {
+                          balanceText = "₦${state.balance.balance}";
+                        } else if (state is WalletBalanceErrorState) {
+                          balanceText = "Error";
+                        }
+                        return Text(balanceText,
+                            style: const TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Outfit",
+                              color: Colors.black,
+                            ));
+                      },
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    const SizedBox(height: 20),
+                    Row(
                       children: [
-                        const Text(
-                          "Earning Summary",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Outfit',
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () =>
+                                context.go(MyAppRouteConstant.addfunds),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF4A85E4),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              minimumSize: const Size(double.infinity, 45),
+                            ),
+                            child: const Text("Add Money",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "Outfit",
+                                    fontWeight: FontWeight.w500)),
                           ),
                         ),
-                        const SizedBox(height: 15),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              "Pending Earning",
-                              style:
-                                  TextStyle(fontFamily: 'Outfit', fontSize: 14),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () =>
+                                context.go(MyAppRouteConstant.requestpayout),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF4A85E4),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              minimumSize: const Size(double.infinity, 45),
                             ),
-                            Text(
-                              "₦${summary.pendingPayments ?? 0}",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Outfit',
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              "Withdrawal Balance",
-                              style:
-                                  TextStyle(fontFamily: 'Outfit', fontSize: 14),
-                            ),
-                            Text(
-                              "₦${summary.withdrawableBalance ?? 0}",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Outfit',
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        const Divider(),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              "All-time Earning",
-                              style:
-                                  TextStyle(fontFamily: 'Outfit', fontSize: 14),
-                            ),
-                            Text(
-                              "₦${summary.totalEarningsAllTime ?? 0}",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Outfit',
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
+                            child: const Text("Request Payout",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: "Outfit",
+                                    fontWeight: FontWeight.w500)),
+                          ),
                         ),
                       ],
                     ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 25),
+
+              // 🔄 Auto Deduction Toggle
+              BlocConsumer<ProfileBloc, ProfileState>(
+                listener: (context, state) {
+                  if (state is SubscribeAutoDeductionSuccess) {
+                    setState(() => isAutoDeductionEnabled = true);
+                    _showCustomDialog(
+                        title: "Availability Fee Deducted",
+                        message:
+                            "Your wallet has been deducted ₦100 for daily availability. This keeps you active for 24 hours.");
+                  } else if (state is UnsubscribeAutoDeductionSuccess) {
+                    setState(() => isAutoDeductionEnabled = false);
+                    _showCustomDialog(
+                        title: "Auto-Deduction Disabled",
+                        message: "You have unsubscribed from auto-deduction.");
+                  } else if (state is SubscribeAutoDeductionError ||
+                      state is UnsubscribeAutoDeductionError) {
+                    final msg = state is SubscribeAutoDeductionError
+                        ? state.errorMessage
+                        : (state as UnsubscribeAutoDeductionError).errorMessage;
+                    _showCustomDialog(title: "Error", message: msg);
+                  }
+                },
+                builder: (context, state) {
+                  final isLoading = state is SubscribeAutoDeductionLoading ||
+                      state is UnsubscribeAutoDeductionLoading;
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Auto-Deduction",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontFamily: 'Outfit',
+                                    fontWeight: FontWeight.w600)),
+                            SizedBox(height: 4),
+                            Text(
+                                "Enable daily deduction of ₦100 availability fee",
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontFamily: 'Outfit',
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0XFF434953))),
+                          ],
+                        ),
+                      ),
+                      isLoading
+                          ? const SizedBox(
+                              height: 24,
+                              width: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2))
+                          : Switch(
+                              value: isAutoDeductionEnabled,
+                              activeColor: const Color(0xFF3A75FF),
+                              onChanged: (value) {
+                                if (value) {
+                                  context.read<ProfileBloc>().add(
+                                        ToggleSubscribeAutoDeductionEvent(
+                                          model: SubscribeAutoDeductionModel(
+                                              subscribe: true),
+                                        ),
+                                      );
+                                } else {
+                                  context.read<ProfileBloc>().add(
+                                        UnsubscribeAutoDeductionEvent(
+                                          model: UnsubscribeAutoDeductionModel(
+                                              unsubscribe: false),
+                                        ),
+                                      );
+                                }
+                              },
+                            ),
+                    ],
                   );
-                }
-                return const SizedBox.shrink();
-              },
-            ),
-            const SizedBox(height: 30),
+                },
+              ),
+              const SizedBox(height: 20),
 
-            // Transaction History
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Transaction History",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Outfit',
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    context.push(MyAppRouteConstant.addpayment);
-                  },
-                  child: const Text(
-                    "See All",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.blue,
-                      fontFamily: 'Outfit',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
+              // 📊 Earning Summary
+              BlocBuilder<TaskBloc, TaskState>(
+                builder: (context, state) {
+                  if (state is WalletSummaryLoadingState) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is WalletSummaryErrorState) {
+                    return Text(state.errorMessage,
+                        style: const TextStyle(color: Colors.red));
+                  } else if (state is WalletSummarySuccessState) {
+                    final s = state.walletSummary;
+                    return Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Color(0XFFF0F2F5),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text("Earning Summary",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Outfit')),
+                          const SizedBox(height: 16),
+                          _summaryRow(
+                              "Pending Payments", "₦${s.pendingPayments ?? 0}"),
+                          const SizedBox(height: 8),
+                          _summaryRow("Withdrawable Balance",
+                              "₦${s.withdrawableBalance ?? 0}"),
+                          const SizedBox(height: 8),
+                          const Divider(),
+                          const SizedBox(height: 8),
+                          _summaryRow("Total Earnings (All-Time)",
+                              "₦${s.totalEarningsAllTime ?? 0}"),
+                        ],
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+              const SizedBox(height: 25),
 
-            // Transactions List
-            Expanded(child: transactionList()),
-          ],
+              // 🧾 Transaction History
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("Transaction History",
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Outfit')),
+                  TextButton(
+                    onPressed: () =>
+                        context.push(MyAppRouteConstant.addpayment),
+                    child: const Text("See All",
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF3A75FF),
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'Outfit')),
+                  )
+                ],
+              ),
+              const SizedBox(height: 10),
+              SizedBox(height: 400, child: transactionList()),
+            ],
+          ),
         ),
       ),
     );
   }
+
+  Widget _summaryRow(String title, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(title, style: const TextStyle(fontSize: 14, fontFamily: 'Outfit')),
+        Text(value,
+            style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Outfit')),
+      ],
+    );
+  }
 }
 
+// Transaction List Widget (Unchanged logic, modernized style)
 Expanded transactionList() {
   return Expanded(
     child: BlocBuilder<TransactionBloc, TransactionState>(
@@ -414,42 +429,38 @@ Expanded transactionList() {
           return const Center(child: CircularProgressIndicator());
         } else if (state is TransactionHistoryErrorState) {
           return Center(
-            child: Text(
-              state.errorMessage,
-              style: const TextStyle(color: Colors.red),
-            ),
-          );
+              child: Text(state.errorMessage,
+                  style: const TextStyle(color: Colors.red)));
         } else if (state is TransactionHistorySuccessState) {
           final transactions = state.transactionHistory;
-
           if (transactions.isEmpty) {
             return Center(child: Image.asset('assets/images/tract.png'));
           }
-
           return ListView.separated(
             physics: const BouncingScrollPhysics(),
             itemCount: transactions.length,
-            separatorBuilder: (_, __) => const Divider(height: 30),
-            itemBuilder: (context, index) {
-              final transaction = transactions[index];
+            separatorBuilder: (_, __) => const Divider(height: 25),
+            itemBuilder: (context, i) {
+              final t = transactions[i];
               return Row(
                 children: [
                   Container(
-                    width: 40,
-                    height: 40,
+                    width: 44,
+                    height: 44,
                     decoration: BoxDecoration(
-                      color: Colors.white12,
-                      borderRadius: BorderRadius.circular(8),
+                      color: const Color(0xFFF5F5F5),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Center(
-                      child: Image.asset(
-                        transaction.metadata ?? 'assets/icons/ri.png',
-                        width: 24,
-                        height: 24,
+                      child: SvgPicture.asset(
+                        'assets/icons/vic.svg', // <-- SVG file path
+                        width: 32.w,
+                        height: 30.w,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 15),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -457,46 +468,38 @@ Expanded transactionList() {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              transaction.type ?? 'Transaction',
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                fontFamily: 'Outfit',
-                              ),
-                            ),
-                            Text(
-                              "₦${transaction.amount ?? '0'}",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                                fontFamily: 'Outfit',
-                              ),
-                            ),
+                            Text(t.type ?? "Transaction",
+                                style: const TextStyle(
+                                    fontFamily: 'Outfit',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14)),
+                            Text("₦${t.amount ?? '0'}",
+                                style: const TextStyle(
+                                    fontFamily: 'Outfit',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14)),
                           ],
                         ),
                         const SizedBox(height: 4),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            Text(t.status ?? "11:20 PM Today",
+                                style: const TextStyle(
+                                  fontFamily: 'Outfit',
+                                  fontSize: 12,
+                                  color: Color(0xFF434953),
+                                )),
                             Text(
-                              transaction.status ?? 'Date not available',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey[600],
-                                fontFamily: 'Outfit',
-                              ),
-                            ),
-                            Text(
-                              transaction.status ?? 'Completed',
+                              (t.createdAt ?? '11:20 PM Today').toString(),
                               style: const TextStyle(
-                                fontSize: 10,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w500,
+                                fontSize: 13,
+                                color: Color(0xFF434953),
                                 fontFamily: 'Outfit',
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.2,
                               ),
-                            ),
+                            )
                           ],
                         ),
                       ],
@@ -508,120 +511,9 @@ Expanded transactionList() {
           );
         }
         return const Center(
-          child: Text(
-            "No transaction data",
-            style: TextStyle(fontFamily: 'Outfit'),
-          ),
-        );
+            child: Text("No transaction data",
+                style: TextStyle(fontFamily: 'Outfit')));
       },
-    ),
-  );
-}
-
-Container balance(BuildContext context) {
-  return Container(
-    width: double.infinity,
-    padding: const EdgeInsets.all(20),
-    decoration: BoxDecoration(
-      color: const Color(0xFFF2F2F2),
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          "Wallet Balance",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w300,
-            fontFamily: 'Outfit',
-          ),
-        ),
-        const SizedBox(height: 10),
-
-        /// BlocBuilder to show dynamic balance
-        BlocBuilder<WalletBloc, WalletState>(
-          builder: (context, state) {
-            String balanceText = "₦0.00";
-
-            if (state is WalletBalanceLoadingState) {
-              balanceText = "Loading...";
-            } else if (state is WalletBalanceSuccessState) {
-              balanceText = "₦${state.balance.balance}";
-            } else if (state is WalletBalanceErrorState) {
-              balanceText = "Error loading balance";
-            }
-
-            return Text(
-              balanceText,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Outfit',
-              ),
-            );
-          },
-        ),
-
-        const SizedBox(height: 20),
-
-        // Buttons
-        Row(
-          children: [
-            Expanded(
-              child: SizedBox(
-                height: 40,
-                child: ElevatedButton(
-                  onPressed: () {
-                    context.go(MyAppRouteConstant.addfunds);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: const Text(
-                    "+ Add Funds",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontFamily: 'Outfit',
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: SizedBox(
-                height: 40,
-                child: ElevatedButton(
-                  onPressed: () {
-                    context.go(MyAppRouteConstant.requestpayout);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: const Text(
-                    "Request Payout",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontFamily: 'Outfit',
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
     ),
   );
 }

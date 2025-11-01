@@ -469,11 +469,6 @@ class _MyProfileState extends State<MyProfile> {
         profile = state.getProfile;
         setState(() {});
       }
-      // if (state is GetClientNotificationErrorState) {
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     SnackBar(content: Text(state.errorMessage)),
-      //   );
-      // }
     }, builder: (context, state) {
       return Padding(
         padding: const EdgeInsets.all(10),
@@ -496,10 +491,6 @@ class _MyProfileState extends State<MyProfile> {
                     )
                     .toList(),
               )
-              // _verifiedItem("Government ID Verified"),
-              // _verifiedItem("Vehicle Registration Verified"),
-              // _verifiedItem("International Passport Verified"),
-              // _verifiedItem("Background Check Verified"),
             ],
           ),
         ),
